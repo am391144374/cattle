@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>ktr</artifactId>
+        <groupId>com.ktr</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>ktr-common</artifactId>
+
+    <dependencies>
+        <!-- kettle -->
+        <dependency>
+            <groupId>pentaho-kettle</groupId>
+            <artifactId>kettle-core</artifactId>
+            <version>9.2.0.0-103</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pentaho-kettle</groupId>
+            <artifactId>kettle-engine</artifactId>
+            <version>9.2.0.0-102</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pentaho-kettle</groupId>
+            <artifactId>kettle-dbdialog</artifactId>
+            <version>9.2.0.0-103</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pentaho</groupId>
+            <artifactId>metastore</artifactId>
+            <version>9.1.0.0-295</version>
+        </dependency>
+
+    </dependencies>
+
+    <repositories>
+        <!-- https://repo.pentaho.org/ -->
+        <repository>
+            <id>pentaho-nexus</id>
+            <name>Kettle</name>
+            <url>https://nexus.pentaho.org/content/groups/omni/</url>
+        </repository>
+
+        <!--         阿里云maven仓库 -->
+        <repository>
+            <id>aliyun_nexus</id>
+            <name>aliyun_nexus</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+</project>
