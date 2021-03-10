@@ -31,7 +31,6 @@ public class KettleRunner implements Runnable{
     public KettleRunner(){
         executorService = new ThreadPoolExecutor(2,6,15, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(1000),new NamedThreadFactory("kettle job running",false));
-//        executorService = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -66,13 +65,13 @@ public class KettleRunner implements Runnable{
 //                                                            .addLastProcess(excelHeadFormatHandler)
                                                             .addLastProcess(stepProcessHandler);
 
-                    Map<String,Object> result = kettleScript.execute(kettleJob.getBatchId());
+                    kettleScript.execute(kettleJob.getBatchId());
 
-                    if(ResultHelper.isSuccess(result)){
+                    if(ResultHelper.isSuccess(kettleJob.getBatchId())){
                         logger.debug("执行成功！");
                     }else{
                         logger.error("执行失败！请查看日志");
-                        List<String> error = ResultHelper.getException(result);
+                        List<String> error = ResultHelper.getException(kettleJob.getBatchId());
                         error.forEach(str -> logger.error(Thread.currentThread().getName() + " ## error :{}",str));
                     }
                     logger.debug(Thread.currentThread().getName() + " ## 处理完成:{}秒",(System.currentTimeMillis() - start) / 1000);

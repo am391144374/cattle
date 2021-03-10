@@ -29,7 +29,7 @@ public class ExcelHeadFormatHandler extends ExecuteProcessHandler {
     }
 
     @Override
-    public void executeContent(ProcessContext processContext, Map<String,Object> variables) {
+    public void executeContent(ProcessContext processContext) {
         WriteExcel writeExcel = new WriteExcel(excelMeta.getFileName(),excelMeta.getSheetName()[0]);
         try {
             writeExcel.writeHeadRow(writeHeadRowIndex,
@@ -43,7 +43,7 @@ public class ExcelHeadFormatHandler extends ExecuteProcessHandler {
             writeExcel.flushAll();
         }catch (Exception e){
             e.printStackTrace();
-            ResultHelper.setException(variables,this,e);
+            ResultHelper.setException(processContext.getBatchId(),this,e);
         }finally {
             writeExcel.close();
         }

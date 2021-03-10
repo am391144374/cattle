@@ -19,11 +19,11 @@ public class StepProcessHandler extends ExecuteProcessHandler {
     private int index = 0;
 
     @Override
-    public void executeContent(ProcessContext processContext, Map<String,Object> variables) {
+    public void executeContent(ProcessContext processContext) {
         TransMeta transMeta = (TransMeta) processContext.get("transMeta");
         for(BaseStepMeta stepMeta : baseStepMetaList){
             stepMeta.setTransMeta(transMeta);
-            stepMeta.execute(processContext, variables);
+            stepMeta.execute(processContext);
         }
     }
 

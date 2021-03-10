@@ -16,4 +16,12 @@ public class ProcessContext extends HashMap<String,Object> {
     public String getConnectionName(){
         return CONNECTION_NAME;
     }
+
+    public long getBatchId() {
+        return batchId;
+    }
+
+    public void setBatchId(long batchId) {
+        this.batchId = batchId;
+    }
 }

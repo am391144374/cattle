@@ -31,13 +31,13 @@ public abstract class BaseStepMeta extends ExecuteProcessHandler implements Step
     }
 
     @Override
-    public void execute(ProcessContext processContext, Map<String,Object> variables){
+    public void execute(ProcessContext processContext){
         try {
             currentStepMeta = buildCurrentStepMate();
             transMeta.addOrReplaceStep(currentStepMeta);
         } catch (Exception e) {
             e.printStackTrace();
-            ResultHelper.setException(variables,currentStepMeta,e);
+            ResultHelper.setException(processContext.getBatchId(),currentStepMeta,e);
         }
 
     }
@@ -53,7 +53,7 @@ public abstract class BaseStepMeta extends ExecuteProcessHandler implements Step
     }
 
     @Override
-    public void executeContent(ProcessContext processContext, Map<String,Object> variables) {
+    public void executeContent(ProcessContext processContext) {
 
     }
 }

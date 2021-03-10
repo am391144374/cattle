@@ -18,11 +18,11 @@ import java.util.Map;
 public class ExecuteKettleScriptProcessHandler extends ExecuteProcessHandler {
 
     @Override
-    public void executeContent(ProcessContext processContext, Map<String,Object> variables) {
+    public void executeContent(ProcessContext processContext) {
         TransMeta transMeta = (TransMeta) processContext.get("transMeta");
         long batchId = (long) processContext.get("batchId");
         if(transMeta == null){
-            ResultHelper.setException(variables,this,new ExecuteKettleScriptException("execute kettle script error TransMeta is null"));
+            ResultHelper.setException(processContext.getBatchId(),this,new ExecuteKettleScriptException("execute kettle script error TransMeta is null"));
             return;
         }
         MyTrans trans = null;
@@ -35,14 +35,14 @@ public class ExecuteKettleScriptProcessHandler extends ExecuteProcessHandler {
             trans.waitUntilFinished();
             // 抛出异常
             if (trans.getErrors() > 0) {
-                ResultHelper.setException(variables,this,new RuntimeException("There are errors during transformation exception!(传输过程中发生异常)"));
+                ResultHelper.setException(processContext.getBatchId(),this,new RuntimeException("There are errors during transformation exception!(传输过程中发生异常)"));
                 String[] errMsgList = KettleLogStore.getAppender().getBuffer(trans.getLogChannelId(), false).toString().split("\n\r\n");
                 String errMsg=errMsgList[0];
-                ResultHelper.setException(variables,this,new RuntimeException(errMsg));
+                ResultHelper.setException(processContext.getBatchId(),this,new RuntimeException(errMsg));
             }
         } catch (KettleException e) {
             e.printStackTrace();
-            ResultHelper.setException(variables,this,e);
+            ResultHelper.setException(processContext.getBatchId(),this,e);
         }finally {
             trans.cleanup();
         }

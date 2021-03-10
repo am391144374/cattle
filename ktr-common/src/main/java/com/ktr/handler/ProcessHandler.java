@@ -6,12 +6,12 @@ import java.util.Map;
 
 public interface ProcessHandler {
 
-    void execute(ProcessContext processContext, Map<String, Object> variables);
+    void execute(ProcessContext processContext);
 
     void setNextHandler(ProcessHandler processHandler);
 
     /**
      * 执行主要内容
      */
-    void executeContent(ProcessContext processContext, Map<String, Object> variables);
+    void executeContent(ProcessContext processContext);
 }

@@ -75,12 +75,10 @@ public class KettleScript {
         addLastProcess(kettleScriptProcessHandler);
     }
 
-    public Map<String,Object> execute(long batchId){
-        Map<String,Object> variables = new HashMap<>();
-
+    public void execute(long batchId){
         if(first == null || end == null){
-            ResultHelper.setException(variables,this,new ProcessHandlerNullException("processHandler is not init"));
-            return null;
+            ResultHelper.setException(batchId,this,new ProcessHandlerNullException("processHandler is not init"));
+            return ;
         }
         //最后加上 kettle脚本执行器
         addExecuteKettleScriptActuator();
@@ -92,15 +90,14 @@ public class KettleScript {
             transMeta = new TransMeta(scriptFile);
             processContext.put("transMeta",transMeta);
             processContext.put("batchId",batchId);
-            first.execute(processContext, variables);
+            first.execute(processContext);
         } catch (KettleXMLException e) {
             e.printStackTrace();
-            ResultHelper.setException(variables,this,e);
+            ResultHelper.setException(processContext.getBatchId(),this,e);
         } catch (KettleMissingPluginsException e) {
             e.printStackTrace();
-            ResultHelper.setException(variables,this,e);
+            ResultHelper.setException(processContext.getBatchId(),this,e);
         }
-        return variables;
     }
 
 }
