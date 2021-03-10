@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: druid
+
+server:
+  port: 5000
