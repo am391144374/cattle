@@ -1,9 +1,9 @@
-package com.cattle.service.Impl;
+package com.cattle.service.Impl.kettle;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cattle.entity.kettle.KtrStepInfo;
-import com.cattle.mapper.KtrStepInfoMapper;
-import com.cattle.service.api.KtrStepInfoService;
+import com.cattle.mapper.kettle.KtrStepInfoMapper;
+import com.cattle.service.api.kettle.KtrStepInfoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

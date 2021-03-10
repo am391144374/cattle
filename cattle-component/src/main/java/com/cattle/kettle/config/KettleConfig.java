@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class KettleJob {
+public class KettleConfig {
 
     private long batchId;
 

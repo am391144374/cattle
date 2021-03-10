@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @Slf4j
 @MapperScan(basePackages = "com.ktr.mapper")
-@SpringBootApplication(scanBasePackages = "com.ktr.*",exclude = { DataSourceAutoConfiguration.class })
+@SpringBootApplication(scanBasePackages = {"com.ktr.*","cn.hutool.extra.spring"},exclude = { DataSourceAutoConfiguration.class })
 public class KtrWebApplication {
 
 	public static void main(String[] args) {

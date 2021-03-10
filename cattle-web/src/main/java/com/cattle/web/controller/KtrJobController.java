@@ -1,8 +1,8 @@
 package com.cattle.web.controller;
 
-import com.cattle.entity.kettle.KtrJobInfo;
-import com.cattle.service.Impl.KtrRunFactory;
-import com.cattle.service.api.KtrJobService;
+import com.cattle.entity.CattleJob;
+import com.cattle.service.api.JobService;
+import com.cattle.web.KtrRunFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class KtrJobController {
 
     @Autowired
-    private KtrJobService ktrJobService;
+    private JobService jobService;
     @Autowired
     private KtrRunFactory runFactory;
 
     @GetMapping("/execute")
     @ResponseBody
     public String executeJob(Integer jobId){
-        KtrJobInfo ktrJobInfo = ktrJobService.buildExecuteJobInfo(jobId);
-        if(ktrJobInfo != null){
+        CattleJob cattleJob = jobService.buildExecuteJobInfo(jobId);
+        if(cattleJob != null){
             try {
-                runFactory.putRunJob(ktrJobInfo);
+                runFactory.putRunJob(cattleJob);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -35,8 +35,8 @@ public class KtrJobController {
 
     @GetMapping("/list")
     @ResponseBody
-    public KtrJobInfo list(Integer jobId){
-        return ktrJobService.buildExecuteJobInfo(jobId);
+    public CattleJob list(Integer jobId){
+        return jobService.buildExecuteJobInfo(jobId);
     }
 
 }
