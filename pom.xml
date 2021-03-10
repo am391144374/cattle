@@ -4,17 +4,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.ktr</groupId>
-    <artifactId>ktr</artifactId>
+    <groupId>com.cattle</groupId>
+    <artifactId>cattle</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>ktr-common</module>
-        <module>ktr-web</module>
-        <module>ktr-service</module>
-        <module>ktr-dao</module>
-        <module>ktr-component</module>
+        <module>cattle-common</module>
+        <module>cattle-web</module>
+        <module>cattle-service</module>
+        <module>cattle-dao</module>
+        <module>cattle-component</module>
     </modules>
 
     <properties>
