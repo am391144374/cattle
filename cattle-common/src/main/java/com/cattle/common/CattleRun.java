@@ -1,4 +1,4 @@
-package com.cattle;
+package com.cattle.common;
 
 
 import cn.hutool.core.thread.ThreadUtil;
