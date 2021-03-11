@@ -18,8 +18,6 @@ public interface ConfigurableSpiderService{
      */
     void saveData(List<LinkedHashMap<String, String>> datas, String tableName,LinkedHashMap<String, String> fields, String uuid);
 
-    LinkedHashMap<String,String> parseFields(String fieldsJson);
-
     String buildPrepareSql(LinkedHashMap<String, String> field,String tableName);
 
     /**

@@ -2,13 +2,12 @@ package com.cattle.web;
 
 import cn.hutool.core.util.IdUtil;
 import com.cattle.entity.CattleJob;
-import com.cattle.kettle.KettleRunner;
 import com.cattle.entity.kettle.KtrStepField;
 import com.cattle.entity.kettle.KtrStepInfo;
-import com.cattle.kettle.config.KettleConfig;
-import com.cattle.kettle.step.StepTypeInterface;
-import com.cattle.kettle.meta.ExcelMeta;
-import com.cattle.kettle.meta.FieldMeta;
+import com.cattle.component.kettle.KettleConfig;
+import com.cattle.component.kettle.step.StepTypeInterface;
+import com.cattle.component.kettle.meta.ExcelMeta;
+import com.cattle.component.kettle.meta.FieldMeta;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,12 +16,11 @@ import java.util.List;
 @Service
 public class KtrRunFactory {
 
-    private static KettleRunner runner;
     private static KtrRunFactory runFactory;
     private final String scriptFilePath = "D:\\code\\new work space from git\\ktr\\doc\\科技企业孵化\\省-科技企业孵化.ktr";
 
     public KtrRunFactory(){
-        runner = new KettleRunner();
+
     }
 
     public KettleConfig putRunJob(CattleJob jobInfo) throws InterruptedException {
@@ -64,7 +62,7 @@ public class KtrRunFactory {
         kettleConfig.setJobName(jobInfo.getJobName());
         kettleConfig.setWriteHeadRowIndex(2);
         kettleConfig.setBatchId(IdUtil.getSnowflake(1,1).nextId());
-        runner.putJob(kettleConfig);
+//        runner.putJob(kettleConfig);
 
         return kettleConfig;
     }

@@ -1,12 +1,11 @@
 package com.cattle.service.Impl.spider;
 
 import com.cattle.service.api.spider.ConfigurableSpiderService;
-import junit.framework.TestCase;
 import lombok.extern.slf4j.Slf4j;
 import java.util.LinkedHashMap;
 
 @Slf4j
-public class ConfigurableSpiderServiceImplTest extends TestCase {
+public class ConfigurableSpiderServiceImplTest {
 
     public void testBuildPrepareSql() {
         ConfigurableSpiderService spiderService = new ConfigurableSpiderServiceImpl();

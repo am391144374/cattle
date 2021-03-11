@@ -12,30 +12,7 @@
     <artifactId>cattle-common</artifactId>
 
     <dependencies>
-        <!-- kettle -->
-        <dependency>
-            <groupId>pentaho-kettle</groupId>
-            <artifactId>kettle-core</artifactId>
-            <version>9.2.0.0-103</version>
-        </dependency>
 
-        <dependency>
-            <groupId>pentaho-kettle</groupId>
-            <artifactId>kettle-engine</artifactId>
-            <version>9.2.0.0-102</version>
-        </dependency>
-
-        <dependency>
-            <groupId>pentaho-kettle</groupId>
-            <artifactId>kettle-dbdialog</artifactId>
-            <version>9.2.0.0-103</version>
-        </dependency>
-
-        <dependency>
-            <groupId>pentaho</groupId>
-            <artifactId>metastore</artifactId>
-            <version>9.1.0.0-295</version>
-        </dependency>
 
     </dependencies>
 

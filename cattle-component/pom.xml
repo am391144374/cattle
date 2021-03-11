@@ -13,11 +13,6 @@
     <description>执行组件</description>
 
     <dependencies>
-        <dependency>
-            <groupId>com.cattle</groupId>
-            <artifactId>cattle-common</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
 
         <!-- http://webmagic.io/docs/zh -->
         <dependency>
@@ -44,6 +39,47 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- kettle -->
+        <dependency>
+            <groupId>pentaho-kettle</groupId>
+            <artifactId>kettle-core</artifactId>
+            <version>9.2.0.0-103</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pentaho-kettle</groupId>
+            <artifactId>kettle-engine</artifactId>
+            <version>9.2.0.0-102</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pentaho-kettle</groupId>
+            <artifactId>kettle-dbdialog</artifactId>
+            <version>9.2.0.0-103</version>
+        </dependency>
+
+        <dependency>
+            <groupId>pentaho</groupId>
+            <artifactId>metastore</artifactId>
+            <version>9.1.0.0-295</version>
+        </dependency>
+
     </dependencies>
+
+    <repositories>
+        <!-- https://repo.pentaho.org/ -->
+        <repository>
+            <id>pentaho-nexus</id>
+            <name>Kettle</name>
+            <url>https://nexus.pentaho.org/content/groups/omni/</url>
+        </repository>
+
+        <!--         阿里云maven仓库 -->
+        <repository>
+            <id>aliyun_nexus</id>
+            <name>aliyun_nexus</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
 
 </project>

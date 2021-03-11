@@ -1,6 +1,7 @@
 package com.cattle.service;
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.cattle.common.constant.JobStatus;
 import com.cattle.service.api.JobService;
 
 public class JobStatusHelper {
@@ -11,26 +12,8 @@ public class JobStatusHelper {
         jobService = SpringUtil.getBean(JobService.class);
     }
 
-    public static int updateStatus(long batchId,Status status){
+    public static int updateStatus(long batchId, JobStatus.Status status){
         return jobService.updateJobStatus(batchId,status.getName());
-    }
-
-    public enum Status{
-        START("start"),
-        RUNNING("running"),
-        WAIT("wait"),
-        STOP("stop"),
-        FINISH("finish");
-
-        private String name;
-
-        Status(String name){
-            this.name = name;
-        }
-
-        String getName(){
-            return this.name;
-        }
     }
 
 }
