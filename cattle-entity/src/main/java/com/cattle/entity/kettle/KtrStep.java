@@ -43,7 +43,6 @@ public class KtrStep {
     @TableField(exist = false)
     private List<KtrField> fieldList;
 
-    //todo 移动
     public String[] getFileList(){
         return fileList.split(",");
     }
