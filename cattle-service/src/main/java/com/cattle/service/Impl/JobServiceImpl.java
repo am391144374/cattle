@@ -2,8 +2,8 @@ package com.cattle.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cattle.entity.CattleJob;
-import com.cattle.entity.kettle.KtrStepField;
-import com.cattle.entity.kettle.KtrStepInfo;
+import com.cattle.entity.kettle.KtrField;
+import com.cattle.entity.kettle.KtrStep;
 import com.cattle.mapper.JobMapper;
 import com.cattle.service.api.JobService;
 import com.cattle.service.api.kettle.KtrStepFieldService;
@@ -43,9 +43,9 @@ public class JobServiceImpl implements JobService {
         if(jobInfo == null){
             return null;
         }
-        List<KtrStepInfo> stepInfoList = stepInfoService.selectStepInfoByJobId(jobId);
-        for(KtrStepInfo stepInfo : stepInfoList){
-            List<KtrStepField> stepFields = stepFieldService.selectFieldListByStepId(stepInfo.getStepId());
+        List<KtrStep> stepInfoList = stepInfoService.selectStepInfoByJobId(jobId);
+        for(KtrStep stepInfo : stepInfoList){
+            List<KtrField> stepFields = stepFieldService.selectFieldListByStepId(stepInfo.getStepId());
             stepInfo.setFieldList(stepFields);
         }
         jobInfo.setStepInfoList(stepInfoList);

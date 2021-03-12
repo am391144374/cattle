@@ -3,6 +3,7 @@ package com.cattle.component.kettle.handler;
 import cn.hutool.core.util.StrUtil;
 import com.cattle.common.handler.ExecuteProcessHandler;
 import com.cattle.common.context.ProcessContext;
+import com.cattle.component.kettle.KettleConfig;
 import com.cattle.component.kettle.meta.ExcelMeta;
 import com.cattle.component.kettle.meta.FieldMeta;
 import com.cattle.component.kettle.excel.WriteExcel;
@@ -16,21 +17,19 @@ import java.util.stream.Collectors;
  */
 public class ExcelHeadFormatHandler extends ExecuteProcessHandler {
 
-    private ExcelMeta excelMeta;
-    private int writeHeadRowIndex;
     private List<FieldMeta> excelFieldMetas;
+    private KettleConfig kettleConfig;
 
-    public ExcelHeadFormatHandler(ExcelMeta excelMeta,List<FieldMeta> excelFieldMetas,int writeHeadRowIndex){
-        this.excelMeta = excelMeta;
-        this.excelFieldMetas = excelFieldMetas;
-        this.writeHeadRowIndex = writeHeadRowIndex;
+    public ExcelHeadFormatHandler(KettleConfig kettleConfig){
+        this.excelFieldMetas = kettleConfig.getSelectValueMap();
+        this.kettleConfig = kettleConfig;
     }
 
     @Override
     public void executeContent(ProcessContext processContext) {
-        WriteExcel writeExcel = new WriteExcel(excelMeta.getFileName(),excelMeta.getSheetName()[0]);
+        WriteExcel writeExcel = new WriteExcel(kettleConfig.getFileName(),kettleConfig.getSheetName()[0]);
         try {
-            writeExcel.writeHeadRow(writeHeadRowIndex,
+            writeExcel.writeHeadRow(kettleConfig.getWriteHeadRowIndex(),
                     excelFieldMetas.stream().map(fieldMate -> {
                         //todo excel字段设置规则，按执行脚本来适配
                         if(StrUtil.isBlank(fieldMate.getComment())){

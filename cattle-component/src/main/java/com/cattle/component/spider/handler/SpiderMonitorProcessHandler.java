@@ -1,9 +1,8 @@
 package com.cattle.component.spider.handler;
 
+import com.cattle.common.enums.JobStatus;
 import com.cattle.common.handler.ExecuteProcessHandler;
-import com.cattle.common.constant.JobStatus;
 import com.cattle.common.context.ProcessContext;
-import com.cattle.service.JobStatusHelper;
 import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.Spider;
 
@@ -17,22 +16,22 @@ public class SpiderMonitorProcessHandler extends ExecuteProcessHandler {
     @Override
     public void executeContent(ProcessContext processContext) {
         Spider spider = (Spider) processContext.get("spiderWorker");
-        while (!spider.isExitWhenComplete()){
+        while (spider.getStatus() != Spider.Status.Stopped){
             //阻塞等待完成
             try {
-                if(processContext.getJobStatus().getName().equals(JobStatus.Status.INTERRUPT.getName())){
+                if(processContext.getJobStatus().getName().equals(JobStatus.INTERRUPT.getName())){
                     spider.stop();
                     break;
                 }
-                Thread.currentThread().wait(10);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 processContext.putError(this,e);
             }
         }
-        spider.close();
-        log.info("{} 爬虫已经完成 ！",processContext.getBatchId());
-        JobStatusHelper.updateStatus(processContext.getBatchId(), JobStatus.Status.FINISH);
+        if(!processContext.getJobStatus().getName().equals(JobStatus.INTERRUPT.getName())){
+            processContext.setJobStatus(JobStatus.FINISH);
+        }
     }
 
 }

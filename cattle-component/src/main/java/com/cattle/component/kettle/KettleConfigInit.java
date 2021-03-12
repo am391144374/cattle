@@ -1,4 +1,4 @@
-package com.cattle.kettle;
+package com.cattle.component.kettle;
 
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;

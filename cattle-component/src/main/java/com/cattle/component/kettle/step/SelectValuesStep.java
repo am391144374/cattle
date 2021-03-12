@@ -1,6 +1,7 @@
 package com.cattle.component.kettle.step;
 
 import cn.hutool.core.util.StrUtil;
+import com.cattle.component.kettle.KettleConfig;
 import com.cattle.component.kettle.meta.FieldMeta;
 import org.pentaho.di.core.plugins.StepPluginType;
 import org.pentaho.di.trans.step.StepMeta;
@@ -14,11 +15,10 @@ import java.util.stream.Collectors;
 public class SelectValuesStep extends BaseStepMeta{
 
     private List<FieldMeta> fieldMetaList;
-    private String stepName;
+    public static String stepName = "字段选择";
 
-    public SelectValuesStep(List<FieldMeta> fieldMetaList,String stepName){
-        this.fieldMetaList = fieldMetaList;
-        this.stepName = stepName;
+    public SelectValuesStep(KettleConfig kettleConfig){
+        this.fieldMetaList = kettleConfig.getSelectValueMap();
     }
 
     @Override

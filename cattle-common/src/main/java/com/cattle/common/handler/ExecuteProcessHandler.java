@@ -1,8 +1,11 @@
 package com.cattle.common.handler;
 
-import com.cattle.common.constant.JobStatus;
 import com.cattle.common.context.ProcessContext;
+import com.cattle.common.enums.JobStatus;
 
+/**
+ * 组件通用执行类，链式调用，更好划分处理边界
+ */
 public abstract class ExecuteProcessHandler implements ProcessHandler {
 
     private ProcessHandler next;
@@ -10,13 +13,13 @@ public abstract class ExecuteProcessHandler implements ProcessHandler {
     @Override
     public void execute(ProcessContext processContext){
         //上一步执行成功，则继续，否则跳过后续执行步骤
-        if(processContext.isSuccess()){
+        if(processContext.getJobStatus() == JobStatus.RUNNING){
             executeContent(processContext);
             if(next != null){
                 next.execute(processContext);
             }
         }else {
-            setStatus(processContext, JobStatus.Status.INTERRUPT);
+            setStatus(processContext, JobStatus.INTERRUPT);
         }
     }
 
@@ -26,7 +29,7 @@ public abstract class ExecuteProcessHandler implements ProcessHandler {
     }
 
     @Override
-    public void setStatus(ProcessContext processContext, JobStatus.Status status) {
+    public void setStatus(ProcessContext processContext, JobStatus status) {
         processContext.setJobStatus(status);
     }
 }

@@ -1,15 +1,15 @@
 package com.cattle.service.api.kettle;
 
-import com.cattle.entity.kettle.KtrStepField;
+import com.cattle.entity.kettle.KtrField;
 
 import java.util.List;
 
 public interface KtrStepFieldService {
 
-    public List<KtrStepField> selectFieldListByStepId(Integer stepId);
+    public List<KtrField> selectFieldListByStepId(Integer stepId);
 
-    public KtrStepField selectFieldListById(Integer fieldId);
+    public KtrField selectFieldListById(Integer fieldId);
 
-    public int save(KtrStepField fieldInfo);
+    public int save(KtrField fieldInfo);
 
 }

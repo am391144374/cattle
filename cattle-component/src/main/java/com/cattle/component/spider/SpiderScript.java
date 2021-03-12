@@ -4,11 +4,16 @@ import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
 import com.cattle.component.spider.handler.SpiderProcessHandler;
 import com.cattle.ProcessScript;
 import com.cattle.common.context.ProcessContext;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 爬虫执行类
  */
 public class SpiderScript extends ProcessScript {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private SpiderConfig spiderConfig;
     private ProcessContext context;
@@ -21,6 +26,7 @@ public class SpiderScript extends ProcessScript {
     public void run() {
         context.setBatchId(spiderConfig.getBatchId());
         context.put("spiderConfig",spiderConfig);
+        logger.info("{} start spider config:{}",Thread.currentThread().getName(),spiderConfig.toString());
         first.execute(context);
     }
 

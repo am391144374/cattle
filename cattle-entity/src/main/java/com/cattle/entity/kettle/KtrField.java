@@ -8,27 +8,27 @@ import lombok.Data;
 
 /**
  * @author lsj
- * 数据库信息表
+ * 步骤需求字段
  */
 @Data
-@TableName("ktr_db_info")
-public class KtrDbInfo {
+@TableName("ktr_field")
+public class KtrField {
 
     @TableId(type = IdType.AUTO)
-    private Integer dbId;
+    private Integer fieldId;
     @TableField
-    private String name;
+    private Integer stepId;
     @TableField
-    private String dbDatabase;
+    private String fieldName;
     @TableField
-    private String dbType;
+    private String fieldType;
+    @TableField(value = "`comment`")
+    private String comment;
     @TableField
-    private String connectStr;
+    private Integer length;
+    @TableField(value = "`precision`")
+    private Integer precision;
     @TableField
-    private String loginName;
-    @TableField
-    private Integer port;
-    @TableField
-    private String loginPwd;
+    private String defaultValue;
 
 }

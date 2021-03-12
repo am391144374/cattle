@@ -1,6 +1,6 @@
 package com.cattle.common.context;
 
-import com.cattle.common.constant.JobStatus;
+import com.cattle.common.enums.JobStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +16,12 @@ public class ProcessContext extends HashMap<String,Object> {
     private static final String EXECUTOR_EXCEPTION = "exceptionException";
     /** 批次ID */
     private long batchId;
+    /** 计划名 */
+    private String jobName;
 
-    private JobStatus.Status jobStatus;
+    private Integer count;
+
+    private JobStatus jobStatus;
 
     private final String CONNECTION_NAME = "yearbook";
 
@@ -37,18 +41,18 @@ public class ProcessContext extends HashMap<String,Object> {
      * 中断正在执行job
      */
     public void interruptJob(){
-        jobStatus = JobStatus.Status.INTERRUPT;
+        jobStatus = JobStatus.INTERRUPT;
     }
 
-    public JobStatus.Status getJobStatus() {
+    public JobStatus getJobStatus() {
         return jobStatus;
     }
 
     public List<String> getError(){
-        return getException();
+        return (List<String>) this.get(EXECUTOR_EXCEPTION);
     }
 
-    public Map<String,Object> getResult(long batchId){
+    public Map<String,Object> getResult(){
         return this;
     }
 
@@ -63,18 +67,40 @@ public class ProcessContext extends HashMap<String,Object> {
         }
         exList.add(exMsg);
         put(EXECUTOR_EXCEPTION,exList);
-        setJobStatus(JobStatus.Status.INTERRUPT);
+        setJobStatus(JobStatus.INTERRUPT);
     }
 
     public boolean isSuccess(){
-        return jobStatus.getName().equals(JobStatus.Status.FINISH);
+        return jobStatus.getName().equals(JobStatus.FINISH);
     }
 
-    public List<String> getException(){
-        return (List<String>) this.get(EXECUTOR_EXCEPTION);
-    }
-
-    public void setJobStatus(JobStatus.Status jobStatus) {
+    public void setJobStatus(JobStatus jobStatus) {
         this.jobStatus = jobStatus;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    @Override
+    public String toString() {
+        return "ProcessContext{" +
+                "batchId=" + batchId +
+                ", jobName='" + jobName + '\'' +
+                ", count=" + count +
+                ", jobStatus=" + jobStatus.getName() +
+                '}';
     }
 }

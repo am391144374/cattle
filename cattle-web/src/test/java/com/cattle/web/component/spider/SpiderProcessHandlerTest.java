@@ -1,49 +1,51 @@
 package com.cattle.web.component.spider;
 
-import com.cattle.service.Impl.spider.ConfigurableSpiderServiceImpl;
-import com.cattle.service.api.spider.ConfigurableSpiderService;
-import lombok.AllArgsConstructor;
+import cn.hutool.core.util.IdUtil;
+import com.cattle.common.context.ProcessContext;
+import com.cattle.common.enums.JobStatus;
+import com.cattle.common.handler.ProcessHandler;
+import com.cattle.component.spider.SpiderConfig;
+import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
+import com.cattle.component.spider.handler.SpiderProcessHandler;
+import com.cattle.component.spider.service.ConfigurableSpiderService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 @Slf4j
 @SpringBootTest
 public class SpiderProcessHandlerTest {
 
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private ConfigurableSpiderService spiderService;
 
-    public void testSpiderRun(){
-
-    }
-
     @Test
     public void autoCreateTable(){
-        List<LinkedHashMap<String, String>> datas = new ArrayList<>();
-        LinkedHashMap<String,String> field = new LinkedHashMap<>();
-        field.put("name","1");
-        field.put("age","2");
-        datas.add(field);
-        datas.add(field);
-        datas.add(field);
-        datas.add(field);
-        datas.add(field);
-        datas.add(field);
-        log.info(spiderService.buildPrepareSql(field,"table"));
-        try {
-            spiderService.doPrepareSaveData(datas,"test",field,"1234");
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        ProcessHandler processHandler = new SpiderProcessHandler();
+        long batchId = IdUtil.getSnowflake(1,1).nextId();
+        SpiderConfig spiderConfig = new SpiderConfig();
+        spiderConfig.setBatchId(batchId);
+        spiderConfig.setTableName("hz_lp");
+        spiderConfig.setSpiderName("杭州楼盘");
+        spiderConfig.setListRegex("https://hz\\.newhouse\\.fang\\.com/house/s/b\\d+");
+        spiderConfig.setEntryUrl("https://hz.newhouse.fang.com/house/s/b91");
+        spiderConfig.setFieldsJson("[{\"index\":0,\"key\":\"name\",\"value\":\"//div[@class='nlc_details']//div[@class='nlcd_name']//a/text()\"},{\"index\":1,\"key\":\"address\",\"value\":\"//div[@class='address']//a/text()\"},{\"index\":2,\"key\":\"price\",\"value\":\"//div[@class='nhouse_price']/*[1]/text()\"}]");
+        spiderConfig.setXPathSelection(0);
+        spiderConfig.setThreadNum(2);
+
+        ProcessContext processContext = new ProcessContext();
+        processContext.setBatchId(batchId);
+        processContext.put("spiderConfig",spiderConfig);
+        processContext.setJobStatus(JobStatus.RUNNING);
+
+        processHandler.setNextHandler(new SpiderMonitorProcessHandler());
+        processHandler.execute(processContext);
+        logger.info(processContext.toString());
     }
 
 }

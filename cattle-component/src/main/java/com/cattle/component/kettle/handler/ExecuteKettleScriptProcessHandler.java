@@ -1,5 +1,6 @@
 package com.cattle.component.kettle.handler;
 
+import com.cattle.common.enums.JobStatus;
 import com.cattle.common.handler.ExecuteProcessHandler;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.component.kettle.trans.MyTrans;
@@ -36,6 +37,8 @@ public class ExecuteKettleScriptProcessHandler extends ExecuteProcessHandler {
                 String[] errMsgList = KettleLogStore.getAppender().getBuffer(trans.getLogChannelId(), false).toString().split("\n\r\n");
                 String errMsg=errMsgList[0];
                 processContext.putError(this,new RuntimeException(errMsg));
+            }else{
+                processContext.setJobStatus(JobStatus.FINISH);
             }
         } catch (KettleException e) {
             e.printStackTrace();
@@ -43,7 +46,5 @@ public class ExecuteKettleScriptProcessHandler extends ExecuteProcessHandler {
         }finally {
             trans.cleanup();
         }
-
-
     }
 }

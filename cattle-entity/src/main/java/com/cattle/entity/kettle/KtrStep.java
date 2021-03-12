@@ -13,8 +13,8 @@ import java.util.List;
  * @author lsj
  */
 @Data
-@TableName("ktr_step_info")
-public class KtrStepInfo {
+@TableName("ktr_step")
+public class KtrStep {
 
     @TableId(type = IdType.AUTO)
     private Integer stepId;
@@ -33,7 +33,19 @@ public class KtrStepInfo {
     private Integer startCol;
     @TableField
     private Integer nextStepId;
+    @TableField
+    private Integer inputDbId;
+    @TableField
+    private String fileList;
+
+    @TableField
+    private Integer outputDbId;
     @TableField(exist = false)
-    private List<KtrStepField> fieldList;
+    private List<KtrField> fieldList;
+
+    //todo 移动
+    public String[] getFileList(){
+        return fileList.split(",");
+    }
 
 }

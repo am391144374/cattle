@@ -24,11 +24,11 @@ public class KtrJobController {
     public String executeJob(Integer jobId){
         CattleJob cattleJob = jobService.buildExecuteJobInfo(jobId);
         if(cattleJob != null){
-            try {
-                runFactory.putRunJob(cattleJob);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+////                runFactory.putRunJob(cattleJob);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
         return "调用成功";
     }

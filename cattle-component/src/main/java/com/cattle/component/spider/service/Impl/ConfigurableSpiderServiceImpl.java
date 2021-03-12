@@ -1,8 +1,8 @@
-package com.cattle.service.Impl.spider;
+package com.cattle.component.spider.service.Impl;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.cattle.service.api.spider.ConfigurableSpiderService;
+import com.cattle.component.spider.service.ConfigurableSpiderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -210,9 +210,9 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
                 statement.setString(index,val);
                 index ++;
             }
-            statement.setString(3,uuid);
-            statement.setString(4,LocalDateTimeUtil.formatNormal(LocalDateTime.now()));
-            statement.setString(5,LocalDateTimeUtil.formatNormal(LocalDateTime.now()));
+            statement.setString(index++,uuid);
+            statement.setString(index++,LocalDateTimeUtil.formatNormal(LocalDateTime.now()));
+            statement.setString(index++,LocalDateTimeUtil.formatNormal(LocalDateTime.now()));
             statement.addBatch();
         }
     }

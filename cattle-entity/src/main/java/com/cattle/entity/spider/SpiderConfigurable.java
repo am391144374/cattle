@@ -1,23 +1,24 @@
-package com.cattle.component.spider;
+package com.cattle.entity.spider;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.LinkedHashMap;
 
 @Data
-@ToString
 @ApiModel
-public class SpiderConfig {
+@TableName("spider_configurable")
+public class SpiderConfigurable {
 
     @ApiModelProperty
-    private long batchId;
+    private Integer step_id;
     @ApiModelProperty(notes = "爬虫名")
     private String spiderName;
     @ApiModelProperty(notes = "保存的表名",required = true)
@@ -68,12 +69,14 @@ public class SpiderConfig {
      * key - 字段名
      * val - xpath
      */
+    @TableField(exist = false)
     private LinkedHashMap<String, String> fields;
 
     /**
      * key - 字段名
      * val - xpath
      */
+    @TableField(exist = false)
     private LinkedHashMap<String, String> contentFields;
 
     public LinkedHashMap<String, String> getFields() {

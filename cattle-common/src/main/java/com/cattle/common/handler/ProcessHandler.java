@@ -1,8 +1,11 @@
 package com.cattle.common.handler;
 
-import com.cattle.common.constant.JobStatus;
 import com.cattle.common.context.ProcessContext;
+import com.cattle.common.enums.JobStatus;
 
+/**
+ * 组件执行类
+ */
 public interface ProcessHandler {
 
     void execute(ProcessContext processContext);
@@ -14,5 +17,5 @@ public interface ProcessHandler {
      */
     void executeContent(ProcessContext processContext);
 
-    void setStatus(ProcessContext processContext, JobStatus.Status status);
+    void setStatus(ProcessContext processContext, JobStatus status);
 }

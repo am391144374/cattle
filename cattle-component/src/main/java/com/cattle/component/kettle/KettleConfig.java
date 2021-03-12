@@ -1,14 +1,13 @@
 package com.cattle.component.kettle;
 
-import com.cattle.component.kettle.step.StepTypeInterface;
 import com.cattle.component.kettle.meta.DataBaseMeta;
-import com.cattle.component.kettle.meta.ExcelMeta;
 import com.cattle.component.kettle.meta.FieldMeta;
+import lombok.ToString;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+@ToString
 public class KettleConfig {
 
     private long batchId;
@@ -16,11 +15,19 @@ public class KettleConfig {
     private String scriptFile;
     private String jobName;
     private int writeHeadRowIndex;
-    /** excel 数据源信息 */
-    private ExcelMeta excelMeta;
-    /** 字段数据 */
-    private Map<String,List<FieldMeta>> fieldMetaMap = new ConcurrentHashMap<>();
-    //数据存储
+    /** 文件路径 */
+    private String[] fileName;
+    /** sheet名 */
+    private String[] sheetName;
+    /** 开始行 */
+    private int[] startRow;
+    /** 开始列 */
+    private int[] startCol;
+    /** 数据导入字段 */
+    private List<FieldMeta> selectValueMap = new ArrayList<>();
+    /** 新增变量字段 */
+    private List<FieldMeta> constantMap = new ArrayList<>();
+    /** 数据存储 */
     private DataBaseMeta dataBaseMeta;
 
     public String getScriptFile() {
@@ -47,28 +54,12 @@ public class KettleConfig {
         this.writeHeadRowIndex = writeHeadRowIndex;
     }
 
-    public ExcelMeta getExcelMeta() {
-        return excelMeta;
-    }
-
-    public void setExcelMeta(ExcelMeta excelMeta) {
-        this.excelMeta = excelMeta;
-    }
-
     public DataBaseMeta getDataBaseMeta() {
         return dataBaseMeta;
     }
 
     public void setDataBaseMeta(DataBaseMeta dataBaseMeta) {
         this.dataBaseMeta = dataBaseMeta;
-    }
-
-    public void putFieldMeta(StepTypeInterface.FieldBelongType fieldBelongType, List<FieldMeta> fieldMetas){
-        fieldMetaMap.putIfAbsent(fieldBelongType.getName(),fieldMetas);
-    }
-
-    public List<FieldMeta> getFieldMeta(StepTypeInterface.FieldBelongType fieldBelongType){
-        return fieldMetaMap.get(fieldBelongType.getName());
     }
 
     public long getBatchId() {
@@ -79,4 +70,51 @@ public class KettleConfig {
         this.batchId = batchId;
     }
 
+    public List<FieldMeta> getSelectValueMap() {
+        return selectValueMap;
+    }
+
+    public void setSelectValueMap(List<FieldMeta> selectValueMap) {
+        this.selectValueMap = selectValueMap;
+    }
+
+    public List<FieldMeta> getConstantMap() {
+        return constantMap;
+    }
+
+    public void setConstantMap(List<FieldMeta> constantMap) {
+        this.constantMap = constantMap;
+    }
+
+    public String[] getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String[] fileName) {
+        this.fileName = fileName;
+    }
+
+    public String[] getSheetName() {
+        return sheetName;
+    }
+
+    public void setSheetName(String[] sheetName) {
+        this.sheetName = sheetName;
+    }
+
+    public int[] getStartRow() {
+        return startRow;
+    }
+
+    public void setStartRow(int[] startRow) {
+        this.startRow = startRow;
+    }
+
+    public int[] getStartCol() {
+        return startCol;
+    }
+
+    public void setStartCol(int[] startCol) {
+        this.startCol = startCol;
+    }
 }

@@ -1,6 +1,7 @@
 package com.cattle.component.kettle.step;
 
 import cn.hutool.core.util.StrUtil;
+import com.cattle.component.kettle.KettleConfig;
 import com.cattle.component.kettle.meta.FieldMeta;
 import org.pentaho.di.core.plugins.StepPluginType;
 import org.pentaho.di.trans.step.StepMeta;
@@ -15,12 +16,11 @@ import java.util.List;
 public class ConstantStep extends BaseStepMeta {
 
     private List<FieldMeta> fieldMetaList;
-    private String stepName;
+    public static String stepName = "设置自定义字段";
 
-    public ConstantStep(List<FieldMeta> fieldMetaList,String stepName,long batchId){
-        this.fieldMetaList = fieldMetaList;
-        this.stepName = stepName;
-        addBatchId(fieldMetaList,batchId);
+    public ConstantStep(KettleConfig kettleConfig){
+        this.fieldMetaList = kettleConfig.getConstantMap();
+        addBatchId(fieldMetaList,kettleConfig.getBatchId());
     }
 
     @Override

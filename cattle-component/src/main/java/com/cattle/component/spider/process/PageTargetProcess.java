@@ -1,4 +1,4 @@
-package com.cattle.component.spider.Process;
+package com.cattle.component.spider.process;
 
 import com.cattle.component.spider.parse.HtmlCleanerParse;
 import com.cattle.component.spider.parse.XsoupParse;
@@ -8,6 +8,10 @@ import com.cattle.common.context.ProcessContext;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * 扫描匹配的数据
@@ -25,6 +29,7 @@ public class PageTargetProcess implements PageProcessor {
         XpathParse xpathParse = getXpathParse(page);
         if(page.getUrl().regex(spiderConfig.getListRegex()).match() || page.getRequest().getUrl().equals(spiderConfig.getEntryUrl())){
             page.addTargetRequests(page.getHtml().links().regex(spiderConfig.getListRegex()).all());
+            //todo 优先级最高，需要优化存储格式，在pipeline保存时不需要做数据新增，直接解析入库
             spiderConfig.getFields().forEach((column,xpath) -> {
                 try {
                     page.putField(column,xpathParse.xpath(xpath));

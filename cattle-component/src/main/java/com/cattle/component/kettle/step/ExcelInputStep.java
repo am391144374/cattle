@@ -1,6 +1,7 @@
 package com.cattle.component.kettle.step;
 
 import cn.hutool.core.util.StrUtil;
+import com.cattle.component.kettle.KettleConfig;
 import com.cattle.component.kettle.meta.ExcelMeta;
 import com.cattle.component.kettle.meta.FieldMeta;
 import com.cattle.component.kettle.excel.WriteExcel;
@@ -21,20 +22,19 @@ import java.util.stream.Collectors;
  */
 public class ExcelInputStep extends BaseStepMeta {
 
-    private ExcelMeta excelMeta;
     private List<FieldMeta> fieldMetaList;
-    private String stepName;
+    public static String stepName = "Excel输入";
+    private KettleConfig kettleConfig;
 
-    public ExcelInputStep(ExcelMeta excelMeta,List<FieldMeta> fieldMetaList,String stepName){
-        this.excelMeta = excelMeta;
-        this.fieldMetaList = fieldMetaList;
-        this.stepName = stepName;
+    public ExcelInputStep(KettleConfig kettleConfig){
+        fieldMetaList = kettleConfig.getSelectValueMap();
+        this.kettleConfig = kettleConfig;
     }
 
     @Override
     public StepMeta buildCurrentStepMate() throws Exception {
         ExcelInputMeta excelInputMeta = new ExcelInputMeta();
-        excelInputMeta.setFileName(conversionFileName(excelMeta.getFileName()));
+        excelInputMeta.setFileName(conversionFileName(kettleConfig.getFileName()));
         //字段构建
         ExcelInputField[] excelInputFields = Optional.ofNullable(fieldMetaList).get().stream().map(fieldMeta -> {
             ExcelInputField excelInputField = new ExcelInputField();
@@ -48,9 +48,9 @@ public class ExcelInputStep extends BaseStepMeta {
             return excelInputField;
         }).collect(Collectors.toList()).toArray(new ExcelInputField[fieldMetaList.size()]);
         excelInputMeta.setField(excelInputFields);
-        excelInputMeta.setSheetName(excelMeta.getSheetName());
-        excelInputMeta.setStartRow(excelMeta.getStartRow());
-        excelInputMeta.setStartColumn(excelMeta.getStartCol());
+        excelInputMeta.setSheetName(kettleConfig.getSheetName());
+        excelInputMeta.setStartRow(kettleConfig.getStartRow());
+        excelInputMeta.setStartColumn(kettleConfig.getStartCol());
         excelInputMeta.setSpreadSheetType(SpreadSheetType.getStpreadSheetTypeByDescription(SpreadSheetType.POI.getDescription()));
         return new StepMeta(registryID.getPluginId(StepPluginType.class,excelInputMeta), stepName, excelInputMeta);
     }
