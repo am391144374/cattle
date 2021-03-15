@@ -26,6 +26,9 @@ public class SpiderConfig {
     @ApiModelProperty(notes = "列表页正则表达式", required = true)
     private String listRegex;
 
+    @ApiModelProperty(notes = "正文页正则表达式",required = false)
+    private String listContentRegex;
+
     @ApiModelProperty(notes = "入口页", required = true)
     private String entryUrl;
 

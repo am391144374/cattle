@@ -1,6 +1,6 @@
 package com.cattle.component.spider.process;
 
-import cn.hutool.bloomfilter.BloomFilterUtil;
+import cn.hutool.core.util.StrUtil;
 import com.cattle.component.spider.parse.HtmlCleanerParse;
 import com.cattle.component.spider.parse.XsoupParse;
 import com.cattle.component.spider.SpiderConfig;
@@ -31,9 +31,14 @@ public class PageTargetProcess implements PageProcessor {
         XpathParse xpathParse = getXpathParse(page);
         List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
         LinkedHashMap<String,List<String>> columnMap = new LinkedHashMap<>();
-        if(page.getUrl().regex(spiderConfig.getListRegex()).match() || page.getRequest().getUrl().equals(spiderConfig.getEntryUrl())){
+        //不是列表页就是正文页
+        if(page.getUrl().regex(spiderConfig.getListRegex()).match() || page.getRequest().getUrl().equals(spiderConfig.getEntryUrl())) {
             page.addTargetRequests(page.getHtml().links().regex(spiderConfig.getListRegex()).all());
-            //todo 优先级最高，需要优化存储格式，在pipeline保存时不需要做数据新增，直接解析入库
+            //添加匹配的正文页
+            if(StrUtil.isNotBlank(spiderConfig.getContentXpath())){
+                page.addTargetRequests(page.getHtml().xpath(spiderConfig.getContentXpath()).all());
+            }
+
             spiderConfig.getFields().forEach((column,xpath) -> {
                 try {
                     List<String> vstr = xpathParse.xpath(xpath);
@@ -44,16 +49,22 @@ public class PageTargetProcess implements PageProcessor {
                 }
             });
         }else{
+            LinkedHashMap<String,List<String>> contentMap = new LinkedHashMap<>();
             spiderConfig.getContentFields().forEach((column,xpath) -> {
                 try {
                     List<String> vstr = xpathParse.xpath(xpath);
-                    columnMap.put(column,vstr);
+                    contentMap.put(column,vstr);
                 } catch (Exception e) {
                     e.printStackTrace();
                     processContext.putError(this,e);
                 }
             });
+
+            if(contentMap.size() > 0){
+
+            }
         }
+
         columnMap.forEach((column,vstr) -> {
             try {
                 if (resultList.isEmpty() || resultList.size() != vstr.size()) {
@@ -71,6 +82,9 @@ public class PageTargetProcess implements PageProcessor {
                 processContext.putError(this,e);
             }
         });
+
+
+
         page.putField("resultList",resultList);
     }
 
