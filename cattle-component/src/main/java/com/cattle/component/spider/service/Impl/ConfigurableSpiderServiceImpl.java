@@ -169,7 +169,7 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
         Connection connection = getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
         connection.setAutoCommit(false);
-        addBatchValue(datas,uuid,statement);
+        addBatchValue(datas,uuid,statement,fields);
         try {
             statement.executeBatch();
             connection.commit();
@@ -180,14 +180,16 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
                     createTable(tableName, statement, fields);
                 } catch (Exception ex) {
                     log.error("doSaveData createTable error", ex);
+                    throw ex;
                 }
                 //没有表提交错误会导致数据被清空，需要重新添加
-                addBatchValue(datas,uuid,statement);
+                addBatchValue(datas,uuid,statement,fields);
                 //再执行一遍
                 statement.executeBatch();
                 connection.commit();
             }else{
                 log.error("doSaveData error", e);
+                throw e;
             }
         } finally {
             statement.close();
@@ -200,13 +202,15 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
      * @param datas
      * @param uuid
      * @param statement
+     * @param fields
      * @throws SQLException
      */
-    private void addBatchValue(List<LinkedHashMap<String, String>> datas,String uuid,PreparedStatement statement) throws SQLException {
+    private void addBatchValue(List<LinkedHashMap<String, String>> datas,String uuid,PreparedStatement statement,LinkedHashMap<String, String> fields) throws SQLException {
         for(LinkedHashMap<String,String> data : datas){
             int index = 1;
-            for(String key : data.keySet()){
-                String val = data.get(key);
+            //有一种情况，页面内的数据非全匹配，所以设置默认值
+            for(String key : fields.keySet()){
+                String val = data.getOrDefault(key,"");
                 statement.setString(index,val);
                 index ++;
             }

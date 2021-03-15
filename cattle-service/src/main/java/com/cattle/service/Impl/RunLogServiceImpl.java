@@ -16,6 +16,7 @@ public class RunLogServiceImpl extends ServiceImpl<RunLogMapper,CattleRunLog> im
         runLog.setBatchId(batchId);
         runLog.setJobName(jobName);
         runLog.setJobId(jobId);
+        runLog.setJobStatus(JobStatus.CREATE.getName());
         return save(runLog);
     }
 

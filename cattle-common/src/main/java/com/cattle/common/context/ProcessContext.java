@@ -2,10 +2,8 @@ package com.cattle.common.context;
 
 import com.cattle.common.enums.JobStatus;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * process执行上下文
@@ -19,11 +17,13 @@ public class ProcessContext extends HashMap<String,Object> {
     /** 计划名 */
     private String jobName;
 
-    private Integer count;
+    private AtomicInteger count = new AtomicInteger(0);
 
     private JobStatus jobStatus;
 
     private final String CONNECTION_NAME = "yearbook";
+
+    private final Set<String> errors = new HashSet<>();
 
     public String getConnectionName(){
         return CONNECTION_NAME;
@@ -48,8 +48,8 @@ public class ProcessContext extends HashMap<String,Object> {
         return jobStatus;
     }
 
-    public List<String> getError(){
-        return (List<String>) this.get(EXECUTOR_EXCEPTION);
+    public Set<String> getError(){
+        return errors;
     }
 
     public Map<String,Object> getResult(){
@@ -57,16 +57,9 @@ public class ProcessContext extends HashMap<String,Object> {
     }
 
     public void putError(Object errorClass,Exception e){
-        List<String> exList;
         String exMsg = String.format(errorClass.getClass().getName() +
                 "executor error Exception:%s --- message:%s",e.getClass().getName(),e.getMessage());
-        if(containsKey(EXECUTOR_EXCEPTION)){
-            exList = (List<String>) this.get(EXECUTOR_EXCEPTION);
-        }else{
-            exList = new ArrayList<>();
-        }
-        exList.add(exMsg);
-        put(EXECUTOR_EXCEPTION,exList);
+        errors.add(exMsg);
         setJobStatus(JobStatus.INTERRUPT);
     }
 
@@ -78,14 +71,6 @@ public class ProcessContext extends HashMap<String,Object> {
         this.jobStatus = jobStatus;
     }
 
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
     public String getJobName() {
         return jobName;
     }
@@ -93,6 +78,15 @@ public class ProcessContext extends HashMap<String,Object> {
     public void setJobName(String jobName) {
         this.jobName = jobName;
     }
+
+    public Integer getCount() {
+        return count.get();
+    }
+
+    public int increment(Integer num){
+        return count.addAndGet(num);
+    }
+
 
     @Override
     public String toString() {

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -78,17 +79,16 @@ public class CattleRun implements Closeable {
                     Object config = queue.take();
                     cattlePool.submit(() -> {
                         ProcessContext context = new ProcessContext();
-                        //使用hutool提供的雪花算法，使批次ID不重复
-                        long batchId = IdUtil.getSnowflake(1,1).nextId();
-                        context.setBatchId(batchId);
-                        JobContextHelper.setJobContext(batchId,context);
-                        runLogService.updateStatus(batchId, JobStatus.RUNNING);
+                        context.setJobStatus(JobStatus.RUNNING);
                         //spider
                         if(config instanceof SpiderConfig){
                             SpiderConfig spiderConfig = (SpiderConfig) config;
                             SpiderScript spiderScript = new SpiderScript(context);
+                            context.setBatchId(spiderConfig.getBatchId());
                             context.setJobName(spiderConfig.getSpiderName());
                             spiderScript.buildSpiderScript(spiderConfig);
+                            JobContextHelper.setJobContext(spiderConfig.getBatchId(),context);
+                            runLogService.updateStatus(spiderConfig.getBatchId(), JobStatus.RUNNING);
                             spiderScript.run();
                         }else if(config instanceof  KettleConfig){
                             //kettle
@@ -103,15 +103,16 @@ public class CattleRun implements Closeable {
                             }
                             KettleConfig kettleConfig = (KettleConfig) config;
                             context.setJobName(kettleConfig.getJobName());
+                            context.setBatchId(kettleConfig.getBatchId());
                             KettleScript kettleScript = new KettleScript(context);
                             kettleScript.buildKettleProcess(kettleConfig);
+                            JobContextHelper.setJobContext(kettleConfig.getBatchId(),context);
+                            runLogService.updateStatus(kettleConfig.getBatchId(), JobStatus.RUNNING);
                             kettleScript.run();
                         }
                     });
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    log.error("执行错误");
                 }
             }
         }
@@ -126,7 +127,9 @@ public class CattleRun implements Closeable {
         SpiderConfig spiderConfig = new SpiderConfig();
         SpiderConfigurable spiderConfigurable = job.getConfigurable();
         BeanUtil.copyProperties(spiderConfigurable,spiderConfig,true);
+        spiderConfig.setBatchId(job.getBatchId());
 
+        createRunLog(job);
         queue.put(spiderConfig);
     }
 
@@ -145,11 +148,14 @@ public class CattleRun implements Closeable {
             stepFields.forEach(stepField -> {
                 FieldMeta fieldMeta = FieldMeta.builder()
                         .comment(stepField.getComment())
-                        .length(stepField.getLength())
                         .name(stepField.getFieldName())
                         .type(stepField.getFieldType())
-                        .precision(stepField.getPrecision())
                         .value(stepField.getDefaultValue()).build();
+                if(fieldMeta.getType().equals("Number")){
+                    fieldMeta.setPrecision(stepField.getPrecision());
+                }else if(!fieldMeta.getType().equals("Integer")){
+                    fieldMeta.setLength(stepField.getLength());
+                }
                 fieldMetaList.add(fieldMeta);
             });
             switch (stepType){
@@ -174,7 +180,9 @@ public class CattleRun implements Closeable {
         kettleConfig.setScriptFile(job.getScriptPath());
         kettleConfig.setJobName(job.getJobName());
         kettleConfig.setWriteHeadRowIndex(2);
+        kettleConfig.setBatchId(job.getBatchId());
 
+        createRunLog(job);
         queue.put(kettleConfig);
     }
 
@@ -197,31 +205,37 @@ public class CattleRun implements Closeable {
             while (true){
                 Map<Long, ProcessContext> contextMap = JobContextHelper.getAllContext();
                 contextMap.forEach((batchId,context) -> {
-                    switch (context.getJobStatus()){
-                        //执行中
-                        case RUNNING:
-                            break;
-                        //执行错误
-                        case INTERRUPT:
-                            log.error("{} - {} 执行错误",batchId,context.getJobName());
-                            List<String> errorList = context.getError();
-                            StringBuilder errorStr = new StringBuilder();
-                            errorList.forEach(error -> {
-                                errorStr.append(error).append("\\n\\n");
-                            });
-                            runLogService.updateResult(batchId,0,errorList.size(),errorStr.toString(),JobStatus.INTERRUPT);
-                            JobContextHelper.remove(batchId);
-                            break;
-                        //执行完成
-                        case FINISH:
-                            log.error("{} - {} 执行完成！",batchId,context.getJobName());
-                            runLogService.updateResult(batchId,context.getCount(),0,null,JobStatus.FINISH);
-                            JobContextHelper.remove(batchId);
-                            break;
+                    try {
+                        switch (context.getJobStatus()){
+                            //执行错误
+                            case INTERRUPT:
+                                log.error("{} - {} 执行错误",batchId,context.getJobName());
+                                Set<String> errors = context.getError();
+                                StringBuilder errorStr = new StringBuilder();
+                                errors.forEach(error -> {
+                                    errorStr.append(error);
+                                });
+                                runLogService.updateResult(batchId,0,errors.size(),errorStr.toString(),JobStatus.INTERRUPT);
+                                JobContextHelper.remove(batchId);
+                                break;
+                            //执行完成
+                            case FINISH:
+                                log.error("{} - {} 执行完成！",batchId,context.getJobName());
+                                runLogService.updateResult(batchId,context.getCount(),0,null,JobStatus.FINISH);
+                                JobContextHelper.remove(batchId);
+                                break;
+                            //执行中
+                            case RUNNING:
+                            default:
+                                break;
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                        context.putError(this,e);
                     }
                 });
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -229,4 +243,11 @@ public class CattleRun implements Closeable {
         }
     }
 
+    /**
+     * 创建执行log
+     * @param job
+     */
+    private void createRunLog(CattleJob job){
+        runLogService.createLog(job.getJobId(),job.getBatchId(),job.getJobName());
+    }
 }

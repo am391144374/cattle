@@ -13,13 +13,18 @@ public abstract class ExecuteProcessHandler implements ProcessHandler {
     @Override
     public void execute(ProcessContext processContext){
         //上一步执行成功，则继续，否则跳过后续执行步骤
-        if(processContext.getJobStatus() == JobStatus.RUNNING){
-            executeContent(processContext);
-            if(next != null){
-                next.execute(processContext);
+        try{
+            if(processContext.getJobStatus() == JobStatus.RUNNING){
+                executeContent(processContext);
+                if(next != null){
+                    next.execute(processContext);
+                }
+            }else {
+                setStatus(processContext, JobStatus.INTERRUPT);
             }
-        }else {
-            setStatus(processContext, JobStatus.INTERRUPT);
+        }catch (Exception e){
+            e.printStackTrace();
+            processContext.putError(this,e);
         }
     }
 

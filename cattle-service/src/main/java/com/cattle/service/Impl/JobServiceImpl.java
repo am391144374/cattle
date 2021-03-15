@@ -51,20 +51,4 @@ public class JobServiceImpl implements JobService {
         jobInfo.setStepInfoList(stepInfoList);
         return jobInfo;
     }
-
-    /**
-     * 更新脚本执行状态
-     * @param batchId
-     * @param status
-     * @return
-     */
-    @Override
-    public int updateJobStatus(long batchId,String status) {
-        QueryWrapper<CattleJob> queryWrapper = new QueryWrapper();
-        CattleJob cattleJob = new CattleJob();
-        cattleJob.setStatus(status);
-        queryWrapper.eq("batch_id",batchId);
-        return jobMapper.update(cattleJob,queryWrapper);
-    }
-
 }

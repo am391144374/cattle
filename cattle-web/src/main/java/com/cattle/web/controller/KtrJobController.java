@@ -2,7 +2,6 @@ package com.cattle.web.controller;
 
 import com.cattle.entity.CattleJob;
 import com.cattle.service.api.JobService;
-import com.cattle.web.KtrRunFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +15,6 @@ public class KtrJobController {
 
     @Autowired
     private JobService jobService;
-    @Autowired
-    private KtrRunFactory runFactory;
 
     @GetMapping("/execute")
     @ResponseBody

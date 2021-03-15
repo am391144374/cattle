@@ -34,13 +34,6 @@ public class CattleJob {
     @TableField
     private String scriptPath;
     @TableField
-    private String cron;
-    /** 执行状态 */
-    @TableField
-    private String status;
-    @TableField
-    private Integer deleted;
-    @TableField
     private Date startTime;
     @TableField
     private Date endTime;

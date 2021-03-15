@@ -8,5 +8,4 @@ public interface JobService {
 
     CattleJob buildExecuteJobInfo(Integer jobId);
 
-    int updateJobStatus(long batchId,String status);
 }

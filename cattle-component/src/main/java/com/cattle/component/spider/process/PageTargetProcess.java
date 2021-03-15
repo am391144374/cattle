@@ -1,5 +1,6 @@
 package com.cattle.component.spider.process;
 
+import cn.hutool.bloomfilter.BloomFilterUtil;
 import com.cattle.component.spider.parse.HtmlCleanerParse;
 import com.cattle.component.spider.parse.XsoupParse;
 import com.cattle.component.spider.SpiderConfig;
@@ -8,6 +9,11 @@ import com.cattle.common.context.ProcessContext;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 扫描匹配的数据
@@ -23,12 +29,15 @@ public class PageTargetProcess implements PageProcessor {
     @Override
     public void process(Page page) {
         XpathParse xpathParse = getXpathParse(page);
+        List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
+        LinkedHashMap<String,List<String>> columnMap = new LinkedHashMap<>();
         if(page.getUrl().regex(spiderConfig.getListRegex()).match() || page.getRequest().getUrl().equals(spiderConfig.getEntryUrl())){
             page.addTargetRequests(page.getHtml().links().regex(spiderConfig.getListRegex()).all());
             //todo 优先级最高，需要优化存储格式，在pipeline保存时不需要做数据新增，直接解析入库
             spiderConfig.getFields().forEach((column,xpath) -> {
                 try {
-                    page.putField(column,xpathParse.xpath(xpath));
+                    List<String> vstr = xpathParse.xpath(xpath);
+                    columnMap.put(column,vstr);
                 } catch (Exception e) {
                     e.printStackTrace();
                     processContext.putError(this,e);
@@ -37,13 +46,32 @@ public class PageTargetProcess implements PageProcessor {
         }else{
             spiderConfig.getContentFields().forEach((column,xpath) -> {
                 try {
-                    page.putField(column,xpathParse.xpath(xpath));
+                    List<String> vstr = xpathParse.xpath(xpath);
+                    columnMap.put(column,vstr);
                 } catch (Exception e) {
                     e.printStackTrace();
                     processContext.putError(this,e);
                 }
             });
         }
+        columnMap.forEach((column,vstr) -> {
+            try {
+                if (resultList.isEmpty() || resultList.size() != vstr.size()) {
+                    resultList.clear();
+                    for (int i = 0; i < vstr.size(); i++) {
+                        resultList.add(new LinkedHashMap<>());
+                    }
+                }
+                for (int i = 0; i < resultList.size(); i++) {
+                    Map<String, String> obj = resultList.get(i);
+                    obj.put(column, vstr.get(i));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                processContext.putError(this,e);
+            }
+        });
+        page.putField("resultList",resultList);
     }
 
     @Override

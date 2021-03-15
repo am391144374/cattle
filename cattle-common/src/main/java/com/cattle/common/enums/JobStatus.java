@@ -2,6 +2,8 @@ package com.cattle.common.enums;
 
 public enum JobStatus {
 
+    //已经创建
+    CREATE("create"),
     RUNNING("running"),
     /** 错误中断 */
     INTERRUPT("interrupt"),
