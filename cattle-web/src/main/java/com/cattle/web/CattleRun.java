@@ -4,6 +4,7 @@ package com.cattle.web;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.IdUtil;
+import com.cattle.common.ItemsHelper;
 import com.cattle.common.JobContextHelper;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.common.enums.JobStatus;
@@ -217,12 +218,14 @@ public class CattleRun implements Closeable {
                                 });
                                 runLogService.updateResult(batchId,0,errors.size(),errorStr.toString(),JobStatus.INTERRUPT);
                                 JobContextHelper.remove(batchId);
+                                ItemsHelper.remove(batchId);
                                 break;
                             //执行完成
                             case FINISH:
                                 log.error("{} - {} 执行完成！",batchId,context.getJobName());
                                 runLogService.updateResult(batchId,context.getCount(),0,null,JobStatus.FINISH);
                                 JobContextHelper.remove(batchId);
+                                ItemsHelper.remove(batchId);
                                 break;
                             //执行中
                             case RUNNING:

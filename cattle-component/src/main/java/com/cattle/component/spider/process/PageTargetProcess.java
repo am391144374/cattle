@@ -1,6 +1,7 @@
 package com.cattle.component.spider.process;
 
 import cn.hutool.core.util.StrUtil;
+import com.cattle.common.ItemsHelper;
 import com.cattle.component.spider.parse.HtmlCleanerParse;
 import com.cattle.component.spider.parse.XsoupParse;
 import com.cattle.component.spider.SpiderConfig;
@@ -31,12 +32,23 @@ public class PageTargetProcess implements PageProcessor {
         XpathParse xpathParse = getXpathParse(page);
         List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
         LinkedHashMap<String,List<String>> columnMap = new LinkedHashMap<>();
+        boolean isContentField = false;
         //不是列表页就是正文页
         if(page.getUrl().regex(spiderConfig.getListRegex()).match() || page.getRequest().getUrl().equals(spiderConfig.getEntryUrl())) {
             page.addTargetRequests(page.getHtml().links().regex(spiderConfig.getListRegex()).all());
             //添加匹配的正文页
             if(StrUtil.isNotBlank(spiderConfig.getContentXpath())){
-                page.addTargetRequests(page.getHtml().xpath(spiderConfig.getContentXpath()).all());
+                List<String> contentUrls = null;
+                try {
+                    contentUrls = xpathParse.xpath(spiderConfig.getContentXpath());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    processContext.putError(this,e);
+                }
+                if(!contentUrls.isEmpty()){
+                    page.addTargetRequests(contentUrls);
+                    ItemsHelper.putContentUrl(spiderConfig.getBatchId(),page.getUrl().get(),contentUrls);
+                }
             }
 
             spiderConfig.getFields().forEach((column,xpath) -> {
@@ -49,20 +61,16 @@ public class PageTargetProcess implements PageProcessor {
                 }
             });
         }else{
-            LinkedHashMap<String,List<String>> contentMap = new LinkedHashMap<>();
             spiderConfig.getContentFields().forEach((column,xpath) -> {
                 try {
                     List<String> vstr = xpathParse.xpath(xpath);
-                    contentMap.put(column,vstr);
+                    columnMap.put(column,vstr);
                 } catch (Exception e) {
                     e.printStackTrace();
                     processContext.putError(this,e);
                 }
             });
-
-            if(contentMap.size() > 0){
-
-            }
+            isContentField = true;
         }
 
         columnMap.forEach((column,vstr) -> {
@@ -83,6 +91,13 @@ public class PageTargetProcess implements PageProcessor {
             }
         });
 
+        if(isContentField){
+            String requestUrl = ItemsHelper.getParentUrlByContentUrl(spiderConfig.getBatchId(),page.getUrl().get());
+            ItemsHelper.putContentField(spiderConfig.getBatchId(),requestUrl,resultList);
+        }else{
+            String requestUrl = page.getUrl().get();
+            ItemsHelper.putListRequestField(spiderConfig.getBatchId(),requestUrl,resultList);
+        }
 
 
         page.putField("resultList",resultList);
@@ -100,6 +115,7 @@ public class PageTargetProcess implements PageProcessor {
         getSite().setCycleRetryTimes(config.getCycleRetryTimes() != null ? config.getCycleRetryTimes() : 2)
                 .setRetryTimes(config.getRetryTimes() != null ? config.getRetryTimes() : 3)
                 .setSleepTime(config.getSleepTime() != null ? config.getSleepTime() : 10)
+                .setTimeOut(config.getTimeOut() != null ? config.getTimeOut() : 10)
                 .setRetrySleepTime(config.getRetrySleepTime() != null ? config.getRetrySleepTime() : 5);
         this.spiderConfig = config;
     }

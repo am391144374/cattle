@@ -13,6 +13,6 @@ public class ConfigurableSpiderServiceImplTest {
         LinkedHashMap<String,String> field = new LinkedHashMap<>();
         field.put("name","");
         field.put("age","");
-        log.info(spiderService.buildPrepareSql(field,"table"));
+        log.info(spiderService.buildPrepareSql(field.keySet(),"table"));
     }
 }

@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 爬虫执行类
@@ -61,7 +62,7 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
             log.error("doSaveData error", e);
             try {
                 //可能是因为表不存在 创建表试试
-                createTable(tableName, statement, fields);
+                createTable(tableName, statement, fields.keySet());
             } catch (Exception ex) {
                 //其他线程可能已经创建了这个表
                 log.error("doSaveData createTable error", ex);
@@ -83,13 +84,13 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
      );
      * @param tableName
      * @param statement
-     * @param fields
+     * @param columns
      */
-    private void createTable(String tableName, Statement statement, LinkedHashMap<String, String> fields) throws SQLException {
+    private void createTable(String tableName, Statement statement, Set<String> columns) throws SQLException {
         StringBuilder sql = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableName + "\n");
         StringBuilder fieldDefs = new StringBuilder("( ");
         fieldDefs.append("`").append("id").append("`").append(" BIGINT(20) NOT NULL AUTO_INCREMENT ").append(",\n");
-        fields.forEach((k, v) -> {
+        columns.forEach(k -> {
             StringBuilder fieldDef = new StringBuilder();
             //TODO 可能会出现默认字段长度不够
             fieldDef.append("`").append(k).append("`").append(" text ").append(",\n");
@@ -107,7 +108,7 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
     }
 
     private void createTable(String tableName, LinkedHashMap<String, String> fields) throws SQLException, ClassNotFoundException {
-        createTable(tableName,getConnection().createStatement(),fields);
+        createTable(tableName,getConnection().createStatement(),fields.keySet());
     }
 
     private Connection getConnection() throws ClassNotFoundException, SQLException {
@@ -143,10 +144,10 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
         return sql.toString();
     }
 
-    public String buildPrepareSql(LinkedHashMap<String, String> field,String tableName){
+    public String buildPrepareSql(Set<String> columns,String tableName){
         StringBuilder fieldsStr = new StringBuilder();
         StringBuilder valStr = new StringBuilder();
-        field.forEach((k, v) -> {
+        columns.forEach(k -> {
             fieldsStr.append("`").append(k).append("`").append(",");
             valStr.append("?").append(",");
         });
@@ -161,15 +162,15 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
         return sql.toString();
     }
 
-    public void doPrepareSaveData(List<LinkedHashMap<String, String>> datas, String tableName,LinkedHashMap<String, String> fields, String uuid) throws SQLException, ClassNotFoundException {
+    public void doPrepareSaveData(List<LinkedHashMap<String, String>> datas, String tableName,Set<String> columns, String uuid) throws SQLException, ClassNotFoundException {
         //插入数据
-        String sql = buildPrepareSql(fields,tableName);
+        String sql = buildPrepareSql(columns,tableName);
         log.info("doPrepareSaveData sql={}", sql);
 
         Connection connection = getConnection();
         PreparedStatement statement = connection.prepareStatement(sql);
         connection.setAutoCommit(false);
-        addBatchValue(datas,uuid,statement,fields);
+        addBatchValue(datas,uuid,statement,columns);
         try {
             statement.executeBatch();
             connection.commit();
@@ -177,13 +178,13 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
             if(e.getMessage().indexOf("doesn't exist") > 0){
                 try {
                     log.info("{} doesn't exist,do create table method",tableName);
-                    createTable(tableName, statement, fields);
+                    createTable(tableName, statement, columns);
                 } catch (Exception ex) {
                     log.error("doSaveData createTable error", ex);
                     throw ex;
                 }
                 //没有表提交错误会导致数据被清空，需要重新添加
-                addBatchValue(datas,uuid,statement,fields);
+                addBatchValue(datas,uuid,statement,columns);
                 //再执行一遍
                 statement.executeBatch();
                 connection.commit();
@@ -202,14 +203,14 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
      * @param datas
      * @param uuid
      * @param statement
-     * @param fields
+     * @param columns
      * @throws SQLException
      */
-    private void addBatchValue(List<LinkedHashMap<String, String>> datas,String uuid,PreparedStatement statement,LinkedHashMap<String, String> fields) throws SQLException {
+    private void addBatchValue(List<LinkedHashMap<String, String>> datas,String uuid,PreparedStatement statement,Set<String> columns) throws SQLException {
         for(LinkedHashMap<String,String> data : datas){
             int index = 1;
             //有一种情况，页面内的数据非全匹配，所以设置默认值
-            for(String key : fields.keySet()){
+            for(String key : columns){
                 String val = data.getOrDefault(key,"");
                 statement.setString(index,val);
                 index ++;
@@ -219,6 +220,10 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
             statement.setString(index++,LocalDateTimeUtil.formatNormal(LocalDateTime.now()));
             statement.addBatch();
         }
+    }
+
+    public void setDataSource(DruidDataSource dataSource){
+        this.dataSource = dataSource;
     }
 
 }

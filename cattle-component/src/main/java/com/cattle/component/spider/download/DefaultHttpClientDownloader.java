@@ -1,9 +1,12 @@
 package com.cattle.component.spider.download;
 
+import cn.hutool.core.util.StrUtil;
+import com.cattle.common.ItemsHelper;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.annotation.ThreadSafe;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
@@ -22,6 +25,7 @@ import us.codecraft.webmagic.utils.CharsetUtils;
 import us.codecraft.webmagic.utils.HttpClientUtils;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +91,17 @@ public class DefaultHttpClientDownloader extends AbstractDownloader {
             onSuccess(request);
             logger.info("downloading page success {}", request.getUrl());
             return page;
+
+        }catch (SocketTimeoutException | ConnectTimeoutException e){
+            long batchId = Long.parseLong(task.getUUID());
+            String parentUrl = ItemsHelper.getParentUrlByContentUrl(batchId,request.getUrl());
+            if(StrUtil.isNotBlank(parentUrl)){
+                ItemsHelper.errorPutContentField(batchId,parentUrl);
+            }
+            logger.warn("download page {} time out", request.getUrl(), e);
+            //todo 目前只针对下载页面超时情况做错误处理，目前方法可能比较繁琐，后续有更好的想法再优化
+            onError(request);
+            return page;
         } catch (IOException e) {
             logger.warn("download page {} error", request.getUrl(), e);
             onError(request);
@@ -136,5 +151,10 @@ public class DefaultHttpClientDownloader extends AbstractDownloader {
             logger.warn("Charset autodetect failed, use {} as charset. Please specify charset in Site.setCharset()", Charset.defaultCharset());
         }
         return charset;
+    }
+
+    @Override
+    protected void onError(Request request) {
+        super.onError(request);
     }
 }

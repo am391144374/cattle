@@ -88,6 +88,15 @@ public class SpiderConfig {
         return fields;
     }
 
+    public LinkedHashMap<String, String> getContentFields() {
+        if(contentFields == null){
+            if(contentFieldsJson != null){
+                contentFields = parseFields(contentFieldsJson);
+            }
+        }
+        return contentFields;
+    }
+
     public LinkedHashMap<String, String> parseFields(String fieldsJson) {
         if (Strings.isNullOrEmpty(fieldsJson)) {
             return new LinkedHashMap<>();
