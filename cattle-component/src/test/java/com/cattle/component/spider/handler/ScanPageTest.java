@@ -65,10 +65,10 @@ public class ScanPageTest {
         spiderConfig.setContentXpath("//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href");
         spiderConfig.setContentFieldsJson("[{\"index\":1,\"key\":\"another\",\"value\":\"//div[@id='info']/text()\"}]");
         spiderConfig.setXPathSelection(0);
-        spiderConfig.setTimeOut(500);
-        spiderConfig.setRetrySleepTime(0);
+        spiderConfig.setTimeOut(5000);
         spiderConfig.setThreadNum(3);
         spiderConfig.setSleepTime(3000);
+        spiderConfig.setCycleRetryTimes(5);
         spiderConfig.setTableName("spider_movie_info");
 
         ProcessContext processContext = new ProcessContext();
@@ -79,8 +79,8 @@ public class ScanPageTest {
 
         while (true){
             try {
-                if(ItemsHelper.getField(batchId) != null){
-                    List<LinkedHashMap<String, String>> resultList = ItemsHelper.getField(batchId);
+                if(ItemsHelper.getPageField(batchId) != null){
+                    List<LinkedHashMap<String, String>> resultList = ItemsHelper.getPageField(batchId);
                     System.out.println("result size " + resultList.size());
                     resultList.forEach(m -> {
                         m.forEach((k,v) -> {
@@ -91,7 +91,7 @@ public class ScanPageTest {
                 if(processContext.get("spiderWorker") != null){
                     Spider spider = (Spider) processContext.get("spiderWorker");
                     if(spider.getStatus() == Spider.Status.Stopped){
-                        List<LinkedHashMap<String, String>> resultList = ItemsHelper.getField(batchId);
+                        List<LinkedHashMap<String, String>> resultList = ItemsHelper.getPageField(batchId);
                         System.out.println("result size " + resultList.size());
                         resultList.forEach(m -> {
                             m.forEach((k,v) -> {

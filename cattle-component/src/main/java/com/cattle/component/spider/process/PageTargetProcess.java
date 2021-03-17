@@ -11,10 +11,7 @@ import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 扫描匹配的数据
@@ -33,12 +30,12 @@ public class PageTargetProcess implements PageProcessor {
         List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
         LinkedHashMap<String,List<String>> columnMap = new LinkedHashMap<>();
         boolean isContentField = false;
+        List<String> contentUrls = null;
         //不是列表页就是正文页
         if(page.getUrl().regex(spiderConfig.getListRegex()).match() || page.getRequest().getUrl().equals(spiderConfig.getEntryUrl())) {
             page.addTargetRequests(page.getHtml().links().regex(spiderConfig.getListRegex()).all());
             //添加匹配的正文页
             if(StrUtil.isNotBlank(spiderConfig.getContentXpath())){
-                List<String> contentUrls = null;
                 try {
                     contentUrls = xpathParse.xpath(spiderConfig.getContentXpath());
                 } catch (Exception e) {
@@ -47,7 +44,6 @@ public class PageTargetProcess implements PageProcessor {
                 }
                 if(!contentUrls.isEmpty()){
                     page.addTargetRequests(contentUrls);
-                    ItemsHelper.putContentUrl(spiderConfig.getBatchId(),page.getUrl().get(),contentUrls);
                 }
             }
 
@@ -60,6 +56,7 @@ public class PageTargetProcess implements PageProcessor {
                     processContext.putError(this,e);
                 }
             });
+
         }else{
             spiderConfig.getContentFields().forEach((column,xpath) -> {
                 try {
@@ -73,12 +70,18 @@ public class PageTargetProcess implements PageProcessor {
             isContentField = true;
         }
 
-        columnMap.forEach((column,vstr) -> {
+        List<String> finalContentUrls = contentUrls;
+        boolean finalIsContentField = isContentField;
+        columnMap.forEach((column, vstr) -> {
             try {
                 if (resultList.isEmpty() || resultList.size() != vstr.size()) {
                     resultList.clear();
                     for (int i = 0; i < vstr.size(); i++) {
-                        resultList.add(new LinkedHashMap<>());
+                        LinkedHashMap param = new LinkedHashMap<>();
+                        if(finalContentUrls != null && !finalIsContentField){
+                            ItemsHelper.addListField(spiderConfig.getBatchId(),finalContentUrls.get(i),param);
+                        }
+                        resultList.add(param);
                     }
                 }
                 for (int i = 0; i < resultList.size(); i++) {
@@ -92,13 +95,8 @@ public class PageTargetProcess implements PageProcessor {
         });
 
         if(isContentField){
-            String requestUrl = ItemsHelper.getParentUrlByContentUrl(spiderConfig.getBatchId(),page.getUrl().get());
-            ItemsHelper.putContentField(spiderConfig.getBatchId(),requestUrl,resultList);
-        }else{
-            String requestUrl = page.getUrl().get();
-            ItemsHelper.putListRequestField(spiderConfig.getBatchId(),requestUrl,resultList);
+            ItemsHelper.addContentField(spiderConfig.getBatchId(),page.getUrl().get(),resultList);
         }
-
 
         page.putField("resultList",resultList);
     }

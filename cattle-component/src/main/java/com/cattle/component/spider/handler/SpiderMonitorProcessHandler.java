@@ -42,7 +42,7 @@ public class SpiderMonitorProcessHandler extends ExecuteProcessHandler {
                 processContext.putError(this,e);
             }
         }
-        List<LinkedHashMap<String, String>> result = ItemsHelper.getField(spiderConfig.getBatchId());
+        List<LinkedHashMap<String, String>> result = ItemsHelper.getPageField(spiderConfig.getBatchId());
         if(result.size() > 0){
             try {
                 Set<String> columns = new HashSet<>();

@@ -93,13 +93,7 @@ public class DefaultHttpClientDownloader extends AbstractDownloader {
             return page;
 
         }catch (SocketTimeoutException | ConnectTimeoutException e){
-            long batchId = Long.parseLong(task.getUUID());
-            String parentUrl = ItemsHelper.getParentUrlByContentUrl(batchId,request.getUrl());
-            if(StrUtil.isNotBlank(parentUrl)){
-                ItemsHelper.errorPutContentField(batchId,parentUrl);
-            }
             logger.warn("download page {} time out", request.getUrl(), e);
-            //todo 目前只针对下载页面超时情况做错误处理，目前方法可能比较繁琐，后续有更好的想法再优化
             onError(request);
             return page;
         } catch (IOException e) {
