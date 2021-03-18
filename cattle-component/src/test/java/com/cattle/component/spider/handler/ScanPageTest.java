@@ -57,8 +57,8 @@ public class ScanPageTest {
         spiderConfig.setBatchId(batchId);
         spiderConfig.setSpiderName("电影首发站");
         //采集全部可放开
-        spiderConfig.setListRegex("https://www\\.wuhaozhan\\.net/movie/list/\\?p=\\d+");
-//        spiderConfig.setListRegex("https://www.wuhaozhan.net/movie/list/?p=1");
+//        spiderConfig.setListRegex("https://www\\.wuhaozhan\\.net/movie/list/\\?p=\\d+");
+        spiderConfig.setListRegex("https://www.wuhaozhan.net/movie/list/?p=1");
 
         spiderConfig.setEntryUrl("https://www.wuhaozhan.net/movie/list/?p=1");
         spiderConfig.setFieldsJson("[{\"index\":1,\"key\":\"title\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/text()\"},{\"index\":2,\"key\":\"rate\",\"value\":\"//div[@Class='pure-g']/div/div[position() > 10]/div/div[3]//a/span/text()\"},{\"index\":3,\"key\":\"url\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href\"}]");

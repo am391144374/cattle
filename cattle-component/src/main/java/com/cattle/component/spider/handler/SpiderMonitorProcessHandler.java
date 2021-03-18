@@ -43,10 +43,12 @@ public class SpiderMonitorProcessHandler extends ExecuteProcessHandler {
             }
         }
         List<LinkedHashMap<String, String>> result = ItemsHelper.getPageField(spiderConfig.getBatchId());
-        if(result.size() > 0){
+        if(result != null && result.size() > 0){
             try {
                 Set<String> columns = new HashSet<>();
-                columns.addAll(spiderConfig.getFields().keySet());
+                if(StrUtil.isNotBlank(spiderConfig.getFieldsJson())){
+                    columns.addAll(spiderConfig.getFields().keySet());
+                }
                 if(StrUtil.isNotBlank(spiderConfig.getContentXpath())){
                     columns.addAll(spiderConfig.getContentFields().keySet());
                 }

@@ -27,7 +27,6 @@ public class PageTargetProcess implements PageProcessor {
     @Override
     public void process(Page page) {
         XpathParse xpathParse = getXpathParse(page);
-        List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
         LinkedHashMap<String,List<String>> columnMap = new LinkedHashMap<>();
         boolean isContentField = false;
         List<String> contentUrls = null;
@@ -47,15 +46,17 @@ public class PageTargetProcess implements PageProcessor {
                 }
             }
 
-            spiderConfig.getFields().forEach((column,xpath) -> {
-                try {
-                    List<String> vstr = xpathParse.xpath(xpath);
-                    columnMap.put(column,vstr);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    processContext.putError(this,e);
-                }
-            });
+            if(StrUtil.isNotBlank(spiderConfig.getFieldsJson())){
+                spiderConfig.getFields().forEach((column,xpath) -> {
+                    try {
+                        List<String> vstr = xpathParse.xpath(xpath);
+                        columnMap.put(column,vstr);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        processContext.putError(this,e);
+                    }
+                });
+            }
 
         }else{
             spiderConfig.getContentFields().forEach((column,xpath) -> {
@@ -70,6 +71,7 @@ public class PageTargetProcess implements PageProcessor {
             isContentField = true;
         }
 
+        List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
         List<String> finalContentUrls = contentUrls;
         boolean finalIsContentField = isContentField;
         columnMap.forEach((column, vstr) -> {
@@ -97,8 +99,6 @@ public class PageTargetProcess implements PageProcessor {
         if(isContentField){
             ItemsHelper.addContentField(spiderConfig.getBatchId(),page.getUrl().get(),resultList);
         }
-
-        page.putField("resultList",resultList);
     }
 
     @Override
