@@ -1,12 +1,8 @@
 package com.cattle.component.spider.handler;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
-import com.cattle.common.ItemsHelper;
 import com.cattle.common.handler.ExecuteProcessHandler;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.component.spider.download.DefaultHttpClientDownloader;
-import com.cattle.component.spider.service.ConfigurableSpiderService;
 import com.cattle.component.spider.process.PageTargetProcess;
 import com.cattle.component.spider.SpiderConfig;
 import us.codecraft.webmagic.Spider;

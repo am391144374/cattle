@@ -1,6 +1,8 @@
 package com.cattle.component.spider.util.filterUrl;
 
 
+import cn.hutool.bloomfilter.BloomFilterUtil;
+
 import java.util.BitSet;
 
 public class BloomFilter {
@@ -77,7 +79,7 @@ public class BloomFilter {
     }
 
     public static void main(String[] args){
-        System.out.println("dawdwafawf".hashCode() + "----" + ("dawdwafawf".hashCode() >>> 16));
+        BloomFilterUtil.createBitMap(1000);
     }
 
 }
