@@ -11,6 +11,7 @@ spring:
         max-active: 30
         min-idle: 10
         max-wait: -1
+    timeout: 10000000
 server:
   port: 5000
 
