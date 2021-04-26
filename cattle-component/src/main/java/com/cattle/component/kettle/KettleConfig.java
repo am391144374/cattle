@@ -12,6 +12,13 @@ public class KettleConfig {
 
     private long batchId;
 
+    /**
+     * 脚本执行方式
+     * normal-普通模式   即只执行脚本，不对脚本进行改造
+     * edit-编辑模式     即对脚本进行编辑，然后再执行
+     */
+    private String scriptType;
+
     private String scriptFile;
     private String jobName;
     private int writeHeadRowIndex;
@@ -32,6 +39,14 @@ public class KettleConfig {
 
     public String getScriptFile() {
         return scriptFile;
+    }
+
+    public String getScriptType() {
+        return scriptType;
+    }
+
+    public void setScriptType(String scriptType) {
+        this.scriptType = scriptType;
     }
 
     public void setScriptFile(String scriptFile) {

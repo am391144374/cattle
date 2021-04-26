@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class ExcelMeta {
+public class ExcelMeta extends BaseMeta{
 
     private String[] fileName;
     private String[] sheetName;

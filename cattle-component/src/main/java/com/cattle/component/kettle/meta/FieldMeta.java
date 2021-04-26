@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class FieldMeta {
+public class FieldMeta extends BaseMeta{
 
     private String name;
     private String comment;
