@@ -1,0 +1,13 @@
+/.idea/
+/Cattle.iml
+/cattle-common/target/
+/cattle-component/target/
+/cattle-component/cattle-component.iml
+/cattle-dao/cattle-dao.iml
+/cattle-dao/target/
+/cattle-entity/target/classes/com/cattle/entity/CattleRunLog.class
+/cattle-entity/target/classes/com/cattle/entity/
+/cattle-entity/cattle-entity.iml
+/cattle-service/target/
+/cattle-service/cattle-service.iml
+/cattle-common/cattle-common.iml
