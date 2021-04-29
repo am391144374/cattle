@@ -1,19 +1,16 @@
 package com.cattle.web;
 
 import cn.hutool.core.util.IdUtil;
-import com.cattle.common.JobContextHelper;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.entity.CattleJob;
 import com.cattle.entity.CattleRunLog;
-import com.cattle.entity.spider.SpiderConfigurable;
+import com.cattle.entity.spider.SpiderInfoBO;
 import com.cattle.service.api.JobService;
 import com.cattle.service.api.RunLogService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Slf4j
 @SpringBootTest
@@ -30,22 +27,21 @@ public class CattleRunTest {
         CattleRun cattleRun = new CattleRun(runLogService);
         cattleRun.init();
 
-        SpiderConfigurable spiderConfigurable = new SpiderConfigurable();
-        spiderConfigurable.setTableName("hz_lp");
-        spiderConfigurable.setSpiderName("杭州楼盘");
-        spiderConfigurable.setListRegex("https://hz\\.newhouse\\.fang\\.com/house/s/b\\d+");
-        spiderConfigurable.setEntryUrl("https://hz.newhouse.fang.com/house/s/b91");
-        spiderConfigurable.setFieldsJson("[{\"index\":0,\"key\":\"name\",\"value\":\"//div[@class='nlc_details']//div[@class='nlcd_name']//a/text()\"},{\"index\":1,\"key\":\"address\",\"value\":\"//div[@class='address']//a/text()\"},{\"index\":2,\"key\":\"price\",\"value\":\"//div[@class='nhouse_price']/*[1]/text()\"}]");
-        spiderConfigurable.setXPathSelection(0);
-        spiderConfigurable.setThreadNum(2);
+        SpiderInfoBO spiderInfoBO = new SpiderInfoBO();
+        spiderInfoBO.setTableName("hz_lp");
+        spiderInfoBO.setSpiderName("杭州楼盘");
+        spiderInfoBO.setListRegex("https://hz\\.newhouse\\.fang\\.com/house/s/b\\d+");
+        spiderInfoBO.setEntryUrl("https://hz.newhouse.fang.com/house/s/b91");
+        spiderInfoBO.setFieldsJson("[{\"index\":0,\"key\":\"name\",\"value\":\"//div[@class='nlc_details']//div[@class='nlcd_name']//a/text()\"},{\"index\":1,\"key\":\"address\",\"value\":\"//div[@class='address']//a/text()\"},{\"index\":2,\"key\":\"price\",\"value\":\"//div[@class='nhouse_price']/*[1]/text()\"}]");
+        spiderInfoBO.setXPathSelection(0);
+        spiderInfoBO.setThreadNum(2);
 
         CattleJob job = new CattleJob();
-        job.setBatchId(IdUtil.getSnowflake(1,1).nextId());
         job.setJobName("测试");
-        job.setConfigurable(spiderConfigurable);
+        job.setConfigurable(spiderInfoBO);
 
         try {
-            cattleRun.putSpiderJob(job);
+            cattleRun.putQueue(job);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -60,10 +56,9 @@ public class CattleRunTest {
         cattleRun.init();
 
         CattleJob job = jobService.buildExecuteJobInfo(1);
-        job.setBatchId(IdUtil.getSnowflake(1,1).nextId());
 
         try {
-            cattleRun.putKettleJob(job);
+            cattleRun.putQueue(job);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

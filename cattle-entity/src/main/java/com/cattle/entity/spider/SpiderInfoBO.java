@@ -14,8 +14,8 @@ import java.util.LinkedHashMap;
 
 @Data
 @ApiModel
-@TableName("spider_configurable")
-public class SpiderConfigurable {
+@TableName("spider_info")
+public class SpiderInfoBO {
 
     @ApiModelProperty
     private Integer step_id;

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.cattle.entity.kettle.KtrStep;
-import com.cattle.entity.spider.SpiderConfigurable;
+import com.cattle.entity.spider.SpiderInfoBO;
 import lombok.Data;
 
 import java.util.Date;
@@ -26,7 +26,7 @@ public class CattleJob {
     private String jobName;
     @TableField
     /** 脚本类别 kettle脚本、爬虫脚本等  kettle  spider  */
-    private String scriptName;
+    private String scriptType;
     /** 对应脚本类别，关联的脚本信息ID  step_id  spider_id*/
     @TableField
     private Integer relateId;
@@ -37,6 +37,8 @@ public class CattleJob {
     private Date startTime;
     @TableField
     private Date endTime;
+    @TableField
+    private String tableName;
 
     /**
      * kettle 执行信息
@@ -47,6 +49,6 @@ public class CattleJob {
      * 爬虫 执行信息
      */
     @TableField(exist = false)
-    private SpiderConfigurable configurable;
+    private SpiderInfoBO configurable;
 
 }

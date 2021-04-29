@@ -1,33 +1,20 @@
 package com.cattle.web;
 
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.core.util.IdUtil;
 import com.cattle.common.ItemsHelper;
 import com.cattle.common.JobContextHelper;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.common.enums.JobStatus;
-import com.cattle.component.kettle.KettleConfig;
-import com.cattle.component.kettle.KettleConfigInit;
-import com.cattle.component.kettle.KettleScript;
-import com.cattle.component.kettle.meta.ExcelMeta;
-import com.cattle.component.kettle.meta.FieldMeta;
-import com.cattle.component.spider.SpiderConfig;
-import com.cattle.component.spider.SpiderScript;
+import com.cattle.component.ExecuteScriptInterface;
 import com.cattle.entity.CattleJob;
-import com.cattle.entity.kettle.KtrField;
-import com.cattle.entity.kettle.KtrStep;
-import com.cattle.entity.spider.SpiderConfigurable;
 import com.cattle.service.api.RunLogService;
 import lombok.extern.slf4j.Slf4j;
-import org.pentaho.di.core.exception.KettleException;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -41,18 +28,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class CattleRun implements Closeable {
 
     /** 执行线程池 */
-    private ExecutorService cattlePool = Executors.newFixedThreadPool(3, ThreadUtil.newNamedThreadFactory("cattle run -",false));
+    private ExecutorService cattlePool = Executors.newFixedThreadPool(15, ThreadUtil.newNamedThreadFactory("cattle run -",true));
     /** 任务等待队列 */
-    private LinkedBlockingQueue<Object> queue = new LinkedBlockingQueue<>(3000);
+    private LinkedBlockingQueue<CattleJob> queue = new LinkedBlockingQueue<>(3000);
     private boolean runFlag = true;
-    /** kettle需要初始init 多线程调用使用线程安全的 AtomicBoolean*/
-    private AtomicBoolean kettleInitFlag = new AtomicBoolean(false);
     /** 监控context线程 */
     private MonitorContextThread monitorContext;
     /** 执行脚本线程 */
     private RunJob scriptRunJob;
     // 日志保存
     private RunLogService runLogService;
+
+    /** 执行脚本 */
+    private Map<String,Class<? extends ExecuteScriptInterface>> scriptMaps = new HashMap<>();
 
     public CattleRun(RunLogService runLogService){
         this.runLogService = runLogService;
@@ -76,116 +64,36 @@ public class CattleRun implements Closeable {
         public void run() {
             log.info("脚本执行线程启动成功！");
             while (runFlag){
+                long batchId = IdUtil.getSnowflake(1,1).nextId();
+                runLogService.createLog(batchId);
                 try {
-                    Object config = queue.take();
+                    CattleJob cattleJob = queue.take();
+                    Class c = scriptMaps.get(cattleJob.getScriptType());
+                    if(c == null){
+                        log.error("错误的执行脚本类别 cattleJob:{}",cattleJob.toString());
+                        runLogService.updateErrorInfo(batchId,"错误的执行脚本类别");
+                        continue;
+                    }
+                    ExecuteScriptInterface execute = (ExecuteScriptInterface) c.newInstance();
                     cattlePool.submit(() -> {
-                        ProcessContext context = new ProcessContext();
-                        context.setJobStatus(JobStatus.RUNNING);
-                        //spider
-                        if(config instanceof SpiderConfig){
-                            SpiderConfig spiderConfig = (SpiderConfig) config;
-                            SpiderScript spiderScript = new SpiderScript(context);
-                            context.setBatchId(spiderConfig.getBatchId());
-                            context.setJobName(spiderConfig.getSpiderName());
-                            spiderScript.buildSpiderScript(spiderConfig);
-                            JobContextHelper.setJobContext(spiderConfig.getBatchId(),context);
-                            runLogService.updateStatus(spiderConfig.getBatchId(), JobStatus.RUNNING);
-                            spiderScript.run();
-                        }else if(config instanceof  KettleConfig){
-                            //kettle
-                            if(!kettleInitFlag.get()){
-                                try {
-                                    KettleConfigInit.init();
-                                    kettleInitFlag.set(true);
-                                } catch (KettleException e) {
-                                    e.printStackTrace();
-                                    context.putError(this,e);
-                                }
-                            }
-                            KettleConfig kettleConfig = (KettleConfig) config;
-                            context.setJobName(kettleConfig.getJobName());
-                            context.setBatchId(kettleConfig.getBatchId());
-                            KettleScript kettleScript = new KettleScript(context);
-                            kettleScript.buildKettleProcess(kettleConfig);
-                            JobContextHelper.setJobContext(kettleConfig.getBatchId(),context);
-                            runLogService.updateStatus(kettleConfig.getBatchId(), JobStatus.RUNNING);
-                            kettleScript.run();
-                        }
+                        runLogService.updateJobInfo(cattleJob.getJobId(),batchId,cattleJob.getJobName());
+                        cattleJob.setBatchId(batchId);
+                        execute.setCattleJob(cattleJob);
+                        runLogService.updateStatus(batchId, JobStatus.RUNNING);
+                        execute.run();
                     });
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    runLogService.updateErrorInfo(batchId,e.getMessage());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                    runLogService.updateErrorInfo(batchId,e.getMessage());
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                    runLogService.updateErrorInfo(batchId,e.getMessage());
                 }
             }
         }
-    }
-
-    /**
-     * 解析 CattleJob 放到执行队列中
-     * @param job
-     * @throws InterruptedException
-     */
-    public void putSpiderJob(CattleJob job) throws InterruptedException {
-        SpiderConfig spiderConfig = new SpiderConfig();
-        SpiderConfigurable spiderConfigurable = job.getConfigurable();
-        BeanUtil.copyProperties(spiderConfigurable,spiderConfig,true);
-        spiderConfig.setBatchId(job.getBatchId());
-
-        createRunLog(job);
-        queue.put(spiderConfig);
-    }
-
-    /**
-     * 解析cattleJob 放到执行队列中
-     * @param job
-     * @throws InterruptedException
-     */
-    public void putKettleJob(CattleJob job) throws InterruptedException {
-        KettleConfig kettleConfig = new KettleConfig();
-        List<KtrStep> stepInfoList = job.getStepInfoList();
-        for(KtrStep stepInfo : stepInfoList){
-            String stepType = stepInfo.getStepType();
-            List<FieldMeta> fieldMetaList = new ArrayList<>();
-            List<KtrField> stepFields = stepInfo.getFieldList();
-            stepFields.forEach(stepField -> {
-                FieldMeta fieldMeta = FieldMeta.builder()
-                        .comment(stepField.getComment())
-                        .name(stepField.getFieldName())
-                        .type(stepField.getFieldType())
-                        .value(stepField.getDefaultValue()).build();
-                if(fieldMeta.getType().equals("Number")){
-                    fieldMeta.setPrecision(stepField.getPrecision());
-                }else if(!fieldMeta.getType().equals("Integer")){
-                    fieldMeta.setLength(stepField.getLength());
-                }
-                fieldMetaList.add(fieldMeta);
-            });
-            switch (stepType){
-                // excel导入
-                case "excelImport":
-                    kettleConfig.setSelectValueMap(fieldMetaList);
-                    ExcelMeta excelMeta = new ExcelMeta();
-                    excelMeta.setFileName(stepInfo.getFileList());
-                    excelMeta.setSheetName(new String[]{stepInfo.getSheetName()});
-                    excelMeta.setStartRow(new int[]{stepInfo.getStartRow()});
-                    excelMeta.setStartCol(new int[]{stepInfo.getStartCol()});
-                    kettleConfig.setExcelMeta(excelMeta);
-                    break;
-                    // 字段设置
-                case "selectValue":
-                    kettleConfig.setSelectValueMap(fieldMetaList);
-                    break;
-                    //新增常量
-                case "constant":
-                    kettleConfig.setConstantMap(fieldMetaList);
-                    break;
-            }
-        }
-        kettleConfig.setScriptFile(job.getScriptPath());
-        kettleConfig.setJobName(job.getJobName());
-        kettleConfig.setBatchId(job.getBatchId());
-
-        createRunLog(job);
-        queue.put(kettleConfig);
     }
 
     @Override
@@ -209,9 +117,9 @@ public class CattleRun implements Closeable {
                 contextMap.forEach((batchId,context) -> {
                     try {
                         switch (context.getJobStatus()){
-                            //执行错误
+                            //执行中断
                             case INTERRUPT:
-                                log.error("{} - {} 执行错误",batchId,context.getJobName());
+                                log.error("{} - {} 执行中断",batchId,context.getJobName());
                                 Set<String> errors = context.getError();
                                 StringBuilder errorStr = new StringBuilder();
                                 errors.forEach(error -> {
@@ -252,6 +160,15 @@ public class CattleRun implements Closeable {
      * @param job
      */
     private void createRunLog(CattleJob job){
-        runLogService.createLog(job.getJobId(),job.getBatchId(),job.getJobName());
+
+    }
+
+    /**
+     * 添加执行队列
+     * @param cattleJob
+     * @throws InterruptedException
+     */
+    public void putQueue(CattleJob cattleJob) throws InterruptedException {
+        queue.put(cattleJob);
     }
 }

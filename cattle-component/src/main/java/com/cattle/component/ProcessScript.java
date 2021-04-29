@@ -2,7 +2,7 @@ package com.cattle.component;
 
 import com.cattle.common.handler.ProcessHandler;
 
-public abstract class ProcessScript implements Runnable {
+public abstract class ProcessScript implements ExecuteScriptInterface {
 
     protected ProcessHandler first;
     protected ProcessHandler end;

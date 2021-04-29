@@ -5,6 +5,7 @@ import com.cattle.component.kettle.meta.ExcelMeta;
 import com.cattle.component.kettle.meta.FieldMeta;
 import lombok.Data;
 import lombok.ToString;
+import org.apache.commons.beanutils.PropertyUtilsBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ public class KettleConfig{
      * normal-普通模式   即只执行脚本，不对脚本进行改造
      * edit-编辑模式     即对脚本进行编辑，然后再执行
      */
-    private String scriptType;
+    private KettleProcessType processType;
     /**
      * 脚本文件路径
      */
@@ -37,4 +38,9 @@ public class KettleConfig{
     private List<FieldMeta> constantMap = new ArrayList<>();
     /** 数据存储 */
     private List<DataBaseMeta> dataBaseMetas;
+
+   public static enum KettleProcessType{
+        NORMAL,
+        EDIT
+    }
 }

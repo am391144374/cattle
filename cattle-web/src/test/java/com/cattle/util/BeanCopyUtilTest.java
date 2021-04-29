@@ -2,21 +2,17 @@ package com.cattle.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.cattle.component.spider.SpiderConfig;
-import com.cattle.entity.spider.SpiderConfigurable;
-import org.joda.time.LocalDate;
+import com.cattle.entity.spider.SpiderInfoBO;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class BeanCopyUtilTest {
 
     @Test
     public void beanCopy(){
-        SpiderConfigurable configurable = new SpiderConfigurable();
+        SpiderInfoBO configurable = new SpiderInfoBO();
         configurable.setTableName("hz_lp");
         configurable.setSpiderName("杭州楼盘");
         configurable.setListRegex("https://hz\\.newhouse\\.fang\\.com/house/s/b\\d+");

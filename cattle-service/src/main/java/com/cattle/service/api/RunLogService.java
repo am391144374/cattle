@@ -12,7 +12,9 @@ public interface RunLogService extends IService<CattleRunLog> {
      * @param jobName
      * @return
      */
-    boolean createLog(Integer jobId,long batchId,String jobName);
+    boolean createLog(long batchId);
+
+    boolean updateJobInfo(Integer jobId,long batchId,String jobName);
 
     /**
      * 更新job状态
@@ -20,7 +22,7 @@ public interface RunLogService extends IService<CattleRunLog> {
      * @param status
      * @return
      */
-    public boolean updateStatus(long batchId, JobStatus status);
+    boolean updateStatus(long batchId, JobStatus status);
 
     /**
      * 保存结果信息
@@ -30,7 +32,9 @@ public interface RunLogService extends IService<CattleRunLog> {
      * @param errorText
      * @return
      */
-    public boolean updateResult(long batchId,Integer count,Integer errorCount,String errorText,JobStatus jobStatus);
+    boolean updateResult(long batchId,Integer count,Integer errorCount,String errorText,JobStatus jobStatus);
+
+    boolean updateErrorInfo(long batchId,String errorText);
 
 
 }
