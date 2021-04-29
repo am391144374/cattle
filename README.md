@@ -11,6 +11,10 @@ mysql
 webMagic
 redis
 
+#### 执行环境配置
+
+1. component下的plugins 需要把kettle下的plugins文件夹下的内容都拷贝下来，否则无法执行kettle脚本
+
 #### 目前正在进行的事
 
 调整结构，使结构具备可扩展性

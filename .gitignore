@@ -11,3 +11,4 @@
 /cattle-service/target/
 /cattle-service/cattle-service.iml
 /cattle-common/cattle-common.iml
+/cattle-component/src/main/resources/plugins/
