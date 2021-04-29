@@ -7,7 +7,7 @@ import com.cattle.common.ItemsHelper;
 import com.cattle.common.JobContextHelper;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.common.enums.JobStatus;
-import com.cattle.component.ExecuteScriptInterface;
+import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.entity.CattleJob;
 import com.cattle.service.api.RunLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,6 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author lsj
@@ -132,7 +131,7 @@ public class CattleRun implements Closeable {
                             //执行完成
                             case FINISH:
                                 log.error("{} - {} 执行完成！",batchId,context.getJobName());
-                                runLogService.updateResult(batchId,context.getCount(),0,null,JobStatus.FINISH);
+                                runLogService.updateResult(batchId,context.getSuccessCount(),0,null,JobStatus.FINISH);
                                 JobContextHelper.remove(batchId);
                                 ItemsHelper.remove(batchId);
                                 break;
@@ -153,14 +152,6 @@ public class CattleRun implements Closeable {
                 }
             }
         }
-    }
-
-    /**
-     * 创建执行log
-     * @param job
-     */
-    private void createRunLog(CattleJob job){
-
     }
 
     /**

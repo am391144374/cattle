@@ -8,7 +8,7 @@ import com.cattle.component.kettle.meta.FieldMeta;
 import com.cattle.component.kettle.step.ConstantStep;
 import com.cattle.component.kettle.step.ExcelInputStep;
 import com.cattle.component.kettle.step.SelectValuesStep;
-import com.cattle.component.ProcessScript;
+import com.cattle.common.plugin.ProcessScript;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.entity.CattleJob;
 import com.cattle.entity.kettle.KtrField;
@@ -143,5 +143,10 @@ public class KettleScript extends ProcessScript {
     @Override
     public void setCattleJob(CattleJob job) {
         this.cattleJob = job;
+    }
+
+    @Override
+    public String getScriptType() {
+        return "kettle";
     }
 }

@@ -1,4 +1,4 @@
-package com.cattle.component;
+package com.cattle.common.plugin;
 
 import com.cattle.common.handler.ProcessHandler;
 

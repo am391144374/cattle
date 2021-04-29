@@ -63,6 +63,7 @@ public class SpiderMonitorProcessHandler extends ExecuteProcessHandler {
         }
         if(!processContext.getJobStatus().getName().equals(JobStatus.INTERRUPT.getName())){
             processContext.setJobStatus(JobStatus.FINISH);
+            processContext.setSuccessCount(result.size());
         }
     }
 

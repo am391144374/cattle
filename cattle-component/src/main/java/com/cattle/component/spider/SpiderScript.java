@@ -3,7 +3,7 @@ package com.cattle.component.spider;
 import cn.hutool.core.bean.BeanUtil;
 import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
 import com.cattle.component.spider.handler.SpiderProcessHandler;
-import com.cattle.component.ProcessScript;
+import com.cattle.common.plugin.ProcessScript;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.entity.CattleJob;
 import com.cattle.entity.spider.SpiderInfoBO;
@@ -53,5 +53,10 @@ public class SpiderScript extends ProcessScript {
     @Override
     public void setCattleJob(CattleJob job) {
         this.cattleJob = job;
+    }
+
+    @Override
+    public String getScriptType() {
+        return "spider";
     }
 }

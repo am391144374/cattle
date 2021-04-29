@@ -11,23 +11,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ProcessContext extends HashMap<String,Object> {
 
-    private static final String EXECUTOR_EXCEPTION = "exceptionException";
     /** 批次ID */
     private long batchId;
     /** 计划名 */
     private String jobName;
 
-    private AtomicInteger count = new AtomicInteger(0);
+    private int successCount;
 
     private JobStatus jobStatus;
 
-    private final String CONNECTION_NAME = "yearbook";
-
     private final Set<String> errors = new HashSet<>();
-
-    public String getConnectionName(){
-        return CONNECTION_NAME;
-    }
 
     public long getBatchId() {
         return batchId;
@@ -35,13 +28,6 @@ public class ProcessContext extends HashMap<String,Object> {
 
     public void setBatchId(long batchId) {
         this.batchId = batchId;
-    }
-
-    /**
-     * 中断正在执行job
-     */
-    public void interruptJob(){
-        jobStatus = JobStatus.INTERRUPT;
     }
 
     public JobStatus getJobStatus() {
@@ -56,15 +42,23 @@ public class ProcessContext extends HashMap<String,Object> {
         return this;
     }
 
-    public void putError(Object errorClass,Exception e){
+    public int getSuccessCount() {
+        return successCount;
+    }
+
+    public void setSuccessCount(int successCount) {
+        this.successCount = successCount;
+    }
+
+    public Set<String> getErrors() {
+        return errors;
+    }
+
+    public void putError(Object errorClass, Exception e){
         String exMsg = String.format(errorClass.getClass().getName() +
                 "executor error Exception:%s --- message:%s",e.getClass().getName(),e.getMessage());
         errors.add(exMsg);
         setJobStatus(JobStatus.INTERRUPT);
-    }
-
-    public boolean isSuccess(){
-        return jobStatus.getName().equals(JobStatus.FINISH);
     }
 
     public void setJobStatus(JobStatus jobStatus) {
@@ -79,21 +73,12 @@ public class ProcessContext extends HashMap<String,Object> {
         this.jobName = jobName;
     }
 
-    public Integer getCount() {
-        return count.get();
-    }
-
-    public int increment(Integer num){
-        return count.addAndGet(num);
-    }
-
-
     @Override
     public String toString() {
         return "ProcessContext{" +
                 "batchId=" + batchId +
                 ", jobName='" + jobName + '\'' +
-                ", count=" + count +
+                ", successCount=" + successCount +
                 ", jobStatus=" + jobStatus.getName() +
                 '}';
     }
