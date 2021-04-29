@@ -2,9 +2,8 @@ package com.cattle.component.spider;
 
 import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
 import com.cattle.component.spider.handler.SpiderProcessHandler;
-import com.cattle.ProcessScript;
+import com.cattle.component.ProcessScript;
 import com.cattle.common.context.ProcessContext;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

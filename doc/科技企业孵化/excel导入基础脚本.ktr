@@ -491,17 +491,62 @@
       </attribute>
     </attributes>
   </connection>
+  <connection>
+    <name>yearbook_ods</name>
+    <server>localhost</server>
+    <type>MYSQL</type>
+    <access>Native</access>
+    <database>yearbook_ods</database>
+    <port>3306</port>
+    <username>root</username>
+    <password>Encrypted 2be98afc806ce8797a310a479dbc3fd89</password>
+    <servername/>
+    <data_tablespace/>
+    <index_tablespace/>
+    <attributes>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_LOWERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>FORCE_IDENTIFIERS_TO_UPPERCASE</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>IS_CLUSTERED</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>PORT_NUMBER</code>
+        <attribute>3306</attribute>
+      </attribute>
+      <attribute>
+        <code>PRESERVE_RESERVED_WORD_CASE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>QUOTE_ALL_FIELDS</code>
+        <attribute>N</attribute>
+      </attribute>
+      <attribute>
+        <code>STREAM_RESULTS</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_BOOLEAN_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>SUPPORTS_TIMESTAMP_DATA_TYPE</code>
+        <attribute>Y</attribute>
+      </attribute>
+      <attribute>
+        <code>USE_POOLING</code>
+        <attribute>N</attribute>
+      </attribute>
+    </attributes>
+  </connection>
   <order>
-    <hop>
-      <from>增加常量</from>
-      <to>写日志</to>
-      <enabled>N</enabled>
-    </hop>
-    <hop>
-      <from>分组 2 2</from>
-      <to>插入日志记录</to>
-      <enabled>Y</enabled>
-    </hop>
     <hop>
       <from>表输出 3 2</from>
       <to>错误输出 2 2</to>
@@ -510,11 +555,6 @@
     <hop>
       <from>表输出 3 2</from>
       <to>阻塞数据直到步骤都完成 2 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>阻塞数据直到步骤都完成 2 2</from>
-      <to>分组 2 2</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -558,8 +598,83 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
+      <from>Switch / case</from>
+      <to>执行建表语句</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>唯一行 (哈希值) 2</from>
+      <to>检查表是否存在</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>执行建表语句</from>
+      <to>阻塞数据直到步骤都完成</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>检查表是否存在</from>
+      <to>Switch / case</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>拼接建表语句</from>
+      <to>唯一行 (哈希值) 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>阻塞数据直到步骤都完成</from>
+      <to>执行SQL脚本</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>分组 2 2 2</from>
+      <to>插入日志记录</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>增加常量 2</from>
+      <to>分组 2 2 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>阻塞数据直到步骤都完成 2 2</from>
+      <to>增加常量 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
       <from>字段选择 2 2 2</from>
+      <to>阻塞数据直到步骤都完成 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>阻塞数据直到步骤都完成 2</from>
       <to>表输出 3 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>Switch / case</from>
+      <to>增加常量 3</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>增加常量 3</from>
+      <to>备份老表</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>执行建表语句 2</from>
+      <to>阻塞数据直到步骤都完成 3</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>阻塞数据直到步骤都完成 3</from>
+      <to>执行SQL脚本 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>备份老表</from>
+      <to>执行建表语句 2</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -590,7 +705,7 @@
     <accept_field/>
     <accept_stepname/>
     <file>
-      <name>D:\code\new work space from git\kettle\科技企业孵化\1.xlsx</name>
+      <name>D:\code\company\workSpace\小程序表格\园区平台\湖南省农业园区名单.xlsx</name>
       <filemask/>
       <exclude_filemask/>
       <file_required>N</file_required>
@@ -598,7 +713,7 @@
     </file>
     <fields>
       <field>
-        <name>city</name>
+        <name>zone_name-园区</name>
         <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
@@ -610,7 +725,7 @@
         <group/>
       </field>
       <field>
-        <name>region</name>
+        <name>approve_time-获批时间</name>
         <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
@@ -622,7 +737,7 @@
         <group/>
       </field>
       <field>
-        <name>tbis_count-在统孵化器数量(个)</name>
+        <name>region-所属地域</name>
         <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
@@ -634,7 +749,7 @@
         <group/>
       </field>
       <field>
-        <name>resident_companies_count-孵化器内企业总数(个)</name>
+        <name>level-园区级别</name>
         <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
@@ -646,43 +761,7 @@
         <group/>
       </field>
       <field>
-        <name>incubatees_count-在孵企业数(个)</name>
-        <type>String</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-      </field>
-      <field>
-        <name>incubatees_employees_count-在孵企业从业人员数(个)</name>
-        <type>String</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-      </field>
-      <field>
-        <name>incubatees_venture_amount-当年获得风险投资额(千元)</name>
-        <type>String</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-      </field>
-      <field>
-        <name>incubatees_rd_input-在孵企业R&amp;D投入(千元)</name>
+        <name>remark-备注</name>
         <type>String</type>
         <length>-1</length>
         <precision>-1</precision>
@@ -696,8 +775,8 @@
     </fields>
     <sheets>
       <sheet>
-        <name>Sheet1</name>
-        <startrow>12</startrow>
+        <name>详细名单</name>
+        <startrow>0</startrow>
         <startcol>0</startcol>
       </sheet>
     </sheets>
@@ -731,129 +810,6 @@
     <GUI>
       <xloc>80</xloc>
       <yloc>192</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>写日志</name>
-    <type>WriteToLog</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <loglevel>log_level_basic</loglevel>
-    <displayHeader>N</displayHeader>
-    <limitRows>N</limitRows>
-    <limitRowsNumber>0</limitRowsNumber>
-    <logmessage/>
-    <fields>
-      <field>
-        <name>param</name>
-      </field>
-      <field>
-        <name>param1</name>
-      </field>
-      <field>
-        <name>param2</name>
-      </field>
-      <field>
-        <name>param3</name>
-      </field>
-      <field>
-        <name>param4</name>
-      </field>
-      <field>
-        <name>param5</name>
-      </field>
-      <field>
-        <name>param6</name>
-      </field>
-      <field>
-        <name>param7</name>
-      </field>
-      <field>
-        <name>param8</name>
-      </field>
-      <field>
-        <name>param9</name>
-      </field>
-      <field>
-        <name>batch_Id</name>
-      </field>
-      <field>
-        <name>insert_time</name>
-      </field>
-      <field>
-        <name>count</name>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>768</xloc>
-      <yloc>80</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>分组 2 2</name>
-    <type>GroupBy</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <all_rows>N</all_rows>
-    <ignore_aggregate>N</ignore_aggregate>
-    <field_ignore/>
-    <directory>%%java.io.tmpdir%%</directory>
-    <prefix>grp</prefix>
-    <add_linenr>N</add_linenr>
-    <linenr_fieldname/>
-    <give_back_row>Y</give_back_row>
-    <group>
-      <field>
-        <name>batch_Id</name>
-      </field>
-      <field>
-        <name>insert_time</name>
-      </field>
-      <field>
-        <name>type</name>
-      </field>
-    </group>
-    <fields>
-      <field>
-        <aggregate>count</aggregate>
-        <subject>batch_Id</subject>
-        <type>COUNT_ALL</type>
-        <valuefield/>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>624</xloc>
-      <yloc>352</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -906,19 +862,19 @@
         <set_empty_string>N</set_empty_string>
       </field>
       <field>
-        <name>count</name>
+        <name>table_sql</name>
         <type>String</type>
         <format/>
         <currency/>
         <decimal/>
         <group/>
         <nullif/>
-        <length>-1</length>
+        <length>255</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
       </field>
       <field>
-        <name>table_sql</name>
+        <name>excel_column</name>
         <type>String</type>
         <format/>
         <currency/>
@@ -958,10 +914,10 @@
     <fields>
       <select_unspecified>N</select_unspecified>
       <meta>
-        <name>city</name>
-        <rename>city</rename>
+        <name>zone_name-园区</name>
+        <rename>zone_name-园区</rename>
         <type>String</type>
-        <length>15</length>
+        <length>30</length>
         <precision>-2</precision>
         <conversion_mask/>
         <date_format_lenient>false</date_format_lenient>
@@ -975,10 +931,27 @@
         <storage_type/>
       </meta>
       <meta>
-        <name>region</name>
-        <rename>region</rename>
+        <name>approve_time-获批时间</name>
+        <rename>approve_time-获批时间</rename>
+        <type>Date</type>
+        <length>15</length>
+        <precision>-2</precision>
+        <conversion_mask>yyyy-MM</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>region-所属地域</name>
+        <rename>region-所属地域</rename>
         <type>String</type>
-        <length>50</length>
+        <length>10</length>
         <precision>-2</precision>
         <conversion_mask/>
         <date_format_lenient>false</date_format_lenient>
@@ -992,11 +965,11 @@
         <storage_type/>
       </meta>
       <meta>
-        <name>tbis_count-在统孵化器数量(个)</name>
-        <rename>tbis_count-在统孵化器数量(个)</rename>
-        <type>Number</type>
-        <length>15</length>
-        <precision>2</precision>
+        <name>level-园区级别</name>
+        <rename>level-园区级别</rename>
+        <type>String</type>
+        <length>8</length>
+        <precision>-2</precision>
         <conversion_mask/>
         <date_format_lenient>false</date_format_lenient>
         <date_format_locale/>
@@ -1009,79 +982,11 @@
         <storage_type/>
       </meta>
       <meta>
-        <name>resident_companies_count-孵化器内企业总数(个)</name>
-        <rename>resident_companies_count-孵化器内企业总数(个)</rename>
-        <type>Number</type>
-        <length>15</length>
-        <precision>2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>incubatees_count-在孵企业数(个)</name>
-        <rename>incubatees_count-在孵企业数(个)</rename>
-        <type>Number</type>
-        <length>15</length>
-        <precision>2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>incubatees_employees_count-在孵企业从业人员数(个)</name>
-        <rename>incubatees_employees_count-在孵企业从业人员数(个)</rename>
-        <type>Number</type>
-        <length>15</length>
-        <precision>2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>incubatees_venture_amount-当年获得风险投资额(千元)</name>
-        <rename>incubatees_venture_amount-当年获得风险投资额(千元)</rename>
-        <type>Number</type>
-        <length>15</length>
-        <precision>2</precision>
-        <conversion_mask/>
-        <date_format_lenient>false</date_format_lenient>
-        <date_format_locale/>
-        <date_format_timezone/>
-        <lenient_string_to_number>false</lenient_string_to_number>
-        <encoding/>
-        <decimal_symbol/>
-        <grouping_symbol/>
-        <currency_symbol/>
-        <storage_type/>
-      </meta>
-      <meta>
-        <name>incubatees_rd_input-在孵企业R&amp;D投入(千元)</name>
-        <rename>incubatees_rd_input-在孵企业R&amp;D投入(千元)</rename>
-        <type>Number</type>
-        <length>15</length>
-        <precision>2</precision>
+        <name>remark-备注</name>
+        <rename>remark-备注</rename>
+        <type>String</type>
+        <length>40</length>
+        <precision>-2</precision>
         <conversion_mask/>
         <date_format_lenient>false</date_format_lenient>
         <date_format_locale/>
@@ -1124,6 +1029,9 @@
       <remove>
         <name>table_sql</name>
       </remove>
+      <remove>
+        <name>excel_column</name>
+      </remove>
     </fields>
     <attributes/>
     <cluster_schema/>
@@ -1158,6 +1066,7 @@
 import java.util.Date;
 
 String createTableSql = "";
+String excelColumnTemp = "";
 
 public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException {
   if (first) {
@@ -1219,6 +1128,7 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
 	
 	if(createTableSql.equals("")){
 		StringBuffer sb = new StringBuffer();
+		StringBuffer excelColumn = new StringBuffer();
 		List&lt;RowSet> list = getInputRowSets();
 		RowSet row = (RowSet)list.get(0);
 		RowMetaInterface rowMeta = row.getRowMeta();
@@ -1228,26 +1138,29 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
 			if(fieldNameFilter(value.getName())){
 				continue;
 			}
-			transform(sb,value.getName(),value.getTypeDesc(),value.getLength());
+			transform(sb,excelColumn,value.getName(),value.getTypeDesc(),value.getLength());
     		super.logBasic(value.getName() + "---" + value.getTypeDesc() + "-----" + value.getLength());
     	}
 		String temp = sb.substring(0,sb.length() - 1);
 		temp = temp + ");";
 		createTableSql = temp;
+		excelColumnTemp = excelColumn.substring(0,excelColumn.length() - 1);
 	}
 		newTableSql = createTableSql.replace("tableYearTemplate",year);
 		get(Fields.Out, "table_sql").setValue(r, newTableSql);
 		get(Fields.Out, "table_name").setValue(r, table_name.replace("tableYearTemplate",year));
+		get(Fields.Out, "excel_column").setValue(r, excelColumnTemp);
 	
   // Send the row on to the next step.
   putRow(data.outputRowMeta, r);
   return true;
 }
 
-private void transform(StringBuffer sb,String fieldName,String typeDesc,int length){
+private void transform(StringBuffer sb,StringBuffer excelColumn,String fieldName,String typeDesc,int length){
         String[] fieldArr = fieldName.split("-");
         String comment = fieldArr.length >= 2 ? fieldArr[1] : "";
-        sb.append(" `"+fieldName + "` ");
+        sb.append(" `"+ fieldName + "` ");
+		excelColumn.append(fieldName + "$" + length + "#" + typeDesc + ",");
         if(length == -1){
             length = 10;
         }
@@ -1273,7 +1186,7 @@ private void transform(StringBuffer sb,String fieldName,String typeDesc,int leng
     }
 
 private boolean fieldNameFilter(String fieldName){
-        String[] filterArr = new String[]{"table_sql"};
+        String[] filterArr = new String[]{"table_sql","excel_column","table_name"};
         for(String filterName : filterArr){
             if(filterName.equals(fieldName)){
                 return true;
@@ -1301,66 +1214,6 @@ private boolean fieldNameFilter(String fieldName){
     <GUI>
       <xloc>1424</xloc>
       <yloc>464</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>插入日志记录</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>year_book</connection>
-    <schema>yearbook</schema>
-    <table>batch_insert_log</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-      <field>
-        <column_name>batch_id</column_name>
-        <stream_name>batch_id</stream_name>
-      </field>
-      <field>
-        <column_name>inert_num</column_name>
-        <stream_name>count</stream_name>
-      </field>
-      <field>
-        <column_name>insert_time</column_name>
-        <stream_name>insert_time</stream_name>
-      </field>
-      <field>
-        <column_name>type</column_name>
-        <stream_name>type</stream_name>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>464</xloc>
-      <yloc>352</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1558,8 +1411,8 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>year_book</connection>
-    <schema>yearbook</schema>
+    <connection>yearbook_ods</connection>
+    <schema/>
     <table>${table_name}</table>
     <commit>1000</commit>
     <truncate>N</truncate>
@@ -1650,20 +1503,8 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
         <currency/>
         <decimal/>
         <group/>
-        <nullif>test_tableYearTemplate_kettle_test</nullif>
+        <nullif>ods_yea_hn_park_farm</nullif>
         <length>20</length>
-        <precision>-1</precision>
-        <set_empty_string>N</set_empty_string>
-      </field>
-      <field>
-        <name>type</name>
-        <type>String</type>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-        <nullif>test</nullif>
-        <length>10</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
       </field>
@@ -1674,7 +1515,19 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
         <currency/>
         <decimal/>
         <group/>
-        <nullif>2000</nullif>
+        <nullif>2020</nullif>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+      <field>
+        <name>category</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif>农业科技园</nullif>
         <length>-1</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
@@ -1705,8 +1558,8 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>year_book</connection>
-    <schema>yearbook</schema>
+    <connection>yearbook_ods</connection>
+    <schema/>
     <table>batch_insert_error_log</table>
     <commit>1000</commit>
     <truncate>N</truncate>
@@ -1723,10 +1576,6 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
     <return_keys>N</return_keys>
     <return_field/>
     <fields>
-      <field>
-        <column_name>type</column_name>
-        <stream_name>type</stream_name>
-      </field>
       <field>
         <column_name>batch_Id</column_name>
         <stream_name>batch_Id</stream_name>
@@ -1813,6 +1662,674 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
     <GUI>
       <xloc>1104</xloc>
       <yloc>192</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Switch / case</name>
+    <type>SwitchCase</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fieldname>result</fieldname>
+    <use_contains>N</use_contains>
+    <case_value_type>String</case_value_type>
+    <case_value_format/>
+    <case_value_decimal/>
+    <case_value_group/>
+    <default_target_step>执行建表语句</default_target_step>
+    <cases>
+      <case>
+        <value>Y</value>
+        <target_step>增加常量 3</target_step>
+      </case>
+      <case>
+        <value>N</value>
+        <target_step>执行建表语句</target_step>
+      </case>
+    </cases>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1024</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>唯一行 (哈希值) 2</name>
+    <type>UniqueRowsByHashSet</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <store_values>N</store_values>
+    <reject_duplicate_row>N</reject_duplicate_row>
+    <error_description/>
+    <fields>
+      <field>
+        <name>table_name</name>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1296</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>执行SQL脚本</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>yearbook_ods</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>Y</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>call change_field_name ("?");</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+      <argument>
+        <name>table_name</name>
+      </argument>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>464</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>执行建表语句</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>yearbook_ods</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>Y</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>drop table if EXISTS ?;
+?;</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+      <argument>
+        <name>table_name</name>
+      </argument>
+      <argument>
+        <name>table_sql</name>
+      </argument>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>800</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>检查表是否存在</name>
+    <type>TableExists</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>yearbook_ods</connection>
+    <tablenamefield>table_name</tablenamefield>
+    <resultfieldname>result</resultfieldname>
+    <schemaname/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1152</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>阻塞数据直到步骤都完成</name>
+    <type>BlockUntilStepsFinish</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <steps>
+      <step>
+        <name>插入日志记录</name>
+        <CopyNr>0</CopyNr>
+      </step>
+    </steps>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>640</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>分组 2 2 2</name>
+    <type>GroupBy</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <all_rows>N</all_rows>
+    <ignore_aggregate>N</ignore_aggregate>
+    <field_ignore/>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>grp</prefix>
+    <add_linenr>N</add_linenr>
+    <linenr_fieldname/>
+    <give_back_row>Y</give_back_row>
+    <group>
+      <field>
+        <name>batch_Id</name>
+      </field>
+      <field>
+        <name>insert_time</name>
+      </field>
+    </group>
+    <fields>
+      <field>
+        <aggregate>count</aggregate>
+        <subject>batch_Id</subject>
+        <type>COUNT_ALL</type>
+        <valuefield/>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>512</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>增加常量 2</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>count</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>672</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>插入日志记录</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>yearbook_ods</connection>
+    <schema/>
+    <table>batch_insert_log</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+      <field>
+        <column_name>batch_id</column_name>
+        <stream_name>batch_id</stream_name>
+      </field>
+      <field>
+        <column_name>inert_num</column_name>
+        <stream_name>count</stream_name>
+      </field>
+      <field>
+        <column_name>insert_time</column_name>
+        <stream_name>insert_time</stream_name>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>384</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>阻塞数据直到步骤都完成 2</name>
+    <type>BlockUntilStepsFinish</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <steps>
+      <step>
+        <name>执行建表语句 2</name>
+        <CopyNr>0</CopyNr>
+      </step>
+      <step>
+        <name>执行建表语句</name>
+        <CopyNr>0</CopyNr>
+      </step>
+    </steps>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1184</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>备份老表</name>
+    <type>UserDefinedJavaClass</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <definitions>
+      <definition>
+        <class_type>TRANSFORM_CLASS</class_type>
+        <class_name>Processor</class_name>
+        <class_source>import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+
+String nowDate = "";
+
+public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws KettleException {
+  if (first) {
+    first = false;
+
+    /* TODO: Your code here. (Using info fields)
+
+    FieldHelper infoField = get(Fields.Info, "info_field_name");
+
+    RowSet infoStream = findInfoRowSet("info_stream_tag");
+
+    Object[] infoRow = null;
+
+    int infoRowCount = 0;
+
+    // Read all rows from info step before calling getRow() method, which returns first row from any
+    // input rowset. As rowMeta for info and input steps varies getRow() can lead to errors.
+    while((infoRow = getRowFrom(infoStream)) != null){
+
+      // do something with info data
+      infoRowCount++;
+    }
+    */
+  }
+
+  Object[] r = getRow();
+
+  if (r == null) {
+    setOutputDone();
+    return false;
+  }
+
+
+	if(nowDate.equals("")){
+		DateTimeFormatter inFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+    	LocalDateTime localDateTime = LocalDateTime.now();
+    	nowDate = localDateTime.format(inFormat);
+	}
+
+	String table_name = get(Fields.In, "table_name").getString(r);
+	get(Fields.Out, "old_table_name").setValue(r, table_name + "_" + nowDate);
+
+  // It is always safest to call createOutputRow() to ensure that your output row's Object[] is large
+  // enough to handle any new fields you are creating in this step.
+  r = createOutputRow(r, data.outputRowMeta.size());
+
+  /* TODO: Your code here. (See Sample)
+
+  // Get the value from an input field
+  String foobar = get(Fields.In, "a_fieldname").getString(r);
+
+  foobar += "bar";
+    
+  // Set a value in a new output field
+  get(Fields.Out, "output_fieldname").setValue(r, foobar);
+
+  */
+  // Send the row on to the next step.
+  putRow(data.outputRowMeta, r);
+
+  return true;
+}
+</class_source>
+      </definition>
+    </definitions>
+    <fields>
+    </fields>
+    <clear_result_fields>N</clear_result_fields>
+    <info_steps/>
+    <target_steps/>
+    <usage_parameters/>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>880</xloc>
+      <yloc>560</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>增加常量 3</name>
+    <type>Constant</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <fields>
+      <field>
+        <name>old_table_name</name>
+        <type>String</type>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+        <nullif/>
+        <length>-1</length>
+        <precision>-1</precision>
+        <set_empty_string>N</set_empty_string>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1024</xloc>
+      <yloc>560</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>执行SQL脚本 2</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>yearbook_ods</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>Y</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>call change_field_name ("?");</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+      <argument>
+        <name>table_name</name>
+      </argument>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>432</xloc>
+      <yloc>560</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>执行建表语句 2</name>
+    <type>ExecSQL</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>yearbook_ods</connection>
+    <execute_each_row>Y</execute_each_row>
+    <single_statement>N</single_statement>
+    <replace_variables>Y</replace_variables>
+    <quoteString>N</quoteString>
+    <sql>create table ? select * from ?;
+drop table if EXISTS ?;
+?;</sql>
+    <set_params>N</set_params>
+    <insert_field/>
+    <update_field/>
+    <delete_field/>
+    <read_field/>
+    <arguments>
+      <argument>
+        <name>old_table_name</name>
+      </argument>
+      <argument>
+        <name>table_name</name>
+      </argument>
+      <argument>
+        <name>table_name</name>
+      </argument>
+      <argument>
+        <name>table_sql</name>
+      </argument>
+    </arguments>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>768</xloc>
+      <yloc>560</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>阻塞数据直到步骤都完成 3</name>
+    <type>BlockUntilStepsFinish</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <steps>
+      <step>
+        <name>插入日志记录</name>
+        <CopyNr>0</CopyNr>
+      </step>
+    </steps>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>608</xloc>
+      <yloc>560</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

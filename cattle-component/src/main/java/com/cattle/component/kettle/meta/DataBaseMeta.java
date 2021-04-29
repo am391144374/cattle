@@ -8,6 +8,10 @@ import lombok.Data;
 @Data
 public class DataBaseMeta extends BaseMeta{
 
+    /**
+     * 在脚本中的连接名
+     */
+    private String dbName;
     private String url;
     private String database;
     private String userName;

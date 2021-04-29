@@ -3,7 +3,6 @@ package com.cattle.web;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.IdUtil;
 import com.cattle.common.ItemsHelper;
 import com.cattle.common.JobContextHelper;
 import com.cattle.common.context.ProcessContext;
@@ -11,6 +10,7 @@ import com.cattle.common.enums.JobStatus;
 import com.cattle.component.kettle.KettleConfig;
 import com.cattle.component.kettle.KettleConfigInit;
 import com.cattle.component.kettle.KettleScript;
+import com.cattle.component.kettle.meta.ExcelMeta;
 import com.cattle.component.kettle.meta.FieldMeta;
 import com.cattle.component.spider.SpiderConfig;
 import com.cattle.component.spider.SpiderScript;
@@ -48,7 +48,7 @@ public class CattleRun implements Closeable {
     /** kettle需要初始init 多线程调用使用线程安全的 AtomicBoolean*/
     private AtomicBoolean kettleInitFlag = new AtomicBoolean(false);
     /** 监控context线程 */
-    private MonitorContext monitorContext;
+    private MonitorContextThread monitorContext;
     /** 执行脚本线程 */
     private RunJob scriptRunJob;
     // 日志保存
@@ -64,7 +64,7 @@ public class CattleRun implements Closeable {
         scriptRunJob.start();
 
         //启动监控context线程
-        monitorContext = new MonitorContext();
+        monitorContext = new MonitorContextThread();
         monitorContext.start();
     }
 
@@ -163,10 +163,12 @@ public class CattleRun implements Closeable {
                 // excel导入
                 case "excelImport":
                     kettleConfig.setSelectValueMap(fieldMetaList);
-                    kettleConfig.setFileName(stepInfo.getFileList());
-                    kettleConfig.setSheetName(new String[]{stepInfo.getSheetName()});
-                    kettleConfig.setStartRow(new int[]{stepInfo.getStartRow()});
-                    kettleConfig.setStartCol(new int[]{stepInfo.getStartCol()});
+                    ExcelMeta excelMeta = new ExcelMeta();
+                    excelMeta.setFileName(stepInfo.getFileList());
+                    excelMeta.setSheetName(new String[]{stepInfo.getSheetName()});
+                    excelMeta.setStartRow(new int[]{stepInfo.getStartRow()});
+                    excelMeta.setStartCol(new int[]{stepInfo.getStartCol()});
+                    kettleConfig.setExcelMeta(excelMeta);
                     break;
                     // 字段设置
                 case "selectValue":
@@ -180,7 +182,6 @@ public class CattleRun implements Closeable {
         }
         kettleConfig.setScriptFile(job.getScriptPath());
         kettleConfig.setJobName(job.getJobName());
-        kettleConfig.setWriteHeadRowIndex(2);
         kettleConfig.setBatchId(job.getBatchId());
 
         createRunLog(job);
@@ -199,7 +200,7 @@ public class CattleRun implements Closeable {
      * 4.脚本执行成功，则更新job信息，保存结果信息
      * 3.删除对应的context，防止内存占用过多
      */
-    class MonitorContext extends Thread{
+    class MonitorContextThread extends Thread{
         @Override
         public void run() {
             log.info("context 监控线程启动成功！");

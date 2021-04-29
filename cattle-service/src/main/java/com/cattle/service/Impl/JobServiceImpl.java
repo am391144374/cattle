@@ -1,6 +1,5 @@
 package com.cattle.service.Impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.cattle.entity.CattleJob;
 import com.cattle.entity.kettle.KtrField;
 import com.cattle.entity.kettle.KtrStep;

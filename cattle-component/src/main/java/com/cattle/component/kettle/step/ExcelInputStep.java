@@ -25,6 +25,7 @@ public class ExcelInputStep extends BaseStepMeta {
     private List<FieldMeta> fieldMetaList;
     public static String stepName = "Excel输入";
     private KettleConfig kettleConfig;
+    private ExcelMeta excelMeta;
 
     public ExcelInputStep(KettleConfig kettleConfig){
         fieldMetaList = kettleConfig.getSelectValueMap();
@@ -34,7 +35,7 @@ public class ExcelInputStep extends BaseStepMeta {
     @Override
     public StepMeta buildCurrentStepMate() throws Exception {
         ExcelInputMeta excelInputMeta = new ExcelInputMeta();
-        excelInputMeta.setFileName(conversionFileName(kettleConfig.getFileName()));
+        excelInputMeta.setFileName(conversionFileName(excelMeta.getFileName()));
         //字段构建
         ExcelInputField[] excelInputFields = Optional.ofNullable(fieldMetaList).get().stream().map(fieldMeta -> {
             ExcelInputField excelInputField = new ExcelInputField();
@@ -48,9 +49,9 @@ public class ExcelInputStep extends BaseStepMeta {
             return excelInputField;
         }).collect(Collectors.toList()).toArray(new ExcelInputField[fieldMetaList.size()]);
         excelInputMeta.setField(excelInputFields);
-        excelInputMeta.setSheetName(kettleConfig.getSheetName());
-        excelInputMeta.setStartRow(kettleConfig.getStartRow());
-        excelInputMeta.setStartColumn(kettleConfig.getStartCol());
+        excelInputMeta.setSheetName(excelMeta.getSheetName());
+        excelInputMeta.setStartRow(excelMeta.getStartRow());
+        excelInputMeta.setStartColumn(excelMeta.getStartCol());
         excelInputMeta.setSpreadSheetType(SpreadSheetType.getStpreadSheetTypeByDescription(SpreadSheetType.POI.getDescription()));
         return new StepMeta(registryID.getPluginId(StepPluginType.class,excelInputMeta), stepName, excelInputMeta);
     }

@@ -1,13 +1,12 @@
 package com.cattle.component.kettle;
 
 
-import com.cattle.component.kettle.handler.ExcelHeadFormatHandler;
 import com.cattle.component.kettle.handler.ExecuteKettleScriptProcessHandler;
 import com.cattle.component.kettle.handler.StepProcessHandler;
 import com.cattle.component.kettle.step.ConstantStep;
 import com.cattle.component.kettle.step.ExcelInputStep;
 import com.cattle.component.kettle.step.SelectValuesStep;
-import com.cattle.ProcessScript;
+import com.cattle.component.ProcessScript;
 import com.cattle.common.context.ProcessContext;
 import org.pentaho.di.core.exception.KettleMissingPluginsException;
 import org.pentaho.di.core.exception.KettleXMLException;
@@ -81,10 +80,10 @@ public class KettleScript extends ProcessScript {
         /** -------------*/
 
         /** excel 处理 */
-        ExcelHeadFormatHandler excelHeadFormatHandler = new ExcelHeadFormatHandler(kettleConfig);
+//        ExcelHeadFormatHandler excelHeadFormatHandler = new ExcelHeadFormatHandler(kettleConfig);
         /** ---------- */
 
-        addLastProcess(excelHeadFormatHandler);
+//        addLastProcess(excelHeadFormatHandler);
         addLastProcess(stepProcessHandler);
 
         setBatchId(kettleConfig.getBatchId());
