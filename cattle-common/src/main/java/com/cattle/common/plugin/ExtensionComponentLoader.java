@@ -2,64 +2,66 @@ package com.cattle.common.plugin;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 
 /**
  * 注册脚本组件
+ * 目前只扫描包路径，可以接口实现jar扫描
  */
 @Slf4j
-public class ExtensionComponentLoader {
+public class ExtensionComponentLoader extends AbstractScanPackage {
 
-    public static final String COMPONENT_DIRECTORY = "MATE-INF/cattle/";
+    public final String COMPONENT_DIRECTORY = "MATE-INF.cattle";
     private final String COMPONENT_PACKAGE = "com.cattle.component";
+    final Map<String, Class<? extends ExecuteScriptInterface>> componentMaps = new HashMap<>();
 
-    private Map<String,Class<? extends ExecuteScriptInterface>> scriptMaps = new HashMap<>();
-
-    public static void loadDirectory(String dir){
-        String fileName = dir + ExecuteScriptInterface.class.getName();
+    public void findComponentByPackage() {
         try {
-            Enumeration<URL> urls;
-            ClassLoader classLoader = getClassLoader(ExtensionComponentLoader.class);
-            if (classLoader != null) {
-                urls = classLoader.getResources(fileName);
-            } else {
-                urls = ClassLoader.getSystemResources(fileName);
-            }
-            if (urls != null) {
-                while (urls.hasMoreElements()) {
-                    java.net.URL resourceURL = urls.nextElement();
-                    System.out.println(resourceURL.toString());
-                }
-            }
-        } catch (Throwable t) {
-            log.error("Exception occurred when loading extension class (interface: " +
-                      ", description file: " + fileName + ").", t);
+            log.info("组件注册开始！");
+            List<String> list = scanPackage(COMPONENT_PACKAGE, "class");
+            initComponent(list);
+            log.info("组件注册完成！");
+        } catch (Exception e) {
+            log.error("find component error:{}", e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public static ClassLoader getClassLoader(Class<?> clazz) {
-        ClassLoader cl = null;
-        try {
-            cl = Thread.currentThread().getContextClassLoader();
-        } catch (Throwable ex) {
-            // Cannot access thread context ClassLoader - falling back to system class loader...
-        }
-        if (cl == null) {
-            // No thread context class loader -> use class loader of this class.
-            cl = clazz.getClassLoader();
-            if (cl == null) {
-                // getClassLoader() returning null indicates the bootstrap ClassLoader
-                try {
-                    cl = ClassLoader.getSystemClassLoader();
-                } catch (Throwable ex) {
-                    // Cannot access system ClassLoader - oh well, maybe the caller can live with null...
+    private void initComponent(List<String> urls) {
+        Optional.ofNullable(urls).get().forEach(url -> {
+            String classPath = subClassPath(url, COMPONENT_PACKAGE);
+            try {
+                Class loadClass = Class.forName(classPath);
+                if (ExecuteScriptInterface.class.isAssignableFrom(loadClass)) {
+                    ExecuteScriptInterface scriptInterface = (ExecuteScriptInterface) loadClass.newInstance();
+                    if (componentMaps.containsKey(scriptInterface.getScriptType())) {
+                        log.error("存在相同的组件执行类型，请检查！ scriptType:{}", scriptInterface.getScriptType());
+                        return;
+                    }
+                    log.info("注册组件 scriptType:{}------className:{}", scriptInterface.getScriptType(), loadClass.getName());
+                    componentMaps.put(scriptInterface.getScriptType(), loadClass);
                 }
+            } catch (ClassNotFoundException e) {
+                log.error("class not found error :{}", e.getMessage());
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
             }
-        }
-
-        return cl;
+        });
     }
+
+    public Set<String> getAllScriptType() {
+        return componentMaps.keySet();
+    }
+
+    public Class getComponentClass(String scriptType){
+        if(!componentMaps.containsKey(scriptType)){
+            return null;
+        }
+        return componentMaps.get(scriptType);
+    }
+
 }

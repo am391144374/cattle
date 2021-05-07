@@ -2,7 +2,7 @@ package com.cattle.common.plugin;
 
 import com.cattle.common.handler.ProcessHandler;
 
-public abstract class ProcessScript implements ExecuteScriptInterface {
+public abstract class ProcessScript {
 
     protected ProcessHandler first;
     protected ProcessHandler end;

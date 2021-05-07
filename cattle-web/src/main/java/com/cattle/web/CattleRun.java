@@ -8,6 +8,7 @@ import com.cattle.common.JobContextHelper;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.plugin.ExecuteScriptInterface;
+import com.cattle.common.plugin.ExtensionComponentLoader;
 import com.cattle.entity.CattleJob;
 import com.cattle.service.api.RunLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class CattleRun implements Closeable {
     private RunLogService runLogService;
 
     /** 执行脚本 */
-    private Map<String,Class<? extends ExecuteScriptInterface>> scriptMaps = new HashMap<>();
+    private ExtensionComponentLoader componentLoader;
 
     public CattleRun(RunLogService runLogService){
         this.runLogService = runLogService;
@@ -50,9 +51,17 @@ public class CattleRun implements Closeable {
         this.scriptRunJob = new RunJob();
         scriptRunJob.start();
 
+        //初始化组件扫描
+        initComponent();
+
         //启动监控context线程
         monitorContext = new MonitorContextThread();
         monitorContext.start();
+    }
+
+    public void initComponent(){
+        componentLoader = new ExtensionComponentLoader();
+        componentLoader.findComponentByPackage();
     }
 
     class RunJob extends Thread{
@@ -63,11 +72,12 @@ public class CattleRun implements Closeable {
         public void run() {
             log.info("脚本执行线程启动成功！");
             while (runFlag){
+                //雪花算法
                 long batchId = IdUtil.getSnowflake(1,1).nextId();
                 runLogService.createLog(batchId);
                 try {
                     CattleJob cattleJob = queue.take();
-                    Class c = scriptMaps.get(cattleJob.getScriptType());
+                    Class c = componentLoader.getComponentClass(cattleJob.getScriptType());
                     if(c == null){
                         log.error("错误的执行脚本类别 cattleJob:{}",cattleJob.toString());
                         runLogService.updateErrorInfo(batchId,"错误的执行脚本类别");

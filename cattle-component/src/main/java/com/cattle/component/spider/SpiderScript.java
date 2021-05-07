@@ -1,6 +1,7 @@
 package com.cattle.component.spider;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
 import com.cattle.component.spider.handler.SpiderProcessHandler;
 import com.cattle.common.plugin.ProcessScript;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 爬虫执行类
  */
-public class SpiderScript extends ProcessScript {
+public class SpiderScript extends ProcessScript implements ExecuteScriptInterface {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

@@ -5,10 +5,13 @@
 /cattle-component/cattle-component.iml
 /cattle-dao/cattle-dao.iml
 /cattle-dao/target/
-/cattle-entity/target/classes/com/cattle/entity/CattleRunLog.class
 /cattle-entity/target/classes/com/cattle/entity/
 /cattle-entity/cattle-entity.iml
 /cattle-service/target/
 /cattle-service/cattle-service.iml
 /cattle-common/cattle-common.iml
 /cattle-component/src/main/resources/plugins/
+/cattle-entity/target/maven-archiver/pom.properties
+/cattle-entity/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+/cattle-entity/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+/cattle-entity/target/cattle-entity-1.0-SNAPSHOT.jar

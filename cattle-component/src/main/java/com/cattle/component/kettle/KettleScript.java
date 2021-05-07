@@ -1,6 +1,7 @@
 package com.cattle.component.kettle;
 
 import com.cattle.common.JobContextHelper;
+import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.component.kettle.handler.ExecuteKettleScriptProcessHandler;
 import com.cattle.component.kettle.handler.StepProcessHandler;
 import com.cattle.component.kettle.meta.ExcelMeta;
@@ -27,16 +28,12 @@ import java.util.List;
  * @author lsj
  * kettle 执行
  */
-public class KettleScript extends ProcessScript {
+public class KettleScript extends ProcessScript implements ExecuteScriptInterface {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private KettleConfig kettleConfig;
     private CattleJob cattleJob;
-
-    public KettleScript() throws KettleException {
-        KettlePluginInit.init();
-    }
 
     private void addExecuteKettleScriptActuator(){
         ExecuteKettleScriptProcessHandler kettleScriptProcessHandler = new ExecuteKettleScriptProcessHandler();
@@ -45,6 +42,12 @@ public class KettleScript extends ProcessScript {
 
     @Override
     public void run(){
+
+        try {
+            KettlePluginInit.init();
+        } catch (KettleException e) {
+            e.printStackTrace();
+        }
 
         buildConfig(cattleJob);
 
