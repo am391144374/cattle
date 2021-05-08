@@ -1,10 +1,9 @@
 package com.cattle.web;
 
-import cn.hutool.core.util.IdUtil;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.entity.CattleJob;
 import com.cattle.entity.CattleRunLog;
-import com.cattle.entity.spider.SpiderInfoBO;
+import com.cattle.entity.spider.CattleSpiderInfo;
 import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.JobService;
 import com.cattle.service.api.RunLogService;
@@ -31,20 +30,20 @@ public class CattleRunTest {
         CattleRun cattleRun = new CattleRun(runLogService,spiderService);
         cattleRun.init();
 
-        SpiderInfoBO spiderInfoBO = new SpiderInfoBO();
-        spiderInfoBO.setTableName("spider_movie_info");
-        spiderInfoBO.setSpiderName("电影");
-        spiderInfoBO.setListRegex("https://www.wuhaozhan.net/movie/list/?p=1");
-        spiderInfoBO.setEntryUrl("https://www.wuhaozhan.net/movie/list/?p=1");
-        spiderInfoBO.setFieldsJson("[{\"index\":1,\"key\":\"title\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/text()\"},{\"index\":2,\"key\":\"rate\",\"value\":\"//div[@Class='pure-g']/div/div[position() > 10]/div/div[3]//a/span/text()\"},{\"index\":3,\"key\":\"url\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href\"}]");
-        spiderInfoBO.setContentXpath("//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href");
-        spiderInfoBO.setContentFieldsJson("[{\"index\":1,\"key\":\"another\",\"value\":\"//div[@id='info']/text()\"}]");
-        spiderInfoBO.setXPathSelection(0);
-        spiderInfoBO.setThreadNum(2);
+        CattleSpiderInfo cattleSpiderInfo = new CattleSpiderInfo();
+        cattleSpiderInfo.setTableName("spider_movie_info");
+        cattleSpiderInfo.setSpiderName("电影");
+        cattleSpiderInfo.setListRegex("https://www.wuhaozhan.net/movie/list/?p=1");
+        cattleSpiderInfo.setEntryUrl("https://www.wuhaozhan.net/movie/list/?p=1");
+        cattleSpiderInfo.setFieldsJson("[{\"index\":1,\"key\":\"title\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/text()\"},{\"index\":2,\"key\":\"rate\",\"value\":\"//div[@Class='pure-g']/div/div[position() > 10]/div/div[3]//a/span/text()\"},{\"index\":3,\"key\":\"url\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href\"}]");
+        cattleSpiderInfo.setContentXpath("//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href");
+        cattleSpiderInfo.setContentFieldsJson("[{\"index\":1,\"key\":\"another\",\"value\":\"//div[@id='info']/text()\"}]");
+        cattleSpiderInfo.setXPathSelection(0);
+        cattleSpiderInfo.setThreadNum(2);
 
         CattleJob job = new CattleJob();
         job.setJobName("测试");
-        job.setConfigurable(spiderInfoBO);
+        job.setSpiderInfo(cattleSpiderInfo);
         job.setScriptType("spider");
 
         try {

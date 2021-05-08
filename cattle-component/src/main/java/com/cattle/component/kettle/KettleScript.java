@@ -13,8 +13,8 @@ import com.cattle.component.kettle.step.SelectValuesStep;
 import com.cattle.common.plugin.ProcessScript;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.entity.CattleJob;
-import com.cattle.entity.kettle.KtrField;
-import com.cattle.entity.kettle.KtrStep;
+import com.cattle.entity.kettle.CattleKtrField;
+import com.cattle.entity.kettle.CattleKtrStep;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleMissingPluginsException;
 import org.pentaho.di.core.exception.KettleXMLException;
@@ -52,7 +52,7 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
 
         buildConfig(cattleJob);
 
-        if(kettleConfig.getProcessType() == KettleConfig.KettleProcessType.EDIT) {
+        if("edit".equals(kettleConfig.getProcessType())) {
             buildKettleEditProcess();
         }
 
@@ -61,13 +61,14 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
 
         ProcessContext context = new ProcessContext();
         try {
-            TransMeta transMeta = new TransMeta(cattleJob.getScriptPath());
+            TransMeta transMeta = new TransMeta(kettleConfig.getScriptFile());
             context.setJobStatus(JobStatus.RUNNING);
+            context.setScriptType(getScriptType());
             context.put("transMeta",transMeta);
             context.setJobId(cattleJob.getJobId());
             context.setJobName(kettleConfig.getJobName());
             context.setBatchId(kettleConfig.getBatchId());
-            JobContextHelper.setJobContext(cattleJob.getBatchId(),context);
+            JobContextHelper.setJobContext(kettleConfig.getBatchId(),context);
             logger.info("{} start spider config:{}",Thread.currentThread().getName(),kettleConfig.toString());
             first.execute(context);
         } catch (KettleXMLException e) {
@@ -100,11 +101,11 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
 
     public void buildConfig(CattleJob job){
         KettleConfig kettleConfig = new KettleConfig();
-        List<KtrStep> stepInfoList = job.getStepInfoList();
-        for(KtrStep stepInfo : stepInfoList){
+        List<CattleKtrStep> stepInfoList = job.getKtrInfo().getStepInfoList();
+        for(CattleKtrStep stepInfo : stepInfoList){
             String stepType = stepInfo.getStepType();
             List<FieldMeta> fieldMetaList = new ArrayList<>();
-            List<KtrField> stepFields = stepInfo.getFieldList();
+            List<CattleKtrField> stepFields = stepInfo.getFieldList();
             stepFields.forEach(stepField -> {
                 FieldMeta fieldMeta = FieldMeta.builder()
                         .comment(stepField.getComment())
@@ -113,7 +114,8 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
                         .value(stepField.getDefaultValue()).build();
                 if(fieldMeta.getType().equals("Number")){
                     fieldMeta.setPrecision(stepField.getPrecision());
-                }else if(!fieldMeta.getType().equals("Integer")){
+                }
+                if(!fieldMeta.getType().equals("Integer")){
                     fieldMeta.setLength(stepField.getLength());
                 }
                 fieldMetaList.add(fieldMeta);
@@ -139,9 +141,11 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
                     break;
             }
         }
-        kettleConfig.setScriptFile(job.getScriptPath());
+        kettleConfig.setScriptFile(job.getKtrInfo().getScriptFile());
         kettleConfig.setJobName(job.getJobName());
         kettleConfig.setBatchId(job.getBatchId());
+        kettleConfig.setProcessType(job.getKtrInfo().getProcessType());
+        kettleConfig.setTableName(job.getKtrInfo().getTableName());
 
         this.kettleConfig = kettleConfig;
     }

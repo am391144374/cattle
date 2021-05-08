@@ -1,8 +1,8 @@
 package com.cattle.service.Impl.kettle;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.cattle.entity.kettle.KtrField;
-import com.cattle.mapper.kettle.KtrStepFieldMapper;
+import com.cattle.entity.kettle.CattleKtrField;
+import com.cattle.mapper.kettle.CattleKtrStepFieldMapper;
 import com.cattle.service.api.kettle.KtrStepFieldService;
 import org.springframework.stereotype.Service;
 
@@ -13,19 +13,19 @@ import java.util.List;
 public class KtrStepFieldImpl implements KtrStepFieldService {
 
     @Resource
-    private KtrStepFieldMapper stepFieldMapper;
+    private CattleKtrStepFieldMapper stepFieldMapper;
 
-    public List<KtrField> selectFieldListByStepId(Integer stepId){
-        QueryWrapper<KtrField> queryWrapper = new QueryWrapper();
+    public List<CattleKtrField> selectFieldListByStepId(Integer stepId){
+        QueryWrapper<CattleKtrField> queryWrapper = new QueryWrapper();
         queryWrapper.eq("step_id",stepId);
         return stepFieldMapper.selectList(queryWrapper);
     }
 
-    public KtrField selectFieldListById(Integer fieldId){
+    public CattleKtrField selectFieldListById(Integer fieldId){
         return stepFieldMapper.selectById(fieldId);
     }
 
-    public int save(KtrField fieldInfo){
+    public int save(CattleKtrField fieldInfo){
         return stepFieldMapper.insert(fieldInfo);
     }
 }

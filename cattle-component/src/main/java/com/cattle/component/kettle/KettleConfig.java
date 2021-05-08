@@ -21,7 +21,7 @@ public class KettleConfig{
      * normal-普通模式   即只执行脚本，不对脚本进行改造
      * edit-编辑模式     即对脚本进行编辑，然后再执行
      */
-    private KettleProcessType processType;
+    private String processType;
     /**
      * 脚本文件路径
      */
@@ -30,6 +30,7 @@ public class KettleConfig{
     private String jobName;
 
     private ExcelMeta excelMeta;
+    private String tableName;
 
 
     /** 数据导入字段 */
@@ -39,8 +40,4 @@ public class KettleConfig{
     /** 数据存储 */
     private List<DataBaseMeta> dataBaseMetas;
 
-   public static enum KettleProcessType{
-        NORMAL,
-        EDIT
-    }
 }

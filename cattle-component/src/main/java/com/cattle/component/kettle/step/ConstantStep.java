@@ -16,11 +16,13 @@ import java.util.List;
 public class ConstantStep extends BaseStepMeta {
 
     private List<FieldMeta> fieldMetaList;
+    private KettleConfig kettleConfig;
     public static String stepName = "设置自定义字段";
 
     public ConstantStep(KettleConfig kettleConfig){
         this.fieldMetaList = kettleConfig.getConstantMap();
-        addBatchId(fieldMetaList,kettleConfig.getBatchId());
+        this.kettleConfig = kettleConfig;
+        addDefaultValue(fieldMetaList);
     }
 
     @Override
@@ -70,7 +72,8 @@ public class ConstantStep extends BaseStepMeta {
         return new StepMeta(registryID.getPluginId(StepPluginType.class,constantMeta), stepName, constantMeta);
     }
 
-    private void addBatchId(List<FieldMeta> fieldMetaList,long batchId){
-        fieldMetaList.add(FieldMeta.builder().name("batch_id").type("String").length(64).value(String.valueOf(batchId)).build());
+    private void addDefaultValue(List<FieldMeta> fieldMetaList){
+        fieldMetaList.add(FieldMeta.builder().name("batch_id").type("String").length(64).value(String.valueOf(kettleConfig.getBatchId())).build());
+        fieldMetaList.add(FieldMeta.builder().name("table_name").type("String").length(20).value(kettleConfig.getTableName()).build());
     }
 }

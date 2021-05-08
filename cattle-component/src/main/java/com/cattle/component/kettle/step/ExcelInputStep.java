@@ -22,20 +22,19 @@ import java.util.stream.Collectors;
  */
 public class ExcelInputStep extends BaseStepMeta {
 
-    private List<FieldMeta> fieldMetaList;
     public static String stepName = "Excel输入";
     private KettleConfig kettleConfig;
-    private ExcelMeta excelMeta;
 
     public ExcelInputStep(KettleConfig kettleConfig){
-        fieldMetaList = kettleConfig.getSelectValueMap();
         this.kettleConfig = kettleConfig;
     }
 
     @Override
     public StepMeta buildCurrentStepMate() throws Exception {
         ExcelInputMeta excelInputMeta = new ExcelInputMeta();
-        excelInputMeta.setFileName(conversionFileName(excelMeta.getFileName()));
+        ExcelMeta excelMeta = kettleConfig.getExcelMeta();
+        List<FieldMeta> fieldMetaList = kettleConfig.getSelectValueMap();
+        excelInputMeta.setFileName(excelMeta.getFileName());
         //字段构建
         ExcelInputField[] excelInputFields = Optional.ofNullable(fieldMetaList).get().stream().map(fieldMeta -> {
             ExcelInputField excelInputField = new ExcelInputField();

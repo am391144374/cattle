@@ -9,7 +9,7 @@ import com.cattle.component.spider.handler.SpiderProcessHandler;
 import com.cattle.common.plugin.ProcessScript;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.entity.CattleJob;
-import com.cattle.entity.spider.SpiderInfoBO;
+import com.cattle.entity.spider.CattleSpiderInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,8 +51,8 @@ public class SpiderScript extends ProcessScript implements ExecuteScriptInterfac
     @Override
     public void buildConfig(CattleJob job) {
         SpiderConfig spiderConfig = new SpiderConfig();
-        SpiderInfoBO spiderInfoBO = job.getConfigurable();
-        BeanUtil.copyProperties(spiderInfoBO,spiderConfig,true);
+        CattleSpiderInfo cattleSpiderInfo = job.getSpiderInfo();
+        BeanUtil.copyProperties(cattleSpiderInfo,spiderConfig,true);
         spiderConfig.setBatchId(job.getBatchId());
         this.spiderConfig = spiderConfig;
     }

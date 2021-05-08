@@ -11,8 +11,8 @@ import lombok.Data;
  * 数据库信息表
  */
 @Data
-@TableName("ktr_db")
-public class KtrDb {
+@TableName("cattle_ktr_db")
+public class CattleKtrDb {
 
     @TableId(type = IdType.AUTO)
     private Integer dbId;

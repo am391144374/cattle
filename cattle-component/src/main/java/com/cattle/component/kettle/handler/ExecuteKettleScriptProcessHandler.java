@@ -18,7 +18,7 @@ public class ExecuteKettleScriptProcessHandler extends ExecuteProcessHandler {
     @Override
     public void executeContent(ProcessContext processContext) {
         TransMeta transMeta = (TransMeta) processContext.get("transMeta");
-        long batchId = (long) processContext.get("batchId");
+        long batchId = processContext.getBatchId();
         if(transMeta == null){
             processContext.putError(this,new ExecuteKettleScriptException("execute kettle script error TransMeta is null"));
             return;

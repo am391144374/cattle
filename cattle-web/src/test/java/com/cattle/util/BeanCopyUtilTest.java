@@ -2,7 +2,7 @@ package com.cattle.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.cattle.component.spider.SpiderConfig;
-import com.cattle.entity.spider.SpiderInfoBO;
+import com.cattle.entity.spider.CattleSpiderInfo;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ public class BeanCopyUtilTest {
 
     @Test
     public void beanCopy(){
-        SpiderInfoBO configurable = new SpiderInfoBO();
+        CattleSpiderInfo configurable = new CattleSpiderInfo();
         configurable.setTableName("hz_lp");
         configurable.setSpiderName("杭州楼盘");
         configurable.setListRegex("https://hz\\.newhouse\\.fang\\.com/house/s/b\\d+");

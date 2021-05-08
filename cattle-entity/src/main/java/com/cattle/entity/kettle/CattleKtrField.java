@@ -11,8 +11,8 @@ import lombok.Data;
  * 步骤需求字段
  */
 @Data
-@TableName("ktr_field")
-public class KtrField {
+@TableName("cattle_ktr_field")
+public class CattleKtrField {
 
     @TableId(type = IdType.AUTO)
     private Integer fieldId;

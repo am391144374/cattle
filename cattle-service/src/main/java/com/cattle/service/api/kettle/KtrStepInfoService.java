@@ -1,16 +1,16 @@
 package com.cattle.service.api.kettle;
 
 
-import com.cattle.entity.kettle.KtrStep;
+import com.cattle.entity.kettle.CattleKtrStep;
 
 import java.util.List;
 
 public interface KtrStepInfoService {
 
-    public List<KtrStep> selectStepInfoByJobId(Integer jobId);
+    public List<CattleKtrStep> selectStepInfoByKtrId(Integer jobId);
 
-    public KtrStep selectStepInfoById(Integer stepId);
+    public CattleKtrStep selectStepInfoById(Integer stepId);
 
-    public int save(KtrStep stepInfo);
+    public int save(CattleKtrStep stepInfo);
 
 }

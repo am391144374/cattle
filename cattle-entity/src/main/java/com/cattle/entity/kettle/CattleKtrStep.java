@@ -13,15 +13,15 @@ import java.util.List;
  * @author lsj
  */
 @Data
-@TableName("ktr_step")
-public class KtrStep {
+@TableName("cattle_ktr_step")
+public class CattleKtrStep {
 
     @TableId(type = IdType.AUTO)
     private Integer stepId;
     @TableField
     private String stepName;
     @TableField
-    private Integer jobId;
+    private Integer ktrInfoId;
     /** 步骤类型：excel导入-excelImport、字段选择-selectValue、自定义字段-constant */
     @TableField
     private String stepType;
@@ -41,7 +41,7 @@ public class KtrStep {
     @TableField
     private Integer outputDbId;
     @TableField(exist = false)
-    private List<KtrField> fieldList;
+    private List<CattleKtrField> fieldList;
 
     public String[] getFileList(){
         return fileList.split(",");

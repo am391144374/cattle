@@ -1,12 +1,15 @@
 package com.cattle.service.Impl;
 
 import com.cattle.entity.CattleJob;
-import com.cattle.entity.kettle.KtrField;
-import com.cattle.entity.kettle.KtrStep;
+import com.cattle.entity.kettle.CattleKtrField;
+import com.cattle.entity.kettle.CattleKtrInfo;
+import com.cattle.entity.kettle.CattleKtrStep;
 import com.cattle.mapper.JobMapper;
 import com.cattle.service.api.JobService;
+import com.cattle.service.api.kettle.CattleKtrInfoService;
 import com.cattle.service.api.kettle.KtrStepFieldService;
 import com.cattle.service.api.kettle.KtrStepInfoService;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,8 @@ public class JobServiceImpl implements JobService {
 
     @Resource
     private JobMapper jobMapper;
+    @Autowired
+    private CattleKtrInfoService ktrInfoService;
     @Autowired
     private KtrStepInfoService stepInfoService;
     @Autowired
@@ -42,12 +47,20 @@ public class JobServiceImpl implements JobService {
         if(jobInfo == null){
             return null;
         }
-        List<KtrStep> stepInfoList = stepInfoService.selectStepInfoByJobId(jobId);
-        for(KtrStep stepInfo : stepInfoList){
-            List<KtrField> stepFields = stepFieldService.selectFieldListByStepId(stepInfo.getStepId());
-            stepInfo.setFieldList(stepFields);
+        switch (jobInfo.getScriptType()){
+            case "spider":
+                break;
+            case "kettle":
+                CattleKtrInfo cattleKtrInfo = ktrInfoService.selectById(jobInfo.getRelateId());
+                List<CattleKtrStep> stepInfoList = stepInfoService.selectStepInfoByKtrId(cattleKtrInfo.getId());
+                for(CattleKtrStep stepInfo : stepInfoList){
+                    List<CattleKtrField> stepFields = stepFieldService.selectFieldListByStepId(stepInfo.getStepId());
+                    stepInfo.setFieldList(stepFields);
+                }
+                cattleKtrInfo.setStepInfoList(stepInfoList);
+                jobInfo.setKtrInfo(cattleKtrInfo);
+                break;
         }
-        jobInfo.setStepInfoList(stepInfoList);
         return jobInfo;
     }
 }
