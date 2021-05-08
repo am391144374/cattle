@@ -8,6 +8,8 @@ import com.cattle.component.spider.SpiderConfig;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.pipeline.ConsolePipeline;
 
+import java.text.DecimalFormat;
+
 /**
  * 创建 webMagic 并执行
  */
@@ -22,10 +24,12 @@ public class SpiderProcessHandler extends ExecuteProcessHandler {
         pageTargetProcess.setSpiderConfig(spiderConfig);
         pageTargetProcess.setProcessContext(processContext);
         Spider spider = Spider.create(pageTargetProcess);
+        DefaultHttpClientDownloader downloader = new DefaultHttpClientDownloader();
+        downloader.setProcessContext(processContext);
         spider.addUrl(spiderConfig.getEntryUrl())
                 .setUUID(String.valueOf(spiderConfig.getBatchId()))
                 .thread(spiderConfig.getThreadNum())
-                .setDownloader(new DefaultHttpClientDownloader())
+                .setDownloader(downloader)
                 .addPipeline(new ConsolePipeline()).runAsync(); //异步执行，使后续监控操作正常执行
         processContext.put("spiderWorker",spider);
     }

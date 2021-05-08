@@ -1,6 +1,7 @@
 package com.cattle.component.kettle;
 
 import com.cattle.common.JobContextHelper;
+import com.cattle.common.enums.JobStatus;
 import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.component.kettle.handler.ExecuteKettleScriptProcessHandler;
 import com.cattle.component.kettle.handler.StepProcessHandler;
@@ -61,7 +62,9 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
         ProcessContext context = new ProcessContext();
         try {
             TransMeta transMeta = new TransMeta(cattleJob.getScriptPath());
+            context.setJobStatus(JobStatus.RUNNING);
             context.put("transMeta",transMeta);
+            context.setJobId(cattleJob.getJobId());
             context.setJobName(kettleConfig.getJobName());
             context.setBatchId(kettleConfig.getBatchId());
             JobContextHelper.setJobContext(cattleJob.getBatchId(),context);

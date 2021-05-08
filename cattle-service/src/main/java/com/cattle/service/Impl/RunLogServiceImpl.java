@@ -35,13 +35,15 @@ public class RunLogServiceImpl extends ServiceImpl<RunLogMapper,CattleRunLog> im
     }
 
     @Override
-    public boolean updateResult(long batchId, Integer count, Integer errorCount, String errorText,JobStatus jobStatus) {
+    public boolean updateResult(long batchId,Integer count,Integer errorCount,String errorText,Integer warnCount,String warnText,JobStatus jobStatus) {
         CattleRunLog runLog = new CattleRunLog();
         runLog.setBatchId(batchId);
         runLog.setJobStatus(jobStatus.getName());
         runLog.setCount(count == null ? 0 : count);
         runLog.setErrorCount(errorCount == null ? 0 : errorCount);
+        runLog.setWarnCount(errorCount == null ? 0 : warnCount);
         runLog.setErrorText(errorText);
+        runLog.setWarnText(warnText);
         return updateById(runLog);
     }
 

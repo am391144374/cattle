@@ -27,6 +27,10 @@ public class CattleRunLog {
     @TableField
     private String errorText;
     @TableField
+    private Integer warnCount;
+    @TableField
+    private String warnText;
+    @TableField
     private Date startTime;
     @TableField
     private Date endTime;

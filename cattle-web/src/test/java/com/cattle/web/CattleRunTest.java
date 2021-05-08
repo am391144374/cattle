@@ -5,6 +5,7 @@ import com.cattle.common.enums.JobStatus;
 import com.cattle.entity.CattleJob;
 import com.cattle.entity.CattleRunLog;
 import com.cattle.entity.spider.SpiderInfoBO;
+import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.JobService;
 import com.cattle.service.api.RunLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,23 +23,29 @@ public class CattleRunTest {
     @Autowired
     private JobService jobService;
 
+    @Autowired
+    private ConfigurableSpiderService spiderService;
+
     @Test
     public void putSpiderTest(){
-        CattleRun cattleRun = new CattleRun(runLogService);
+        CattleRun cattleRun = new CattleRun(runLogService,spiderService);
         cattleRun.init();
 
         SpiderInfoBO spiderInfoBO = new SpiderInfoBO();
-        spiderInfoBO.setTableName("hz_lp");
-        spiderInfoBO.setSpiderName("杭州楼盘");
-        spiderInfoBO.setListRegex("https://hz\\.newhouse\\.fang\\.com/house/s/b\\d+");
-        spiderInfoBO.setEntryUrl("https://hz.newhouse.fang.com/house/s/b91");
-        spiderInfoBO.setFieldsJson("[{\"index\":0,\"key\":\"name\",\"value\":\"//div[@class='nlc_details']//div[@class='nlcd_name']//a/text()\"},{\"index\":1,\"key\":\"address\",\"value\":\"//div[@class='address']//a/text()\"},{\"index\":2,\"key\":\"price\",\"value\":\"//div[@class='nhouse_price']/*[1]/text()\"}]");
+        spiderInfoBO.setTableName("spider_movie_info");
+        spiderInfoBO.setSpiderName("电影");
+        spiderInfoBO.setListRegex("https://www.wuhaozhan.net/movie/list/?p=1");
+        spiderInfoBO.setEntryUrl("https://www.wuhaozhan.net/movie/list/?p=1");
+        spiderInfoBO.setFieldsJson("[{\"index\":1,\"key\":\"title\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/text()\"},{\"index\":2,\"key\":\"rate\",\"value\":\"//div[@Class='pure-g']/div/div[position() > 10]/div/div[3]//a/span/text()\"},{\"index\":3,\"key\":\"url\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href\"}]");
+        spiderInfoBO.setContentXpath("//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href");
+        spiderInfoBO.setContentFieldsJson("[{\"index\":1,\"key\":\"another\",\"value\":\"//div[@id='info']/text()\"}]");
         spiderInfoBO.setXPathSelection(0);
         spiderInfoBO.setThreadNum(2);
 
         CattleJob job = new CattleJob();
         job.setJobName("测试");
         job.setConfigurable(spiderInfoBO);
+        job.setScriptType("spider");
 
         try {
             cattleRun.putQueue(job);
@@ -52,10 +59,11 @@ public class CattleRunTest {
 
     @Test
     public void putKettleTest(){
-        CattleRun cattleRun = new CattleRun(runLogService);
+        CattleRun cattleRun = new CattleRun(runLogService,null);
         cattleRun.init();
 
         CattleJob job = jobService.buildExecuteJobInfo(1);
+        job.setScriptType("kettle");
 
         try {
             cattleRun.putQueue(job);
@@ -69,10 +77,13 @@ public class CattleRunTest {
     private void printJobLog(CattleJob job){
         while (true){
             CattleRunLog runLog = runLogService.getById(job.getBatchId());
-            if(runLog.getJobStatus().equals(JobStatus.FINISH.getName()) || runLog.getJobStatus().equals(JobStatus.INTERRUPT.getName())){
-                log.info(runLog.toString());
-                break;
+            if(runLog != null){
+                if(runLog.getJobStatus().equals(JobStatus.FINISH.getName()) || runLog.getJobStatus().equals(JobStatus.INTERRUPT.getName())){
+                    log.info(runLog.toString());
+                    break;
+                }
             }
+
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {

@@ -7,7 +7,7 @@ import com.cattle.common.handler.ProcessHandler;
 import com.cattle.component.spider.SpiderConfig;
 import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
 import com.cattle.component.spider.handler.SpiderProcessHandler;
-import com.cattle.component.spider.service.ConfigurableSpiderService;
+import com.cattle.service.api.ConfigurableSpiderService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;

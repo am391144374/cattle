@@ -67,6 +67,9 @@ public class SpiderConfig {
     @ApiModelProperty(notes = "xpath 解析选型 0 - htmlCleaner，1 - xSoup")
     private Integer xPathSelection;
 
+    @ApiModelProperty(notes = "url 扫描类型   0 - 全量，1 - 增量")
+    private Integer scanUrlType;
+
     /**
      * key - 字段名
      * val - xpath

@@ -6,15 +6,8 @@ import com.cattle.common.enums.JobStatus;
 import com.cattle.common.handler.ExecuteProcessHandler;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.component.spider.SpiderConfig;
-import com.cattle.component.spider.service.ConfigurableSpiderService;
 import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.Spider;
-
-import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
 
 /**
  * 爬虫监控
@@ -22,8 +15,6 @@ import java.util.Set;
  */
 @Slf4j
 public class SpiderMonitorProcessHandler extends ExecuteProcessHandler {
-
-    private ConfigurableSpiderService spiderService;
 
     @Override
     public void executeContent(ProcessContext processContext) {
@@ -42,32 +33,9 @@ public class SpiderMonitorProcessHandler extends ExecuteProcessHandler {
                 processContext.putError(this,e);
             }
         }
-        List<LinkedHashMap<String, String>> result = ItemsHelper.getPageField(spiderConfig.getBatchId());
-        if(result != null && result.size() > 0){
-            try {
-                Set<String> columns = new HashSet<>();
-                if(StrUtil.isNotBlank(spiderConfig.getFieldsJson())){
-                    columns.addAll(spiderConfig.getFields().keySet());
-                }
-                if(StrUtil.isNotBlank(spiderConfig.getContentXpath())){
-                    columns.addAll(spiderConfig.getContentFields().keySet());
-                }
-                spiderService.doPrepareSaveData(result,spiderConfig.getTableName(),columns,spider.getUUID());
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-                processContext.putError(this,throwables);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                processContext.putError(this,e);
-            }
-        }
         if(!processContext.getJobStatus().getName().equals(JobStatus.INTERRUPT.getName())){
             processContext.setJobStatus(JobStatus.FINISH);
-            processContext.setSuccessCount(result.size());
         }
     }
 
-    public void setSpiderService(ConfigurableSpiderService spiderService) {
-        this.spiderService = spiderService;
-    }
 }

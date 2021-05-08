@@ -1,6 +1,7 @@
 package com.cattle.common.context;
 
 import com.cattle.common.enums.JobStatus;
+import lombok.Data;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -9,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * process执行上下文
  * @author lsj
  */
+@Data
 public class ProcessContext extends HashMap<String,Object> {
 
     /** 批次ID */
@@ -16,43 +18,18 @@ public class ProcessContext extends HashMap<String,Object> {
     /** 计划名 */
     private String jobName;
 
+    private Integer jobId;
+
     private int successCount;
 
     private JobStatus jobStatus;
 
+    private String scriptType;
+
     private final Set<String> errors = new HashSet<>();
 
-    public long getBatchId() {
-        return batchId;
-    }
+    private final Set<String> warns = new HashSet<>();
 
-    public void setBatchId(long batchId) {
-        this.batchId = batchId;
-    }
-
-    public JobStatus getJobStatus() {
-        return jobStatus;
-    }
-
-    public Set<String> getError(){
-        return errors;
-    }
-
-    public Map<String,Object> getResult(){
-        return this;
-    }
-
-    public int getSuccessCount() {
-        return successCount;
-    }
-
-    public void setSuccessCount(int successCount) {
-        this.successCount = successCount;
-    }
-
-    public Set<String> getErrors() {
-        return errors;
-    }
 
     public void putError(Object errorClass, Exception e){
         String exMsg = String.format(errorClass.getClass().getName() +
@@ -61,25 +38,10 @@ public class ProcessContext extends HashMap<String,Object> {
         setJobStatus(JobStatus.INTERRUPT);
     }
 
-    public void setJobStatus(JobStatus jobStatus) {
-        this.jobStatus = jobStatus;
+    public void putWarn(Object errorClass, Exception e){
+        String warnMsg = String.format(errorClass.getClass().getName() +
+                "executor warn Exception:%s --- message:%s",e.getClass().getName(),e.getMessage());
+        warns.add(warnMsg);
     }
 
-    public String getJobName() {
-        return jobName;
-    }
-
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
-    }
-
-    @Override
-    public String toString() {
-        return "ProcessContext{" +
-                "batchId=" + batchId +
-                ", jobName='" + jobName + '\'' +
-                ", successCount=" + successCount +
-                ", jobStatus=" + jobStatus.getName() +
-                '}';
-    }
 }

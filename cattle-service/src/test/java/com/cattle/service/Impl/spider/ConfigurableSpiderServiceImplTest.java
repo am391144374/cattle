@@ -1,7 +1,7 @@
 package com.cattle.service.Impl.spider;
 
-import com.cattle.component.spider.service.ConfigurableSpiderService;
-import com.cattle.component.spider.service.Impl.ConfigurableSpiderServiceImpl;
+import com.cattle.service.api.ConfigurableSpiderService;
+import com.cattle.service.Impl.ConfigurableSpiderServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import java.util.LinkedHashMap;
 

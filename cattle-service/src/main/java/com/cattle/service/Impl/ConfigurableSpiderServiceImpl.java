@@ -1,8 +1,8 @@
-package com.cattle.component.spider.service.Impl;
+package com.cattle.service.Impl;
 
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.cattle.component.spider.service.ConfigurableSpiderService;
+import com.cattle.service.api.ConfigurableSpiderService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

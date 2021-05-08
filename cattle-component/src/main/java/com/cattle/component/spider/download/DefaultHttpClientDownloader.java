@@ -2,6 +2,7 @@ package com.cattle.component.spider.download;
 
 import cn.hutool.core.util.StrUtil;
 import com.cattle.common.ItemsHelper;
+import com.cattle.common.context.ProcessContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.annotation.ThreadSafe;
@@ -49,6 +50,8 @@ public class DefaultHttpClientDownloader extends AbstractDownloader {
 
     private boolean responseHeader = true;
 
+    private ProcessContext processContext;
+
     public void setHttpUriRequestConverter(HttpUriRequestConverter httpUriRequestConverter) {
         this.httpUriRequestConverter = httpUriRequestConverter;
     }
@@ -91,14 +94,13 @@ public class DefaultHttpClientDownloader extends AbstractDownloader {
             onSuccess(request);
             logger.info("downloading page success {}", request.getUrl());
             return page;
-
         }catch (SocketTimeoutException | ConnectTimeoutException e){
             logger.warn("download page {} time out", request.getUrl(), e);
-            onError(request);
+            processContext.putWarn(this,e);
             return page;
         } catch (IOException e) {
             logger.warn("download page {} error", request.getUrl(), e);
-            onError(request);
+            processContext.putError(this,e);
             return page;
         } finally {
             if (httpResponse != null) {
@@ -147,8 +149,7 @@ public class DefaultHttpClientDownloader extends AbstractDownloader {
         return charset;
     }
 
-    @Override
-    protected void onError(Request request) {
-        super.onError(request);
+    public void setProcessContext(ProcessContext processContext){
+        this.processContext = processContext;
     }
 }

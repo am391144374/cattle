@@ -32,7 +32,7 @@ public interface RunLogService extends IService<CattleRunLog> {
      * @param errorText
      * @return
      */
-    boolean updateResult(long batchId,Integer count,Integer errorCount,String errorText,JobStatus jobStatus);
+    boolean updateResult(long batchId,Integer count,Integer errorCount,String errorText,Integer warnCount,String warnText,JobStatus jobStatus);
 
     boolean updateErrorInfo(long batchId,String errorText);
 

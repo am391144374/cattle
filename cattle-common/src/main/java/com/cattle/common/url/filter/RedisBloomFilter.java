@@ -8,11 +8,11 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
 
-public class MyBloomFilter implements UrlFilterInterface{
+public class RedisBloomFilter implements UrlFilterInterface{
 
     private RedisTemplate redisTemplate;
 
-    public MyBloomFilter(RedisTemplate redisTemplate){
+    public RedisBloomFilter(RedisTemplate redisTemplate){
         this.redisTemplate = redisTemplate;
     }
 
@@ -31,17 +31,13 @@ public class MyBloomFilter implements UrlFilterInterface{
         return BitSetBloomFilter.createHashes(str,hashFunctionNum);
     }
 
-    public boolean add(String str){
-        boolean flag = exist(str);
-        if(flag){
-            int[] vals = createHash(str);
-            batchSetBit(vals);
-        }
-        return flag;
+    public boolean add(String str,String key){
+        int[] vals = createHash(str);
+        return batchSetBit(vals,key);
     }
 
     @Override
-    public boolean exist(String str) {
+    public boolean exist(String str,String key) {
         boolean flag = false;
         int[] vals = createHash(str);
         List<Object> resultList = redisTemplate.executePipelined(new RedisCallback<Boolean>() {
@@ -55,7 +51,7 @@ public class MyBloomFilter implements UrlFilterInterface{
         });
 
         /**
-         * 结果有false则代表不存在，则在对应位置插入数据
+         * 结果有false则代表不存在
          */
         for(Object o : resultList){
             if((boolean)o == false){
@@ -67,15 +63,25 @@ public class MyBloomFilter implements UrlFilterInterface{
         return flag;
     }
 
-    private void batchSetBit(int[] hashCode){
-        redisTemplate.executePipelined(new RedisCallback<Integer>() {
+    private boolean batchSetBit(int[] hashCode,String key){
+        boolean flag = false;
+        List<Object> resultList = redisTemplate.executePipelined(new RedisCallback<Boolean>() {
             @Override
-            public Integer doInRedis(RedisConnection connection) throws DataAccessException {
+            public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
                 for(int i = 0 ; i < hashCode.length ; i++){
-                    connection.setBit("test".getBytes(),hashCode[i],true);
+                    connection.setBit(key.getBytes(),hashCode[i],true);
                 }
                 return null;
             }
         });
+
+        for(Object o : resultList){
+            if((boolean)o == false){
+                flag = true;
+                break;
+            }
+        }
+
+        return flag;
     }
 }

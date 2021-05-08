@@ -7,7 +7,17 @@ public interface UrlFilterInterface {
 
     int[] createHash(String str);
 
-    boolean add(String str);
+    /**
+     * 不存在则添加
+     * @param str
+     * @return
+     */
+    boolean add(String str,String key);
 
-    boolean exist(String str);
+    /**
+     *
+     * @param str
+     * @return true - 存在,false - 不存在
+     */
+    boolean exist(String str,String key);
 }

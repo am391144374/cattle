@@ -1,4 +1,4 @@
-package com.cattle.component.spider.service;
+package com.cattle.service.api;
 
 import java.sql.SQLException;
 import java.util.LinkedHashMap;

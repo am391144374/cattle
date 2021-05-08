@@ -2,6 +2,7 @@ package com.cattle.component.spider.process;
 
 import cn.hutool.core.util.StrUtil;
 import com.cattle.common.ItemsHelper;
+import com.cattle.common.url.filter.UrlFilterInterface;
 import com.cattle.component.spider.parse.HtmlCleanerParse;
 import com.cattle.component.spider.parse.XsoupParse;
 import com.cattle.component.spider.SpiderConfig;
@@ -23,6 +24,9 @@ public class PageTargetProcess implements PageProcessor {
     private Site site;
     private SpiderConfig spiderConfig;
     private ProcessContext processContext;
+    private UrlFilterInterface urlFilter;
+
+    private String URL_FILTER_KEY = "url:filter:";
 
     @Override
     public void process(Page page) {
@@ -32,19 +36,34 @@ public class PageTargetProcess implements PageProcessor {
         List<String> contentUrls = null;
         //不是列表页就是正文页
         if(page.getUrl().regex(spiderConfig.getListRegex()).match() || page.getRequest().getUrl().equals(spiderConfig.getEntryUrl())) {
-            page.addTargetRequests(page.getHtml().links().regex(spiderConfig.getListRegex()).all());
+            List<String> scanUrls = new ArrayList<>();
+            scanUrls.addAll(page.getHtml().links().regex(spiderConfig.getListRegex()).all());
             //添加匹配的正文页
             if(StrUtil.isNotBlank(spiderConfig.getContentXpath())){
                 try {
                     contentUrls = xpathParse.xpath(spiderConfig.getContentXpath());
+                    scanUrls.addAll(contentUrls);
                 } catch (Exception e) {
                     e.printStackTrace();
                     processContext.putError(this,e);
                 }
-                if(!contentUrls.isEmpty()){
-                    page.addTargetRequests(contentUrls);
+            }
+
+            //url过滤
+            if(urlFilter != null && spiderConfig.getScanUrlType() == 1){
+                String key = URL_FILTER_KEY + processContext.getJobId();
+                Iterator<String> urls = scanUrls.iterator();
+                while (urls.hasNext()){
+                    String url = urls.next();
+                    if(urlFilter.exist(url,key)){
+                        urls.remove();
+                    }else{
+                        urlFilter.add(url,key);
+                    }
                 }
             }
+
+            page.addTargetRequests(scanUrls);
 
             if(StrUtil.isNotBlank(spiderConfig.getFieldsJson())){
                 spiderConfig.getFields().forEach((column,xpath) -> {
@@ -73,14 +92,13 @@ public class PageTargetProcess implements PageProcessor {
 
         List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
         List<String> finalContentUrls = contentUrls;
-        boolean finalIsContentField = isContentField;
         columnMap.forEach((column, vstr) -> {
             try {
                 if (resultList.isEmpty() || resultList.size() != vstr.size()) {
                     resultList.clear();
                     for (int i = 0; i < vstr.size(); i++) {
                         LinkedHashMap param = new LinkedHashMap<>();
-                        if(finalContentUrls != null && !finalIsContentField){
+                        if(finalContentUrls != null && finalContentUrls.size() > 0){
                             ItemsHelper.addListField(spiderConfig.getBatchId(),finalContentUrls.get(i),param);
                         }
                         resultList.add(param);
@@ -96,9 +114,7 @@ public class PageTargetProcess implements PageProcessor {
             }
         });
 
-        if(isContentField){
-            ItemsHelper.addContentField(spiderConfig.getBatchId(),page.getUrl().get(),resultList);
-        }
+        ItemsHelper.addContentField(spiderConfig.getBatchId(),page.getUrl().get(),resultList);
     }
 
     @Override
@@ -110,11 +126,11 @@ public class PageTargetProcess implements PageProcessor {
     }
 
     public void setSpiderConfig(SpiderConfig config){
-        getSite().setCycleRetryTimes(config.getCycleRetryTimes() != null ? config.getCycleRetryTimes() : 2)
+        getSite().setCycleRetryTimes(config.getCycleRetryTimes() != null ? config.getCycleRetryTimes() : 3)
                 .setRetryTimes(config.getRetryTimes() != null ? config.getRetryTimes() : 3)
-                .setSleepTime(config.getSleepTime() != null ? config.getSleepTime() : 10)
-                .setTimeOut(config.getTimeOut() != null ? config.getTimeOut() : 10)
-                .setRetrySleepTime(config.getRetrySleepTime() != null ? config.getRetrySleepTime() : 5);
+                .setSleepTime(config.getSleepTime() != null ? config.getSleepTime() : 3000)
+                .setTimeOut(config.getTimeOut() != null ? config.getTimeOut() : 10000)
+                .setRetrySleepTime(config.getRetrySleepTime() != null ? config.getRetrySleepTime() : 2000);
         this.spiderConfig = config;
     }
 
@@ -134,5 +150,9 @@ public class PageTargetProcess implements PageProcessor {
         }
         xpathParse.setPage(page);
         return xpathParse;
+    }
+
+    public void setUrlFilter(UrlFilterInterface urlFilter){
+        this.urlFilter = urlFilter;
     }
 }

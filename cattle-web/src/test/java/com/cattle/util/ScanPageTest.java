@@ -1,15 +1,15 @@
-package com.cattle.component.spider.handler;
+package com.cattle.util;
 
 import cn.hutool.core.util.IdUtil;
-import cn.hutool.core.util.StrUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.cattle.common.ItemsHelper;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.handler.ProcessHandler;
 import com.cattle.component.spider.SpiderConfig;
-import com.cattle.component.spider.service.Impl.ConfigurableSpiderServiceImpl;
-import lombok.extern.slf4j.Slf4j;
+import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
+import com.cattle.component.spider.handler.SpiderProcessHandler;
+import com.cattle.service.Impl.ConfigurableSpiderServiceImpl;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class ScanPageTest {
         spiderService.setDataSource(buildDataSource());
         SpiderProcessHandler processHandler = new SpiderProcessHandler();
         SpiderMonitorProcessHandler monitorProcessHandler = new SpiderMonitorProcessHandler();
-        monitorProcessHandler.setSpiderService(spiderService);
+//        monitorProcessHandler.setSpiderService(spiderService);
         processHandler.setNextHandler(monitorProcessHandler);
 
         long batchId = IdUtil.getSnowflake(1,1).nextId();

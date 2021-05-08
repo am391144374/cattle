@@ -1,6 +1,8 @@
 package com.cattle.component.spider;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.cattle.common.JobContextHelper;
+import com.cattle.common.enums.JobStatus;
 import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
 import com.cattle.component.spider.handler.SpiderProcessHandler;
@@ -27,9 +29,13 @@ public class SpiderScript extends ProcessScript implements ExecuteScriptInterfac
         buildConfig(cattleJob);
         buildSpiderScript();
         ProcessContext context = new ProcessContext();
+        context.setJobStatus(JobStatus.RUNNING);
+        context.setScriptType(getScriptType());
+        context.setJobId(cattleJob.getJobId());
         context.setBatchId(spiderConfig.getBatchId());
         context.setJobName(spiderConfig.getSpiderName());
         context.put("spiderConfig",spiderConfig);
+        JobContextHelper.setJobContext(cattleJob.getBatchId(),context);
         logger.info("{} start spider config:{}",Thread.currentThread().getName(),spiderConfig.toString());
         first.execute(context);
     }
