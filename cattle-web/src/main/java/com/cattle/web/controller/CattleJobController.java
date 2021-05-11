@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * 执行job信息api
  */
 @Controller
-public class KtrJobController {
+public class CattleJobController {
 
     @Autowired
     private JobService jobService;

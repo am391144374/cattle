@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../../../component/pear/css/pear.css" />
+</head>
+<body>
+<form class="layui-form" lay-filter="edit-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">脚本名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="ktrName" lay-verify="required|title" autocomplete="off" placeholder="请输入脚本名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                	<label class="layui-form-label">上传脚本</label>
+                	<label for="scriptFile" class="pear-btn pear-btn-sm pear-btn-primary layui-icon layui-icon-upload" title="上传脚本"></label>
+                	<input class="layui-upload-file" id="scriptFile" type="file" value="上传脚本">
+                	<div class="layui-form-mid layui-word-aux">建议:大小在10m以内。</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">数据库表名</label>
+                    <div class="layui-input-block">
+                        <input type="text"  name="tableName" lay-verify="required|title" autocomplete="off" placeholder="请输入表明" class="layui-input">
+                		<div class="layui-form-mid layui-word-aux">提示:表名年份替换值为'tableYearTemplate'</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">执行模式</label>
+                    <div class="layui-input-block">
+                		<select name="processType" class="layui-select" lay-verify="required">
+                			<option value="edit">编辑模式</option>
+                			<option value="normal">普通模式</option>
+                		</select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" lay-submit="" lay-filter="user-save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<script src="../../../component/layui/layui.js"></script>
+<script src="../../../component/pear/pear.js"></script>
+<script>
+	layui.use(['form','jquery'],function(){
+		let form = layui.form;
+		let $ = layui.jquery;
+
+		$(function(){
+			var ktrId = parent.ktrId;
+			$.ajax({
+				url: '127.0.0.1:5000/ktr/detail?id='+ktrId,
+				type:'get',
+				success:function(result){
+					if(result == 0){
+						form.val('edit-form',result.data);
+					}else{
+						layer.open({
+							content: result.message,
+							icon:'5',
+							time:2500
+						});
+					}
+				}
+			});
+		});
+
+		form.on('submit(user-save)', function(data){
+			let roleIds = "";
+			$('input[type=checkbox]:checked').each(function() {
+				roleIds += $(this).val()+",";
+			});
+			roleIds = roleIds.substr(0,roleIds.length-1);
+			data.field.roleIds = roleIds;
+
+			$.ajax({
+				url:'/system/user/save',
+				data:JSON.stringify(data.field),
+				dataType:'json',
+				contentType:'application/json',
+				type:'post',
+				success:function(result){
+					if(result.success){
+						layer.msg(result.msg,{icon:1,time:1000},function(){
+							parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+							parent.layui.table.reload("user-table");
+						});
+					}else{
+						layer.msg(result.msg,{icon:2,time:1000});
+					}
+				}
+			})
+			return false;
+		});
+	})
+</script>
+<script>
+</script>
+</body>
+</html>

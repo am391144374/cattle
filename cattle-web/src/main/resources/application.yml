@@ -12,6 +12,10 @@ spring:
         min-idle: 10
         max-wait: -1
     timeout: 10000000
+
+
 server:
   port: 5000
-
+logging:
+  level:
+    com.cattle.mapper: debug
