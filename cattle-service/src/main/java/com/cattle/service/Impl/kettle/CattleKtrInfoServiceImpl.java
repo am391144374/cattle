@@ -35,4 +35,19 @@ public class CattleKtrInfoServiceImpl implements CattleKtrInfoService {
         });
         return ktrInfoMapper.selectPage(page,queryWrapper);
     }
+
+    @Override
+    public int insert(CattleKtrInfo cattleKtrInfo){
+        return ktrInfoMapper.insert(cattleKtrInfo);
+    }
+
+    @Override
+    public int updateById(CattleKtrInfo cattleKtrInfo) {
+        return ktrInfoMapper.updateById(cattleKtrInfo);
+    }
+
+    @Override
+    public int delete(Integer id) {
+        return ktrInfoMapper.deleteById(id);
+    }
 }

@@ -10,4 +10,10 @@ public interface CattleKtrInfoService {
     CattleKtrInfo selectById(Integer id);
 
     IPage<CattleKtrInfo> selectPage(Integer offset, Integer limit, Map<String,Object> queryMap);
+
+    int insert(CattleKtrInfo cattleKtrInfo);
+
+    int updateById(CattleKtrInfo cattleKtrInfo);
+
+    int delete(Integer id);
 }

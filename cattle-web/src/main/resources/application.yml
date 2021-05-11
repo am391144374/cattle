@@ -18,4 +18,5 @@ server:
   port: 5000
 logging:
   level:
+    com.cattle: info
     com.cattle.mapper: debug
