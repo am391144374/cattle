@@ -23,24 +23,23 @@ public class FileUploadController {
             return ResponseUtil.defaultFail("不存在的文件");
         }
 
-        String fileName = (diskPath.lastIndexOf(File.separator) > 0 ? diskPath : diskPath + File.separator)
-                + file.getOriginalFilename();
+        String fileName = diskPath + File.separator+ file.getOriginalFilename();
         File localFile = new File(fileName);
         if(!localFile.exists()){
             localFile.mkdirs();
         }
 
-        log.info("upload 文件上传成功！filePaht:{}",fileName);
+        log.info("upload 文件上传成功！filePath:{}",fileName);
 
         try {
             file.transferTo(localFile);
             Map<String,Object> module = new HashMap<>();
-            module.put("scriptFile",fileName);
+            module.put("fileName",fileName);
             return ResponseUtil.defaultSuccess(module);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ResponseUtil.defaultFail("upload error!");
+        return ResponseUtil.defaultFail("上传文件错误!");
     }
 
 }

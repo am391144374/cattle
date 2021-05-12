@@ -55,22 +55,28 @@
 			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
 		</script>
 
+		<script type="text/html" id="step-jump">
+			{{# if(d.processType == 'edit'){ }}
+				<label class="layui-table-link" data-id="step-info" data-title="{{d.ktrName}}步骤详情"
+					   data-url="step/stepIndex.html" data-value="{{d.id}}" >{{d.ktrName}}</label>
+			{{# } else { }}
+				<laber>{{ d.ktrName }}</laber>
+			{{# } }}
+		</script>
+
 		<script src="../../../component/layui/layui.js"></script>
 		<script src="../../../component/pear/pear.js"></script>
 		<script>
-			layui.use(['table','form','jquery','layer'],function () {
+			layui.use(['table','form','jquery'],function () {
 				let table = layui.table;
 				let form = layui.form;
 				let $ = layui.jquery;
-				let layer = layui.layer;
-
-				let MODULE_PATH = '/ktr';
 
 				let cols = [
 				    [
 				        {type:'checkbox'},
 						{field:"id",hide:'true'},
-				        {title: '脚本名', field: 'ktrName', align:'center', width:100},
+				        {title: '脚本名', field: 'ktrName', align:'center', width:100,templet:'#step-jump'},
 				        {title: '数据库表名', field: 'tableName', align:'center'},
 				        {title: '执行模式', field: 'processType', align:'center',templet:function(data){
 							if(data.processType == 'edit'){
@@ -217,6 +223,20 @@
 				window.refresh = function(){
 				    table.reload('list-table');
 				}
+
+				$("body").on("click", "[data-url]", function() {
+					window.ktrInfoId = $(this).attr("data-value");
+					let index = layer.open({
+						type: 2,
+						title: $(this).attr("data-title"),
+						id:'stepIndex',
+						anim:3,
+						shade: 0.1,
+						maxmin:true,
+						content: $(this).attr("data-url")
+					});
+					layer.full(index);
+				})
 
 			})
 		</script>

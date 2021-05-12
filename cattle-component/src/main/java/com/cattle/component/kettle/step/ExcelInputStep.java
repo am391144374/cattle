@@ -52,6 +52,8 @@ public class ExcelInputStep extends BaseStepMeta {
         excelInputMeta.setStartRow(excelMeta.getStartRow());
         excelInputMeta.setStartColumn(excelMeta.getStartCol());
         excelInputMeta.setSpreadSheetType(SpreadSheetType.getStpreadSheetTypeByDescription(SpreadSheetType.POI.getDescription()));
+        //个性化设置，kettle脚本内能够获取文件名（地址+文件名），通过文件名获取年度数据
+        excelInputMeta.setFileField("fileName");
         return new StepMeta(registryID.getPluginId(StepPluginType.class,excelInputMeta), stepName, excelInputMeta);
     }
 

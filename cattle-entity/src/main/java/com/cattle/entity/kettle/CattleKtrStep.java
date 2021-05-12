@@ -1,11 +1,10 @@
 package com.cattle.entity.kettle;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +21,9 @@ public class CattleKtrStep {
     private String stepName;
     @TableField
     private Integer ktrInfoId;
-    /** 步骤类型：excel导入-excelImport、字段选择-selectValue、自定义字段-constant */
+    /** 步骤类型：excel导入-excelImport、自定义变量-constant
+     * 自定义变量目前不做新增
+     * */
     @TableField
     private String stepType;
     @TableField
@@ -35,15 +36,23 @@ public class CattleKtrStep {
     private Integer nextStepId;
     @TableField
     private Integer inputDbId;
+    @JsonIgnore
     @TableField
     private String fileList;
+    @TableField(fill = FieldFill.INSERT_UPDATE,update = "now()")
+    private Date updateTime;
+    @TableField
+    private Date createTime;
+    @TableLogic(value = "0",delval = "1")
+    @TableField
+    private Integer deleted;
 
     @TableField
     private Integer outputDbId;
     @TableField(exist = false)
     private List<CattleKtrField> fieldList;
 
-    public String[] getFileList(){
+    public String[] parseFileList(){
         return fileList.split(",");
     }
 

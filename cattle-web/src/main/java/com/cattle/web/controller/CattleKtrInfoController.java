@@ -4,25 +4,29 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cattle.common.util.ResponseUtil;
 import com.cattle.entity.kettle.CattleKtrInfo;
+import com.cattle.entity.kettle.CattleKtrStep;
 import com.cattle.service.api.kettle.CattleKtrInfoService;
+import com.cattle.service.api.kettle.KtrStepInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @RestController
-@Validated
+@Valid
 @RequestMapping("/ktr")
-public class KtrInfoController {
+public class CattleKtrInfoController {
 
     @Autowired
     private CattleKtrInfoService ktrInfoService;
+
+    @Autowired
+    private KtrStepInfoService ktrStepInfoService;
 
     @GetMapping("/list")
     public Object list(@RequestParam(defaultValue = "1",required = false) Integer offset,
@@ -66,4 +70,35 @@ public class KtrInfoController {
         return ResponseUtil.defaultFail("不存在的Id");
     }
 
+    @GetMapping("/step/list")
+    public Object stepList(@NotNull Integer ktrInfoId,
+                            @RequestParam(required = false,defaultValue = "1") Integer offset,
+                           @RequestParam(required = false,defaultValue = "10") Integer limit){
+        IPage<CattleKtrStep> data = ktrStepInfoService.selectStepInfoByKtrInfoIdPage(ktrInfoId,offset,limit);
+        return ResponseUtil.defaultSuccess(data);
+    }
+
+    @PostMapping("/step/add")
+    public Object stepAdd(@RequestBody CattleKtrStep cattleKtrStep){
+        if(ktrStepInfoService.insert(cattleKtrStep) > 0){
+            return ResponseUtil.defaultSuccess("");
+        }
+        return ResponseUtil.defaultFail("add error");
+    }
+
+    @PostMapping("/step/edit")
+    public Object stepEdit(@NotNull @RequestBody CattleKtrStep cattleKtrStep){
+        if(ktrStepInfoService.updateById(cattleKtrStep) > 0){
+            return ResponseUtil.defaultSuccess("");
+        }
+        return ResponseUtil.defaultFail("edit error");
+    }
+
+    @DeleteMapping("/step/remove")
+    public Object stepRemove(@NotNull Integer stepId){
+        if(ktrStepInfoService.delete(stepId) > 0){
+            return ResponseUtil.defaultSuccess("");
+        }
+        return ResponseUtil.defaultFail("不存在的Id");
+    }
 }

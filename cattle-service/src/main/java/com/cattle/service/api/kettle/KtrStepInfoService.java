@@ -1,16 +1,23 @@
 package com.cattle.service.api.kettle;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cattle.entity.kettle.CattleKtrStep;
 
 import java.util.List;
 
 public interface KtrStepInfoService {
 
-    public List<CattleKtrStep> selectStepInfoByKtrId(Integer jobId);
+    List<CattleKtrStep> selectStepInfoByKtrInfoId(Integer ktrInfoId);
 
-    public CattleKtrStep selectStepInfoById(Integer stepId);
+    IPage<CattleKtrStep> selectStepInfoByKtrInfoIdPage(Integer ktrInfoId, Integer offset, Integer limit);
 
-    public int save(CattleKtrStep stepInfo);
+    CattleKtrStep selectStepInfoById(Integer stepId);
+
+    int insert(CattleKtrStep stepInfo);
+
+    int updateById(CattleKtrStep cattleKtrStep);
+
+    int delete(Integer stepId);
 
 }

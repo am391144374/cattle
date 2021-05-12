@@ -71,8 +71,7 @@ layui.use(['form','jquery','upload'],function(){
 		exts: 'ktr',
 	    done: function(res){
 			if(res.code === 0){
-                scriptFile = res.data.scriptFile;
-                $("#scriptFile").val(scriptFile);
+                scriptFile = res.data.fileName;
                 layer.msg("上传成功");
 			}
 	    }

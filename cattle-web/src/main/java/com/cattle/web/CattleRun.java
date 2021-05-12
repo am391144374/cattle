@@ -152,7 +152,7 @@ public class CattleRun implements Closeable {
                                 break;
                             //执行完成
                             case FINISH:
-                                log.error("{} - {} 执行完成！",batchId,context.getJobName());
+                                log.info("{} - {} 执行完成！",batchId,context.getJobName());
                                 StringBuilder warnStrFin = new StringBuilder();
                                 Set<String> warnsFin = context.getWarns();
                                 warnsFin.forEach(warn -> {

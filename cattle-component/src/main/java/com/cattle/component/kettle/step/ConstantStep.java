@@ -72,8 +72,13 @@ public class ConstantStep extends BaseStepMeta {
         return new StepMeta(registryID.getPluginId(StepPluginType.class,constantMeta), stepName, constantMeta);
     }
 
+    /**
+     * 默认新增变量字段
+     * @param fieldMetaList
+     */
     private void addDefaultValue(List<FieldMeta> fieldMetaList){
         fieldMetaList.add(FieldMeta.builder().name("batch_id").type("String").length(64).value(String.valueOf(kettleConfig.getBatchId())).build());
         fieldMetaList.add(FieldMeta.builder().name("table_name").type("String").length(20).value(kettleConfig.getTableName()).build());
+        fieldMetaList.add(FieldMeta.builder().name("year").type("Integer").build());
     }
 }

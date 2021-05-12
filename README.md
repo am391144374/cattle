@@ -4,12 +4,17 @@
 简单的数据处理web平台，只需在界面配置，即可实现数据入库操作。
 
 #### 软件架构
+
+##### 后端
 kettle
 springboot
 mybatis-plus
 mysql
 webMagic
 redis
+
+##### 前端
+pear admin（layui）
 
 #### 执行环境配置
 

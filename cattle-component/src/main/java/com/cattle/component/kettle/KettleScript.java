@@ -62,6 +62,7 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
         ProcessContext context = new ProcessContext();
         try {
             TransMeta transMeta = new TransMeta(kettleConfig.getScriptFile());
+            transMeta.setName(kettleConfig.getJobName());
             context.setJobStatus(JobStatus.RUNNING);
             context.setScriptType(getScriptType());
             context.put("transMeta",transMeta);
@@ -125,20 +126,16 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
                 case "excelImport":
                     kettleConfig.setSelectValueMap(fieldMetaList);
                     ExcelMeta excelMeta = new ExcelMeta();
-                    excelMeta.setFileName(stepInfo.getFileList());
+                    excelMeta.setFileName(stepInfo.parseFileList());
                     excelMeta.setSheetName(new String[]{stepInfo.getSheetName()});
                     excelMeta.setStartRow(new int[]{stepInfo.getStartRow()});
                     excelMeta.setStartCol(new int[]{stepInfo.getStartCol()});
                     kettleConfig.setExcelMeta(excelMeta);
                     break;
-                // 字段设置
-                case "selectValue":
-                    kettleConfig.setSelectValueMap(fieldMetaList);
-                    break;
-                //新增常量
-                case "constant":
-                    kettleConfig.setConstantMap(fieldMetaList);
-                    break;
+                //todo 目前新增变量不做设置
+//                case "constant":
+//                    kettleConfig.setConstantMap(fieldMetaList);
+//                    break;
             }
         }
         kettleConfig.setScriptFile(job.getKtrInfo().getScriptFile());
