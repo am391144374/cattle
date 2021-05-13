@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>步骤新增</title>
+    <link rel="stylesheet" href="../../../../component/pear/css/pear.css" />
+</head>
+<body>
+<form class="layui-form" lay-filter="edit-form" action="">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">步骤名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="stepName" lay-verify="required|title" autocomplete="off" placeholder="步骤名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">步骤类型</label>
+                    <div class="layui-input-block">
+                        <select class="layui-form-select" name="stepType">
+                            <option value="excelImport">excel导入</option>
+                            <option value="constant">新增常量</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+					<label class="layui-form-label">上传excel文件</label>
+					<label id="fileList" class="pear-btn pear-btn-sm pear-btn-primary layui-icon layui-icon-upload" title="上传文件"></label>
+					<div class="layui-form-mid layui-word-aux">建议:只能上传excel文件。</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">sheet名</label>
+                    <div class="layui-input-block">
+                        <input type="text"  name="sheetName" lay-verify="required|title" autocomplete="off" placeholder="sheet名" class="layui-input">
+						<div class="layui-form-mid layui-word-aux">提示:excel文件内的sheet名</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">excel开始行</label>
+                    <div class="layui-input-inline">
+                        <input class="layui-input" name="startRow" type="text" lay-verify="required|number" autocomplete="off" placeholder="excel开始行" >
+                        <div class="layui-form-mid layui-word-aux">提示：excel文件数据开始行，不包括表头</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">excel开始列</label>
+                    <div class="layui-input-inline">
+                        <input class="layui-input" name="startCol" type="text" lay-verify="required|number" autocomplete="off" placeholder="excel开始列" >
+                        <div class="layui-form-mid layui-word-aux">提示：excel文件数据开始列</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" id = "formSubmit" lay-submit="" lay-filter="user-save">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button type="reset" class="pear-btn pear-btn-sm">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<script src="../../../../component/layui/layui.js"></script>
+<script src="../../../../component/pear/pear.js"></script>
+<script>
+layui.use(['form','jquery'],function(){
+    let form = layui.form;
+    let $ = layui.jquery;
+	
+	$(function(){
+		$.ajax({
+			url: '/ktr/step/detail?stepId='+parent.stepId,
+			type:'get',
+			success:function(result){
+				if(result.code == 0){
+					form.val('edit-form',result.data);
+				}else{
+					layer.open({
+						content: result.message,
+						icon:'5',
+						time:2500
+					});
+				}
+			}
+		});
+	});
+
+    form.on('submit(user-save)', function(data){
+
+        data.field.stepId = parent.stepId;
+
+        $.ajax({
+            url:'/ktr/step/edit',
+            data:JSON.stringify(data.field),
+            dataType:'json',
+            contentType:'application/json',
+            type:'post',
+            success:function(result){
+                if(result.code == 0){
+                    layer.msg(result.message,{icon:1,time:1000},function(){
+                        parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                        parent.layui.table.reload("list-table");
+                    });
+                }else{
+                    layer.msg(result.message,{icon:2,time:1000});
+                }
+            }
+        })
+        return false;
+    });
+})
+</script>
+<script>
+</script>
+</body>
+</html>

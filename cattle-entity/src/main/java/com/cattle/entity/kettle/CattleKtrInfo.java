@@ -32,7 +32,7 @@ public class CattleKtrInfo {
     private Integer deleted;
     @TableField
     private Date createTime;
-    @TableField(fill = FieldFill.INSERT_UPDATE,update = "now()")
+    @TableField(update = "now()")
     private Date updateTime;
     /** 备注 */
     @TableField

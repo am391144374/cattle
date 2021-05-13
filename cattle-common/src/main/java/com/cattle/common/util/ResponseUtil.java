@@ -15,7 +15,7 @@ public class ResponseUtil {
     private String message;
     private Object data;
 
-    public static ResponseUtil defaultSuccess(Object data){
+    public static ResponseUtil success(Object data){
         return new ResponseUtil(0,"success",data);
     }
 
@@ -27,7 +27,7 @@ public class ResponseUtil {
         return new ResponseUtil(code,message,data);
     }
 
-    public static ResponseUtil defaultFail(String message){
+    public static ResponseUtil fail(String message){
         return new ResponseUtil(-1,message,"");
     }
 

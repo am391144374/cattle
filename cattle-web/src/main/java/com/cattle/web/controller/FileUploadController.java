@@ -20,7 +20,7 @@ public class FileUploadController {
     @RequestMapping("/upload")
     public Object upload(MultipartFile file){
         if(file == null){
-            return ResponseUtil.defaultFail("不存在的文件");
+            return ResponseUtil.fail("不存在的文件");
         }
 
         String fileName = diskPath + File.separator+ file.getOriginalFilename();
@@ -35,11 +35,11 @@ public class FileUploadController {
             file.transferTo(localFile);
             Map<String,Object> module = new HashMap<>();
             module.put("fileName",fileName);
-            return ResponseUtil.defaultSuccess(module);
+            return ResponseUtil.success(module);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return ResponseUtil.defaultFail("上传文件错误!");
+        return ResponseUtil.fail("上传文件错误!");
     }
 
 }

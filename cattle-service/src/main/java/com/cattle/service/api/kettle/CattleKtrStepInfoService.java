@@ -6,7 +6,7 @@ import com.cattle.entity.kettle.CattleKtrStep;
 
 import java.util.List;
 
-public interface KtrStepInfoService {
+public interface CattleKtrStepInfoService {
 
     List<CattleKtrStep> selectStepInfoByKtrInfoId(Integer ktrInfoId);
 

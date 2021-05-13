@@ -7,9 +7,8 @@ import com.cattle.entity.kettle.CattleKtrStep;
 import com.cattle.mapper.JobMapper;
 import com.cattle.service.api.JobService;
 import com.cattle.service.api.kettle.CattleKtrInfoService;
-import com.cattle.service.api.kettle.KtrStepFieldService;
-import com.cattle.service.api.kettle.KtrStepInfoService;
-import net.bytebuddy.asm.Advice;
+import com.cattle.service.api.kettle.CattleKtrStepFieldService;
+import com.cattle.service.api.kettle.CattleKtrStepInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +23,9 @@ public class JobServiceImpl implements JobService {
     @Autowired
     private CattleKtrInfoService ktrInfoService;
     @Autowired
-    private KtrStepInfoService stepInfoService;
+    private CattleKtrStepInfoService stepInfoService;
     @Autowired
-    private KtrStepFieldService stepFieldService;
+    private CattleKtrStepFieldService stepFieldService;
 
     /**
      * 查询job信息

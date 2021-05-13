@@ -1,39 +1,50 @@
 package com.cattle.web.controller;
 
+import com.cattle.common.util.ResponseUtil;
 import com.cattle.entity.CattleJob;
 import com.cattle.service.api.JobService;
+import com.cattle.web.CattleRun;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 执行job信息api
  */
-@Controller
+@Validated
+@Slf4j
+@RestController()
+@RequestMapping("/job")
 public class CattleJobController {
 
     @Autowired
     private JobService jobService;
 
+    @Autowired
+    private CattleRun cattleRun;
+
     @GetMapping("/execute")
-    @ResponseBody
-    public String executeJob(Integer jobId){
+    public Object executeJob(Integer jobId){
         CattleJob cattleJob = jobService.buildExecuteJobInfo(jobId);
         if(cattleJob != null){
-//            try {
-////                runFactory.putRunJob(cattleJob);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+            try {
+                cattleRun.putQueue(cattleJob);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
-        return "调用成功";
+        return ResponseUtil.success("");
     }
 
     @GetMapping("/list")
-    @ResponseBody
-    public CattleJob list(Integer jobId){
-        return jobService.buildExecuteJobInfo(jobId);
+    public Object list(Integer jobId){
+        CattleJob cattleJob = jobService.selectById(jobId);
+        return ResponseUtil.success(cattleJob);
     }
 
 }

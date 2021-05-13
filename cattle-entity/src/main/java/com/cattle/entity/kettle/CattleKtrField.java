@@ -29,7 +29,7 @@ public class CattleKtrField {
     private Integer precision;
     @TableField
     private String defaultValue;
-    @TableField(fill = FieldFill.INSERT_UPDATE,update = "now()")
+    @TableField(update = "now()")
     private Date updateTime;
     @TableLogic(value = "0",delval = "1")
     private Integer deleted;

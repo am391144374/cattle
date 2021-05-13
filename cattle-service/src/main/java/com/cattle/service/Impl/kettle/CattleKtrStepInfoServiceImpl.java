@@ -5,14 +5,14 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.cattle.entity.kettle.CattleKtrStep;
 import com.cattle.mapper.kettle.CattleKtrStepInfoMapper;
-import com.cattle.service.api.kettle.KtrStepInfoService;
+import com.cattle.service.api.kettle.CattleKtrStepInfoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 
 @Service
-public class KtrStepInfoServiceImpl implements KtrStepInfoService {
+public class CattleKtrStepInfoServiceImpl implements CattleKtrStepInfoService {
 
     @Resource
     private CattleKtrStepInfoMapper stepInfoMapper;

@@ -13,19 +13,26 @@
 			"openType": "_iframe",
 			"href": "view/collection/kettle/kettle.html"
 		}, {
-			"id": 13,
-			"title": "kettle数据采集",
+			"id": 11,
+			"title": "kettle脚本",
 			"icon": "layui-icon layui-icon-console",
 			"type": 1,
 			"openType": "_iframe",
 			"href": "view/collection/kettle/kettle.html"
 		},{
-			"id": 15,
-			"title": "爬虫数据采集",
+			"id": 12,
+			"title": "爬虫脚本",
 			"icon": "layui-icon layui-icon-console",
 			"type": 1,
 			"openType": "_iframe",
 			"href": "view/system/theme.html"
+		},{
+			"id": 13,
+			"title": "执行任务",
+			"icon": "layui-icon layui-icon-console",
+			"type": 1,
+			"openType": "_iframe",
+			"href": "view/job/index.html"
 		}]
 	}
 ]

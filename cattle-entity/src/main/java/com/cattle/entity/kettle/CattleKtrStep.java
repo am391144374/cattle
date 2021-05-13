@@ -39,7 +39,7 @@ public class CattleKtrStep {
     @JsonIgnore
     @TableField
     private String fileList;
-    @TableField(fill = FieldFill.INSERT_UPDATE,update = "now()")
+    @TableField(update = "now()")
     private Date updateTime;
     @TableField
     private Date createTime;
