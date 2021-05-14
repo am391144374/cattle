@@ -2,7 +2,7 @@ package com.cattle.util;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.cattle.component.spider.SpiderConfig;
-import com.cattle.entity.spider.CattleSpiderInfo;
+import com.cattle.entity.CattleSpiderInfo;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

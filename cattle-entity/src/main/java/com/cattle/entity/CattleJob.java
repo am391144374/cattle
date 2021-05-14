@@ -4,13 +4,9 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cattle.entity.kettle.CattleKtrInfo;
-import com.cattle.entity.kettle.CattleKtrStep;
-import com.cattle.entity.spider.CattleSpiderInfo;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 执行计划

@@ -1,19 +1,20 @@
 package com.cattle.service.Impl;
 
-import com.cattle.entity.CattleJob;
-import com.cattle.entity.kettle.CattleKtrField;
-import com.cattle.entity.kettle.CattleKtrInfo;
-import com.cattle.entity.kettle.CattleKtrStep;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.cattle.entity.*;
 import com.cattle.mapper.JobMapper;
-import com.cattle.service.api.JobService;
-import com.cattle.service.api.kettle.CattleKtrInfoService;
-import com.cattle.service.api.kettle.CattleKtrStepFieldService;
-import com.cattle.service.api.kettle.CattleKtrStepInfoService;
+import com.cattle.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class JobServiceImpl implements JobService {
@@ -26,6 +27,8 @@ public class JobServiceImpl implements JobService {
     private CattleKtrStepInfoService stepInfoService;
     @Autowired
     private CattleKtrStepFieldService stepFieldService;
+    @Autowired
+    private CattleSpiderInfoService spiderInfoService;
 
     /**
      * 查询job信息
@@ -48,6 +51,8 @@ public class JobServiceImpl implements JobService {
         }
         switch (jobInfo.getScriptType()){
             case "spider":
+                CattleSpiderInfo spiderInfo = spiderInfoService.selectById(jobInfo.getRelateId());
+                jobInfo.setSpiderInfo(spiderInfo);
                 break;
             case "kettle":
                 CattleKtrInfo cattleKtrInfo = ktrInfoService.selectById(jobInfo.getRelateId());
@@ -62,4 +67,16 @@ public class JobServiceImpl implements JobService {
         }
         return jobInfo;
     }
+
+    @Override
+    public IPage<CattleJob> selectPage(Integer offset, Integer limit, Map<String, Object> queryMap) {
+        Page<CattleJob> page = new Page(offset,limit);
+        QueryWrapper<CattleJob> queryWrapper = new QueryWrapper<>();
+        queryWrapper.orderByDesc("create_time");
+        Optional.ofNullable(queryMap).orElse(new HashMap<>()).forEach((column, value) -> {
+            queryWrapper.eq(StrUtil.toUnderlineCase(column),value);
+        });
+        return jobMapper.selectPage(page,queryWrapper);
+    }
+
 }

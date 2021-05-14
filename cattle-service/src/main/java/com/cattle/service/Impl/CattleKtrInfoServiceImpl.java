@@ -1,12 +1,12 @@
-package com.cattle.service.Impl.kettle;
+package com.cattle.service.Impl;
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cattle.entity.kettle.CattleKtrInfo;
-import com.cattle.mapper.kettle.CattleKtrInfoMapper;
-import com.cattle.service.api.kettle.CattleKtrInfoService;
+import com.cattle.entity.CattleKtrInfo;
+import com.cattle.mapper.CattleKtrInfoMapper;
+import com.cattle.service.api.CattleKtrInfoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

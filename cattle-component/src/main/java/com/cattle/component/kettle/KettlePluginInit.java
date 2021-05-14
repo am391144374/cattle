@@ -20,12 +20,13 @@ public class KettlePluginInit {
         if(!initFlag){
             log.info("kettle plugins start init ...");
             initFlag = true;
-            ClassPathResource classPathResource = new ClassPathResource("/plugins");
-            File file = new File(classPathResource.getAbsolutePath());
-            Arrays.stream(file.listFiles()).forEach(file1 -> {
+//            ClassPathResource classPathResource = new ClassPathResource("/plugins");
+//            File file = new File(classPathResource.getAbsolutePath());
+            File file = new File("D:\\code\\new work space from git\\Cattle\\cattle-component\\src\\main\\resources\\plugins");
+            for(File file1 : file.listFiles()){
                 StepPluginType.getInstance().getPluginFolders()
                         .add(new PluginFolder(file1.getPath(),false,true));
-            });
+            }
             // 转换元对象
             KettleEnvironment.init();// 初始化
             EnvUtil.environmentInit();

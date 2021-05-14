@@ -1,6 +1,6 @@
 package com.cattle.common.util;
 
-public class SpringApplicationUtil {
+public class BeanUtil{
 
 
 }

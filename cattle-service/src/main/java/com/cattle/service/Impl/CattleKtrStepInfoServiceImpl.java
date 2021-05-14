@@ -1,11 +1,11 @@
-package com.cattle.service.Impl.kettle;
+package com.cattle.service.Impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cattle.entity.kettle.CattleKtrStep;
-import com.cattle.mapper.kettle.CattleKtrStepInfoMapper;
-import com.cattle.service.api.kettle.CattleKtrStepInfoService;
+import com.cattle.entity.CattleKtrStep;
+import com.cattle.mapper.CattleKtrStepInfoMapper;
+import com.cattle.service.api.CattleKtrStepInfoService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

@@ -1,7 +1,7 @@
 package com.cattle.web.util;
 
 import cn.hutool.core.util.IdUtil;
-import com.cattle.common.url.filter.RedisBloomFilter;
+import com.cattle.component.spider.filter.RedisBloomFilter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class RedisBloomFilterTest {
     private RedisBloomFilter redisBloomFilter;
 
     public void init(){
-        redisBloomFilter = new RedisBloomFilter(redisTemplate);
+        redisBloomFilter = new RedisBloomFilter();
     }
 
     @Test

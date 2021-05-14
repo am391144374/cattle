@@ -1810,9 +1810,6 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
   // enough to handle any new fields you are creating in this step.
   r = createOutputRow(r, data.outputRowMeta.size());
 
-  
-  String batcId = uuid.toString().replace("-", "");
-  get(Fields.Out, "batch_id").setValue(r, batcId);
   get(Fields.Out, "insert_time").setValue(r, currentDate);
   get(Fields.Out, "id").setValue(r, UUID.randomUUID().toString().replace("-", ""));
   String fileName = get(Fields.In, "fileName").getString(r);

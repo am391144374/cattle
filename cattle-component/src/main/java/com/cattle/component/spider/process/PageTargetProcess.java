@@ -2,7 +2,7 @@ package com.cattle.component.spider.process;
 
 import cn.hutool.core.util.StrUtil;
 import com.cattle.common.ItemsHelper;
-import com.cattle.common.url.filter.UrlFilterInterface;
+import com.cattle.component.spider.filter.UrlFilterInterface;
 import com.cattle.component.spider.parse.HtmlCleanerParse;
 import com.cattle.component.spider.parse.XsoupParse;
 import com.cattle.component.spider.SpiderConfig;
@@ -32,7 +32,6 @@ public class PageTargetProcess implements PageProcessor {
     public void process(Page page) {
         XpathParse xpathParse = getXpathParse(page);
         LinkedHashMap<String,List<String>> columnMap = new LinkedHashMap<>();
-        boolean isContentField = false;
         List<String> contentUrls = null;
         //不是列表页就是正文页
         if(page.getUrl().regex(spiderConfig.getListRegex()).match() || page.getRequest().getUrl().equals(spiderConfig.getEntryUrl())) {
@@ -87,7 +86,6 @@ public class PageTargetProcess implements PageProcessor {
                     processContext.putError(this,e);
                 }
             });
-            isContentField = true;
         }
 
         List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
@@ -114,7 +112,9 @@ public class PageTargetProcess implements PageProcessor {
             }
         });
 
-        ItemsHelper.addContentField(spiderConfig.getBatchId(),page.getUrl().get(),resultList);
+        if(resultList.size() > 0){
+            ItemsHelper.addContentField(spiderConfig.getBatchId(),page.getUrl().get(),resultList);
+        }
     }
 
     @Override
@@ -128,9 +128,9 @@ public class PageTargetProcess implements PageProcessor {
     public void setSpiderConfig(SpiderConfig config){
         getSite().setCycleRetryTimes(config.getCycleRetryTimes() != null ? config.getCycleRetryTimes() : 3)
                 .setRetryTimes(config.getRetryTimes() != null ? config.getRetryTimes() : 3)
-                .setSleepTime(config.getSleepTime() != null ? config.getSleepTime() : 3000)
-                .setTimeOut(config.getTimeOut() != null ? config.getTimeOut() : 10000)
-                .setRetrySleepTime(config.getRetrySleepTime() != null ? config.getRetrySleepTime() : 2000);
+                .setSleepTime(config.getSleepTime() != null ? config.getSleepTime() * 1000 : 3000)
+                .setTimeOut(config.getTimeOut() != null ? config.getTimeOut() * 1000 : 10000)
+                .setRetrySleepTime(config.getRetrySleepTime() != null ? config.getRetrySleepTime() * 1000 : 2000);
         this.spiderConfig = config;
     }
 

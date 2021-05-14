@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>kettle采集</title>
-		<link rel="stylesheet" href="../../../component/pear/css/pear.css"/>
+		<link rel="stylesheet" href="../../component/pear/css/pear.css"/>
 	</head>
 	<body class="pear-container">
 		<div class="layui-card">
@@ -12,9 +12,9 @@
 					<div class="layui-form-item">
 
 						<div class="layui-form-item layui-inline">
-							<label class="layui-form-label">脚本名</label>
+							<label class="layui-form-label">计划名</label>
 							<div class="layui-input-inline">
-								<input type="text" name="realName" placeholder="" class="layui-input">
+								<input type="text" name="jobName" placeholder="" class="layui-input">
 							</div>
 						</div>
 
@@ -37,7 +37,7 @@
 			<div class="layui-card-body">
 				<table id="list-table" lay-filter="list-table"></table>
 			</div>
-		</div>kettle.html
+		</div>
 
 		<script type="text/html" id="table-toolbar">
 			<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
@@ -51,21 +51,13 @@
 		</script>
 
 		<script type="text/html" id="role-bar">
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="execute"><i class="layui-icon layui-icon-play"></i></button>
 			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
 			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
 		</script>
 
-		<script type="text/html" id="step-jump">
-			{{# if(d.processType == 'edit'){ }}
-				<label class="layui-table-link" data-id="step-info" data-title="{{d.ktrName}}步骤详情"
-					   data-url="step/stepIndex.html" data-value="{{d.id}}" >{{d.ktrName}}</label>
-			{{# } else { }}
-				<laber>{{ d.ktrName }}</laber>
-			{{# } }}
-		</script>
-
-		<script src="../../../component/layui/layui.js"></script>
-		<script src="../../../component/pear/pear.js"></script>
+		<script src="../../component/layui/layui.js"></script>
+		<script src="../../component/pear/pear.js"></script>
 		<script>
 			layui.use(['table','form','jquery'],function () {
 				let table = layui.table;
@@ -76,23 +68,16 @@
 				    [
 				        {type:'numbers'},
 						{field:"id",hide:'true'},
-				        {title: '脚本名', field: 'ktrName', align:'center', width:100,templet:'#step-jump'},
-				        {title: '数据库表名', field: 'tableName', align:'center'},
-				        {title: '执行模式', field: 'processType', align:'center',templet:function(data){
-							if(data.processType == 'edit'){
-								return '编辑模式';
-							}else{
-								return '普通模式';
-							}
-						}},
-				        {title: '备注', field: 'remark', align:'center'},
+				        {title: '执行计划名', field: 'jobName', align:'center', width:100},
+				        {title: '脚本类型', field: 'scriptType', align:'center'},
+				        {title: '关联的脚本ID', field: 'relateId', align:'center'},
 				        {title: '操作', toolbar: '#role-bar', align:'center', width:195}
 				    ]
 				];
 
 				table.render({
 				    elem: '#list-table',
-				    url: '/ktr/list',
+				    url: '/job/list',
 					method: 'get',
 				    page: true ,
 				    cols: cols ,
@@ -137,7 +122,9 @@
 				    } else if(obj.event === 'edit'){
 						window.ktrId = obj.data['id'];
 				        window.edit(obj);
-				    }
+				    } else if(obj.event === 'execute'){
+						window.execute(obj);
+					}
 				});
 
 				form.on('submit(user-query)',function(obj){
@@ -164,6 +151,23 @@
 				        area: ['500px', '400px'],
 				        content: 'edit.html'
 				    });
+				}
+
+				window.execute = function (obj){
+					let loading = layer.load();
+					$.ajax({
+						url: "/job/execute?jobId="+obj.data['jobId'],
+						dataType:'json',
+						type:'post',
+						success:function(result){
+							layer.close(loading);
+							if(result.code == 0){
+								layer.msg(result.message,{icon:1,time:1000});
+							}else{
+								layer.msg(result.message,{icon:2,time:1000});
+							}
+						}
+					})
 				}
 
 				window.remove = function(obj){
@@ -224,19 +228,19 @@
 				    table.reload('list-table');
 				}
 
-				$("body").on("click", "[data-url]", function() {
-					window.ktrInfoId = $(this).attr("data-value");
-					let index = layer.open({
-						type: 2,
-						title: $(this).attr("data-title"),
-						id:'stepIndex',
-						anim:3,
-						shade: 0.1,
-						maxmin:true,
-						content: $(this).attr("data-url")
-					});
-					layer.full(index);
-				})
+				// $("body").on("click", "[data-url]", function() {
+				// 	window.ktrInfoId = $(this).attr("data-value");
+				// 	let index = layer.open({
+				// 		type: 2,
+				// 		title: $(this).attr("data-title"),
+				// 		id:'stepIndex',
+				// 		anim:3,
+				// 		shade: 0.1,
+				// 		maxmin:true,
+				// 		content: $(this).attr("data-url")
+				// 	});
+				// 	layer.full(index);
+				// })
 
 			})
 		</script>

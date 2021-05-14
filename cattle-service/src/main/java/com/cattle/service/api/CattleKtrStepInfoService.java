@@ -1,8 +1,8 @@
-package com.cattle.service.api.kettle;
+package com.cattle.service.api;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.cattle.entity.kettle.CattleKtrStep;
+import com.cattle.entity.CattleKtrStep;
 
 import java.util.List;
 

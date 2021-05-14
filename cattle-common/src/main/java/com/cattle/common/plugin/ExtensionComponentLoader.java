@@ -12,7 +12,6 @@ import java.util.*;
 @Slf4j
 public class ExtensionComponentLoader extends AbstractScanPackage {
 
-    public final String COMPONENT_DIRECTORY = "MATE-INF.cattle";
     private final String COMPONENT_PACKAGE = "com.cattle.component";
     final Map<String, Class<? extends ExecuteScriptInterface>> componentMaps = new HashMap<>();
 
@@ -39,6 +38,9 @@ public class ExtensionComponentLoader extends AbstractScanPackage {
                         log.error("存在相同的组件执行类型，请检查！ scriptType:{}", scriptInterface.getScriptType());
                         return;
                     }
+                    log.info("初始化{}组件环境变量  #### start ####",scriptInterface.getScriptType());
+                    scriptInterface.initEnv();
+                    log.info("初始化{}组件环境变量  #### end ####",scriptInterface.getScriptType());
                     log.info("注册组件 scriptType:{}------className:{}", scriptInterface.getScriptType(), loadClass.getName());
                     componentMaps.put(scriptInterface.getScriptType(), loadClass);
                 }

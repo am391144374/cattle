@@ -1,10 +1,9 @@
-package com.cattle.entity.spider;
+package com.cattle.entity;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,48 +13,64 @@ import java.util.LinkedHashMap;
 
 @Data
 @ApiModel
-@TableName("spider_info")
+@TableName("cattle_spider_info")
 public class CattleSpiderInfo {
 
     @ApiModelProperty
-    private Integer step_id;
+    @TableId(type= IdType.AUTO)
+    private Integer spiderId;
+
     @ApiModelProperty(notes = "爬虫名")
+    @TableField
     private String spiderName;
+
     @ApiModelProperty(notes = "保存的表名",required = true)
+    @TableField
     private String tableName;
 
     @ApiModelProperty(notes = "列表页正则表达式", required = true)
+    @TableField
     private String listRegex;
 
     @ApiModelProperty(notes = "入口页", required = true)
+    @TableField
     private String entryUrl;
 
     @ApiModelProperty(notes = "正文页xpath")
+    @TableField
     private String contentXpath;
 
     @ApiModelProperty(notes = "列表页字段规则json字符串")
+    @TableField
     private String fieldsJson;
 
     @ApiModelProperty(notes = "正文页规则json字符串")
+    @TableField
     private String contentFieldsJson;
 
     //爬虫配置项
+    @TableField
     @ApiModelProperty(notes = "线程数")
     private Integer threadNum;
 
     @ApiModelProperty(notes = "每个页面处理完后的睡眠时间 单位秒")
+    @TableField
     private Integer sleepTime;
 
     @ApiModelProperty(notes = "页面下载失败重试次数")
+    @TableField
     private Integer retryTimes;
 
     @ApiModelProperty(notes = "重试睡眠时间 单位秒")
+    @TableField
     private Integer retrySleepTime;
 
     @ApiModelProperty(notes = "页面爬取失败后放回队列的次数")
+    @TableField
     private Integer cycleRetryTimes;
 
     @ApiModelProperty(notes = "下载页面超时时间 单位秒")
+    @TableField
     private Integer timeOut;
 
     /**
@@ -63,7 +78,16 @@ public class CattleSpiderInfo {
      * xSoup 效率较好，但对Xpath 语法支持不够完善 部分语法不支持
      */
     @ApiModelProperty(notes = "xpath 解析选型 0 - htmlCleaner，1 - xSoup")
+    @TableField
     private Integer xPathSelection;
+
+    @ApiModelProperty(notes = "url 扫描类型   0 - 全量，1 - 增量")
+    @TableField
+    private Integer scanUrlType;
+
+    @TableField
+    @TableLogic(value = "0",delval = "1")
+    private Integer deleted;
 
     /**
      * key - 字段名

@@ -1,4 +1,4 @@
-package com.cattle.entity.kettle;
+package com.cattle.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;

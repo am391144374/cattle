@@ -4,12 +4,13 @@ import cn.hutool.core.bean.BeanUtil;
 import com.cattle.common.JobContextHelper;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.plugin.ExecuteScriptInterface;
+import com.cattle.component.spider.filter.RedisBloomFilter;
 import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
 import com.cattle.component.spider.handler.SpiderProcessHandler;
 import com.cattle.common.plugin.ProcessScript;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.entity.CattleJob;
-import com.cattle.entity.spider.CattleSpiderInfo;
+import com.cattle.entity.CattleSpiderInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,22 +27,30 @@ public class SpiderScript extends ProcessScript implements ExecuteScriptInterfac
 
     @Override
     public void run() {
-        buildConfig(cattleJob);
-        buildSpiderScript();
         ProcessContext context = new ProcessContext();
-        context.setJobStatus(JobStatus.RUNNING);
-        context.setScriptType(getScriptType());
-        context.setJobId(cattleJob.getJobId());
-        context.setBatchId(spiderConfig.getBatchId());
-        context.setJobName(spiderConfig.getSpiderName());
-        context.put("spiderConfig",spiderConfig);
         JobContextHelper.setJobContext(cattleJob.getBatchId(),context);
-        logger.info("{} start spider config:{}",Thread.currentThread().getName(),spiderConfig.toString());
-        first.execute(context);
+        context.setJobStatus(JobStatus.RUNNING);
+        try {
+            buildConfig(cattleJob);
+            buildSpiderScript();
+            context.setScriptType(getScriptType());
+            context.setJobId(cattleJob.getJobId());
+            context.setBatchId(spiderConfig.getBatchId());
+            context.setJobName(spiderConfig.getSpiderName());
+            context.put("spiderConfig",spiderConfig);
+            logger.info("{} start spider config:{}",Thread.currentThread().getName(),spiderConfig.toString());
+            first.execute(context);
+        }catch (Exception e){
+            e.printStackTrace();
+            context.putError(this,e);
+        }
     }
 
     public void buildSpiderScript(){
         SpiderProcessHandler spiderProcess = new SpiderProcessHandler();
+        if(spiderConfig.getScanUrlType() == 1){
+            spiderProcess.setUrlFilter(new RedisBloomFilter());
+        }
         SpiderMonitorProcessHandler monitorProcess = new SpiderMonitorProcessHandler();
 
         addLastProcess(spiderProcess);
@@ -65,5 +74,10 @@ public class SpiderScript extends ProcessScript implements ExecuteScriptInterfac
     @Override
     public String getScriptType() {
         return "spider";
+    }
+
+    @Override
+    public void initEnv() {
+
     }
 }

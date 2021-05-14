@@ -9,4 +9,6 @@ public interface ExecuteScriptInterface extends Runnable {
     void setCattleJob(CattleJob job);
 
     String getScriptType();
+
+    void initEnv();
 }

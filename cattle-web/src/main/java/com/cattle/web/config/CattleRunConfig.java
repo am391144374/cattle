@@ -10,16 +10,10 @@ import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.RunLogService;
 import com.cattle.web.CattleRun;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.stereotype.Component;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-
+@Component
 @Configurable
 public class CattleRunConfig {
 

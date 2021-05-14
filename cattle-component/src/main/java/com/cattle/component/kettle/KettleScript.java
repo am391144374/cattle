@@ -13,8 +13,8 @@ import com.cattle.component.kettle.step.SelectValuesStep;
 import com.cattle.common.plugin.ProcessScript;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.entity.CattleJob;
-import com.cattle.entity.kettle.CattleKtrField;
-import com.cattle.entity.kettle.CattleKtrStep;
+import com.cattle.entity.CattleKtrField;
+import com.cattle.entity.CattleKtrStep;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleMissingPluginsException;
 import org.pentaho.di.core.exception.KettleXMLException;
@@ -43,12 +43,6 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
 
     @Override
     public void run(){
-
-        try {
-            KettlePluginInit.init();
-        } catch (KettleException e) {
-            e.printStackTrace();
-        }
 
         buildConfig(cattleJob);
 
@@ -155,5 +149,14 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
     @Override
     public String getScriptType() {
         return "kettle";
+    }
+
+    @Override
+    public void initEnv() {
+        try {
+            KettlePluginInit.init();
+        } catch (KettleException e) {
+            e.printStackTrace();
+        }
     }
 }
