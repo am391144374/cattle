@@ -92,10 +92,9 @@ public class CattleRun implements Closeable {
                     }
                     ExecuteScriptInterface execute = (ExecuteScriptInterface) c.newInstance();
                     cattlePool.submit(() -> {
-                        runLogService.updateJobInfo(cattleJob.getJobId(),batchId,cattleJob.getJobName());
+                        runLogService.updateJobInfo(cattleJob.getJobId(), batchId, cattleJob.getJobName(), JobStatus.RUNNING);
                         cattleJob.setBatchId(batchId);
                         execute.setCattleJob(cattleJob);
-                        runLogService.updateStatus(batchId, JobStatus.RUNNING);
                         execute.run();
                     });
                 } catch (InterruptedException e) {

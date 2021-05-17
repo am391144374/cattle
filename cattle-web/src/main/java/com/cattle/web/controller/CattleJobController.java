@@ -39,6 +39,7 @@ public class CattleJobController {
                 cattleRun.putQueue(cattleJob);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                return ResponseUtil.fail(-1,"执行失败："+e.getMessage(),null);
             }
         }
         return ResponseUtil.success(0,"执行成功",null);

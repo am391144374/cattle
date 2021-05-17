@@ -128,7 +128,7 @@
 				});
 
 				form.on('submit(user-query)',function(obj){
-					table.reload('list-table',{where:obj.field});
+					table.reload('list-table',{where:{queryJson: JSON.stringify(obj.field)}});
 					return false;
 				});
 

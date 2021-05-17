@@ -25,7 +25,7 @@
 			"icon": "layui-icon layui-icon-console",
 			"type": 1,
 			"openType": "_iframe",
-			"href": "view/system/theme.html"
+			"href": "view/collection/spider/spider.html"
 		},{
 			"id": 13,
 			"title": "执行任务",

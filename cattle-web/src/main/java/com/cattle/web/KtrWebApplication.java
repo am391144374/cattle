@@ -13,7 +13,7 @@ public class KtrWebApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(KtrWebApplication.class, args);
-		log.info("ktr启动完成！");
+		log.info("Cattle 启动完成！");
 	}
 
 }

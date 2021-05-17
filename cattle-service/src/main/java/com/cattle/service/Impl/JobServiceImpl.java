@@ -51,7 +51,7 @@ public class JobServiceImpl implements JobService {
         }
         switch (jobInfo.getScriptType()){
             case "spider":
-                CattleSpiderInfo spiderInfo = spiderInfoService.selectById(jobInfo.getRelateId());
+                CattleSpiderInfo spiderInfo = spiderInfoService.getById(jobInfo.getRelateId());
                 jobInfo.setSpiderInfo(spiderInfo);
                 break;
             case "kettle":
@@ -74,7 +74,9 @@ public class JobServiceImpl implements JobService {
         QueryWrapper<CattleJob> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("create_time");
         Optional.ofNullable(queryMap).orElse(new HashMap<>()).forEach((column, value) -> {
-            queryWrapper.eq(StrUtil.toUnderlineCase(column),value);
+            if(StrUtil.isNotBlank(value.toString())){
+                queryWrapper.eq(StrUtil.toUnderlineCase(column),value);
+            }
         });
         return jobMapper.selectPage(page,queryWrapper);
     }

@@ -31,7 +31,9 @@ public class CattleKtrInfoServiceImpl implements CattleKtrInfoService {
         QueryWrapper<CattleKtrInfo> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("create_time");
         Optional.ofNullable(queryMap).orElse(new HashMap<>()).forEach((column, value) -> {
-            queryWrapper.eq(StrUtil.toUnderlineCase(column),value);
+            if(StrUtil.isNotBlank(value.toString())){
+                queryWrapper.eq(StrUtil.toUnderlineCase(column),value);
+            }
         });
         return ktrInfoMapper.selectPage(page,queryWrapper);
     }

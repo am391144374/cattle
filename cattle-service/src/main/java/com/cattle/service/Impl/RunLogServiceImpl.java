@@ -1,12 +1,13 @@
 package com.cattle.service.Impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.entity.CattleRunLog;
 import com.cattle.mapper.RunLogMapper;
 import com.cattle.service.api.RunLogService;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class RunLogServiceImpl extends ServiceImpl<RunLogMapper,CattleRunLog> implements RunLogService {
@@ -16,6 +17,16 @@ public class RunLogServiceImpl extends ServiceImpl<RunLogMapper,CattleRunLog> im
         runLog.setBatchId(batchId);
         runLog.setJobStatus(JobStatus.CREATE.getName());
         return save(runLog);
+    }
+
+    @Override
+    public boolean updateJobInfo(Integer jobId, long batchId, String jobName, JobStatus status) {
+        CattleRunLog runLog = new CattleRunLog();
+        runLog.setBatchId(batchId);
+        runLog.setJobName(jobName);
+        runLog.setJobId(jobId);
+        runLog.setJobStatus(status.getName());
+        return updateById(runLog);
     }
 
     @Override
@@ -44,6 +55,7 @@ public class RunLogServiceImpl extends ServiceImpl<RunLogMapper,CattleRunLog> im
         runLog.setWarnCount(errorCount == null ? 0 : warnCount);
         runLog.setErrorText(errorText);
         runLog.setWarnText(warnText);
+        runLog.setEndTime(new Date());
         return updateById(runLog);
     }
 
@@ -53,6 +65,7 @@ public class RunLogServiceImpl extends ServiceImpl<RunLogMapper,CattleRunLog> im
         runLog.setBatchId(batchId);
         runLog.setJobStatus(JobStatus.INTERRUPT.getName());
         runLog.setErrorText(errorText);
+        runLog.setEndTime(new Date());
         return updateById(runLog);
     }
 

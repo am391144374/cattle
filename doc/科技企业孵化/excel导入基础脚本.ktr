@@ -2096,7 +2096,7 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
         <currency/>
         <decimal/>
         <group/>
-        <nullif/>
+        <nullif>2020</nullif>
         <length>-1</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>

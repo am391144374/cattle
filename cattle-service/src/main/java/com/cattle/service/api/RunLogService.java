@@ -14,6 +14,8 @@ public interface RunLogService extends IService<CattleRunLog> {
      */
     boolean createLog(long batchId);
 
+    boolean updateJobInfo(Integer jobId,long batchId,String jobName,JobStatus status);
+
     boolean updateJobInfo(Integer jobId,long batchId,String jobName);
 
     /**

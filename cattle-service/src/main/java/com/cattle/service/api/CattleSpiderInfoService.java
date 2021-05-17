@@ -1,15 +1,13 @@
 package com.cattle.service.api;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.cattle.entity.CattleSpiderInfo;
 
-public interface CattleSpiderInfoService {
+import java.util.Map;
 
-    CattleSpiderInfo selectById(Integer spiderId);
+public interface CattleSpiderInfoService extends IService<CattleSpiderInfo> {
 
-    int insert(CattleSpiderInfo spiderInfo);
-
-    int updateById(CattleSpiderInfo spiderInfo);
-
-    int delete(Integer spiderId);
+    IPage<CattleSpiderInfo> selectPageList(Integer offset, Integer limit, Map<String,Object> queryParam);
 
 }
