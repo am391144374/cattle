@@ -129,7 +129,7 @@
 				    if(obj.event === 'remove'){
 				        window.remove(obj);
 				    } else if(obj.event === 'edit'){
-						window.ktrId = obj.data['id'];
+						window.spiderId = obj.data['spiderId'];
 				        window.edit(obj);
 				    }
 				});
@@ -140,24 +140,25 @@
 				});
 
 				window.add = function(){
-				    layer.open({
+				   let add = layer.open({
 				        type: 2,
 				        title: '新增',
 				        shade: 0.1,
-				        area: ['500px', '400px'],
+				        // area: ['500px', '400px'],
 				        content: 'add.html'
 				    });
+					layer.full(add);
 				}
 
 
 				window.edit = function(obj){
-				    layer.open({
+				    let edit = layer.open({
 				        type: 2,
 				        title: '修改',
 				        shade: 0.1,
-				        area: ['500px', '400px'],
 				        content: 'edit.html'
 				    });
+					layer.full(edit);
 				}
 
 				window.remove = function(obj){

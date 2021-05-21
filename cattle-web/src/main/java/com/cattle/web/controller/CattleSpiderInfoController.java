@@ -1,14 +1,21 @@
 package com.cattle.web.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cattle.common.util.ResponseUtil;
 import com.cattle.entity.CattleSpiderInfo;
+import com.cattle.entity.module.SpiderTestModule;
 import com.cattle.service.api.CattleSpiderInfoService;
+import com.cattle.web.util.HttpUtl;
+import org.htmlcleaner.HtmlCleaner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import us.codecraft.webmagic.selector.Html;
+import us.codecraft.webmagic.selector.Selectable;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Struct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,4 +67,18 @@ public class CattleSpiderInfoController{
         }
         return ResponseUtil.fail("不存在的Id");
     }
+
+    @PostMapping("/test/listRegex")
+    public Object debugListRegexUrl(@RequestBody SpiderTestModule spiderTestModule){
+        String entryUrl = spiderTestModule.getEntryUrl();
+        if(StrUtil.isBlank(entryUrl)){
+            return ResponseUtil.fail("入口页为空！");
+        }
+        Html baseHtml = HttpUtl.downLoad(entryUrl);
+        Selectable selectable = baseHtml.links().regex(spiderTestModule.getListRegex());
+        return ResponseUtil.success(selectable.all());
+    }
+
+
+
 }

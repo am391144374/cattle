@@ -1,111 +1,248 @@
 <!DOCTYPE html>
-<html lang="en"  xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>kettle新增</title>
-    <link rel="stylesheet" href="../../../component/pear/css/pear.css" />
-</head>
-<body>
-<form class="layui-form" action="">
-    <div class="mainBox">
-        <div class="main-container">
-            <div class="main-container">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">脚本名</label>
-                    <div class="layui-input-block">
-                        <input type="text" name="ktrName" lay-verify="required|title" autocomplete="off" placeholder="请输入脚本名" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-					<label class="layui-form-label">上传脚本</label>
-					<label id="scriptFile" class="pear-btn pear-btn-sm pear-btn-primary layui-icon layui-icon-upload" title="上传脚本"></label>
-					<div class="layui-form-mid layui-word-aux">建议:大小在10m以内,只能上传ktr结尾的文件。</div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">数据库表名</label>
-                    <div class="layui-input-block">
-                        <input type="text"  name="tableName" lay-verify="required|title" autocomplete="off" placeholder="请输入表明" class="layui-input">
-						<div class="layui-form-mid layui-word-aux">提示:表名年份替换值为'tableYearTemplate'</div>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">执行模式</label>
-                    <div class="layui-input-block">
-						<select name="processType" class="layui-select" lay-verify="required">
-							<option value="normal">普通模式</option>
-							<option value="edit">编辑模式</option>
-						</select>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="bottom">
-        <div class="button-container">
-            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" id = "formSubmit" lay-submit="" lay-filter="user-save">
-                <i class="layui-icon layui-icon-ok"></i>
-                提交
-            </button>
-            <button type="reset" class="pear-btn pear-btn-sm">
-                <i class="layui-icon layui-icon-refresh"></i>
-                重置
-            </button>
-        </div>
-    </div>
-</form>
-<script src="../../../component/layui/layui.js"></script>
-<script src="../../../component/pear/pear.js"></script>
-<script>
-layui.use(['form','jquery','upload'],function(){
-    let form = layui.form;
-    let $ = layui.jquery;
-	let upload = layui.upload;
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" href="../../../component/pear/css/pear.css" />
+	</head>
+	<body class="pear-container">
+		<div class="layui-row layui-col-space10">
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<div class="layui-card">
+						<div class="layui-card-body" style="padding-top: 40px;">
+							<div class="layui-carousel" id="stepForm" lay-filter="stepForm" style="margin: 0 auto;">
+								<div carousel-item>
+									<div>
+										<form class="layui-form" action="javascript:void(0);" style="margin: 0 auto;max-width: 540px;padding-top: 40px;">
+											<div class="layui-form-item">
+												<div class="layui-inline">
+													<label class="layui-form-label">爬虫名</label>
+													<div class="layui-input-block">
+														<input type="text" name="spiderName" lay-verify="required|title" autocomplete="off" class="layui-input">
+													</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">数据库表名</label>
+												<div class="layui-input-block">
+													<input type="text"  name="tableName" lay-verify="required|title" autocomplete="off" class="layui-input">
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">xpath解析选型</label>
+												<div class="layui-input-block">
+													<select name="xPathSelection" class="layui-select" lay-verify="required">
+														<option value="0">htmlCleaner</option>
+														<option value="1">xSoup</option>
+													</select>
+													<div class="layui-form-mid layui-word-aux">提示:htmlCleaner 与xpth语法更接近 但比xSoup效率低---xSoup 效率较好，但对Xpath 语法支持不够完善 部分语法不支持</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">入口页Url</label>
+												<div class="layui-input-block">
+													<input type="text" name="entryUrl" autocomplete="off" class="layui-input">
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">列表页正则表达式</label>
+												<div class="layui-input-inline">
+													<input type="text" name="listRegex" autocomplete="off" class="layui-input">
+												</div>
+												<div class="layui-input-inline">
+													<label data-type="listRegex" class="pear-btn pear-btn-sm pear-btn-primary layui-icon layui-icon-website"></label>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">正文页xpath</label>
+												<div class="layui-input-inline">
+													<input type="text" name="contentXpath" autocomplete="off" class="layui-input">
+												</div>
+												<div class="layui-input-inline">
+													<label data-type="contentXpath" class="pear-btn pear-btn-sm pear-btn-primary layui-icon layui-icon-website"></label>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<div class="layui-input-block">
+													<button class="pear-btn pear-btn-success" lay-submit lay-filter="formStep">
+														&emsp;下一步&emsp;
+													</button>
+												</div>
+											</div>
+										</form>
+									</div>
+									<div>
+										<form class="layui-form"  action="javascript:void(0);" style="margin: 0 auto;max-width: 460px;padding-top: 40px;">
+											<div class="layui-form-item">
+												<label class="layui-form-label">线程数</label>
+												<div class="layui-input-block">
+													<input type="text"  name="threadNum" lay-verify="Number" autocomplete="off" class="layui-input">
+												</div>
+											</div>
+											<div>
+												<label class="layui-form-label">睡眠时间</label>
+												<div class="layui-input-block">
+													<input type="text"  name="sleepTime" lay-verify="Number" autocomplete="off" class="layui-input">
+													<div class="layui-form-mid layui-word-aux">提示：每个页面处理完后的睡眠时间 单位秒</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<div class="layui-inline">
+													<label class="layui-form-label">下载页面重试次数</label>
+													<div class="layui-input-block">
+														<input type="text"  name="retryTimes" lay-verify="Number" autocomplete="off" class="layui-input">
+														<div class="layui-form-mid layui-word-aux">提示：页面下载失败重试次数</div>
+													</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">重试睡眠时间</label>
+												<div class="layui-input-block">
+													<input type="text"  name="retrySleepTime" lay-verify="Number" placeholder="单位秒" autocomplete="off" class="layui-input">
+													<div class="layui-form-mid layui-word-aux">提示：单位秒</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">爬取失败后重试次数</label>
+												<div class="layui-input-block">
+													<input type="text"  name="cycleRetryTimes" lay-verify="Number" autocomplete="off" class="layui-input">
+													<div class="layui-form-mid layui-word-aux">提示:页面爬取失败后放回队列的次数</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">下载页面超时时间</label>
+												<div class="layui-input-block">
+													<input type="text"  name="timeOut" lay-verify="Number" autocomplete="off" class="layui-input">
+													<div class="layui-form-mid layui-word-aux">提示:下载页面超时时间 单位秒</div>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<div class="layui-input-block">
+													<button type="button" class="pear-btn pear-btn-success">上一步</button>
+													<button class="pear-btn pear-btn-success" lay-submit lay-filter="formStep2">
+														&emsp;下一步&emsp;
+													</button>
+												</div>
+											</div>
+										</form>
+									</div>
+									<div>
+										<div style="text-align: center;margin-top: 90px;">
+											<i class="layui-icon layui-circle" style="color: white;font-size:30px;font-weight:bold;background: #52C41A;padding: 20px;line-height: 80px;">&#xe605;</i>
+											<div style="font-size: 24px;color: #333;font-weight: 500;margin-top: 30px;">
+												入款成功
+											</div>
+											<div style="font-size: 14px;color: #666;margin-top: 20px;">预计两小时到账</div>
+										</div>
+										<div style="text-align: center;margin-top: 50px;">
+											<button class="pear-btn pear-btn-success next">再入一笔</button>
+											<button class="pear-btn pear-btn-success">查看账单</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="../../../component/layui/layui.js"></script>
+		<script src="../../../component/pear/pear.js"></script>
+		<script>
+			layui.use(['loading','form','jquery','step','code','element','notice'], function() {
+				let $ = layui.jquery,
+				form = layui.form,
+				step = layui.step,
+				notice = layui.notice,
+				loading = layui.loading;
 
-	let scriptFile;
+				layui.code();
 
-    let uploadInst = upload.render({
-	    elem: '#scriptFile',
-	    url: '/upload', //改成您自己的上传接口
-	    auto: true,
-		accept:'file',
-		exts: 'ktr',
-	    done: function(res){
-			if(res.code === 0){
-                scriptFile = res.data.scriptFile;
-                $("#scriptFile").val(scriptFile);
-                layer.msg("上传成功");
-			}
-	    }
-	  });
+				form.on('submit(user-save)', function(data){
+					loading.load(1,"保存中");
+					$.ajax({
+						url:'/spider/add',
+						data:JSON.stringify(data.field),
+						dataType:'json',
+						contentType:'application/json',
+						type:'post',
+						success:function(result) {
+							loading.loadRemove();
+							if (result.code == 0) {
+								layer.msg(result.message, {icon: 1, time: 1000}, function () {
+									parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+									parent.layui.table.reload("list-table");
+								});
+							} else {
+								layer.msg(result.message, {icon: 2, time: 1000});
+							}
+						}
+					})
+					return false;
+				});
 
-    form.on('submit(user-save)', function(data){
+				step.render({
+					elem: '#stepForm',
+					filter: 'stepForm',
+					width: '100%',
+					stepWidth: '600px',
+					height: '800px',
+					stepItems: [{
+						title: '基本信息填写'
+					}, {
+						title: '请求信息填写'
+					}, {
+						title: '字段信息填写'
+					}]
+				});
 
-        if(scriptFile != undefined){
-            data.field.scriptFile = scriptFile;
-        }
+				form.on('submit(formStep)', function(data) {
+					step.next('#stepForm');
+					return false;
+				});
 
-        $.ajax({
-            url:'/ktr/add',
-            data:JSON.stringify(data.field),
-            dataType:'json',
-            contentType:'application/json',
-            type:'post',
-            success:function(result){
-                if(result.code == 0){
-                    layer.msg(result.message,{icon:1,time:1000},function(){
-                        parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
-                        parent.layui.table.reload("list-table");
-                    });
-                }else{
-                    layer.msg(result.message,{icon:2,time:1000});
-                }
-            }
-        })
-        return false;
-    });
-})
-</script>
-<script>
-</script>
-</body>
+				form.on('submit(formStep2)', function(data) {
+					step.next('#stepForm');
+					return false;
+				});
+
+				$('.pre').click(function() {
+					step.pre('#stepForm');
+					return false;
+				});
+
+				$('.next').click(function() {
+					step.next('#stepForm');
+				    return false;
+				});
+
+				$("body").on("click", "[data-type]", function() {
+					let type = $(this).attr("data-type");
+					let entryUrl = $("[name = 'entryUrl']")[0].value;
+					let obj = new Object();
+					obj['entryUrl'] = entryUrl;
+					if(type == 'listRegex'){
+						let input = $("[name = 'listRegex']");
+						let listRegex = input[0].value;
+						obj['listRegex'] = listRegex;
+						$.ajax({
+							url:'/spider/test/listRegex',
+							data:JSON.stringify(obj),
+							dataType:'json',
+							contentType:'application/json',
+							type:'post',
+							success:function(result) {
+								if (result.code == 0) {
+									layer.msg(result.data, {icon: 1, time: 1000});
+								} else {
+									layer.msg(result.message, {icon: 2, time: 1000});
+								}
+							}
+						})
+					}
+				});
+			})
+		</script>
+	</body>
 </html>
