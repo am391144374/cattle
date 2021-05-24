@@ -42,13 +42,13 @@
 											<div class="layui-form-item">
 												<label class="layui-form-label">入口页Url</label>
 												<div class="layui-input-block">
-													<input type="text" name="entryUrl" autocomplete="off" class="layui-input">
+													<input type="text" name="entryUrl" lay-verify="required|title" autocomplete="off" class="layui-input">
 												</div>
 											</div>
 											<div class="layui-form-item">
 												<label class="layui-form-label">列表页正则表达式</label>
-												<div class="layui-input-inline">
-													<input type="text" name="listRegex" autocomplete="off" class="layui-input">
+												<div class="layui-input-inline" style="width:60%">
+													<input type="text" name="listRegex" lay-verify="required|title" autocomplete="off" class="layui-input">
 												</div>
 												<div class="layui-input-inline">
 													<label data-type="listRegex" class="pear-btn pear-btn-sm pear-btn-primary layui-icon layui-icon-website"></label>
@@ -56,8 +56,11 @@
 											</div>
 											<div class="layui-form-item">
 												<label class="layui-form-label">正文页xpath</label>
-												<div class="layui-input-inline">
+												<div class="layui-input-inline" style="width:60%">
 													<input type="text" name="contentXpath" autocomplete="off" class="layui-input">
+												</div>
+												<div class="layui-input-inline">
+													<label data-type="contentXpath" class="pear-btn pear-btn-sm pear-btn-primary layui-icon layui-icon-website"></label>
 												</div>
 											</div>
 											<div class="layui-form-item">
@@ -74,13 +77,13 @@
 											<div class="layui-form-item">
 												<label class="layui-form-label">线程数</label>
 												<div class="layui-input-block">
-													<input type="text"  name="threadNum" lay-verify="Number" autocomplete="off" class="layui-input">
+													<input type="text"  name="threadNum" lay-verify="number" autocomplete="off" class="layui-input">
 												</div>
 											</div>
 											<div>
 												<label class="layui-form-label">睡眠时间</label>
 												<div class="layui-input-block">
-													<input type="text"  name="sleepTime" lay-verify="Number" autocomplete="off" class="layui-input">
+													<input type="text"  name="sleepTime" lay-verify="number" autocomplete="off" class="layui-input">
 													<div class="layui-form-mid layui-word-aux">提示：每个页面处理完后的睡眠时间 单位秒</div>
 												</div>
 											</div>
@@ -88,7 +91,7 @@
 												<div class="layui-inline">
 													<label class="layui-form-label">下载页面重试次数</label>
 													<div class="layui-input-block">
-														<input type="text"  name="retryTimes" lay-verify="Number" autocomplete="off" class="layui-input">
+														<input type="text"  name="retryTimes" lay-verify="number" autocomplete="off" class="layui-input">
 														<div class="layui-form-mid layui-word-aux">提示：页面下载失败重试次数</div>
 													</div>
 												</div>
@@ -96,21 +99,21 @@
 											<div class="layui-form-item">
 												<label class="layui-form-label">重试睡眠时间</label>
 												<div class="layui-input-block">
-													<input type="text"  name="retrySleepTime" lay-verify="Number" placeholder="单位秒" autocomplete="off" class="layui-input">
+													<input type="text"  name="retrySleepTime" lay-verify="number" placeholder="单位秒" autocomplete="off" class="layui-input">
 													<div class="layui-form-mid layui-word-aux">提示：单位秒</div>
 												</div>
 											</div>
 											<div class="layui-form-item">
 												<label class="layui-form-label">爬取失败后重试次数</label>
 												<div class="layui-input-block">
-													<input type="text"  name="cycleRetryTimes" lay-verify="Number" autocomplete="off" class="layui-input">
+													<input type="text"  name="cycleRetryTimes" lay-verify="number" autocomplete="off" class="layui-input">
 													<div class="layui-form-mid layui-word-aux">提示:页面爬取失败后放回队列的次数</div>
 												</div>
 											</div>
 											<div class="layui-form-item">
 												<label class="layui-form-label">下载页面超时时间</label>
 												<div class="layui-input-block">
-													<input type="text"  name="timeOut" lay-verify="Number" autocomplete="off" class="layui-input">
+													<input type="text"  name="timeOut" lay-verify="number" autocomplete="off" class="layui-input">
 													<div class="layui-form-mid layui-word-aux">提示:下载页面超时时间 单位秒</div>
 												</div>
 											</div>
@@ -135,6 +138,7 @@
 													<tr>
 														<td lay-data="{field:'key',width:100,edit:'text'}">字段名</td>
 														<td lay-data="{field:'value',edit:'text'}">XPath规则</td>
+														<td lay-data="{width:100,templet:'#field-row-bar'}">操作</td>
 													</tr>
 													</thead>
 												</table>
@@ -146,35 +150,23 @@
 											<div class="layui-form-item">
 												<table id="content-table" lay-filter="content-table" lay-data="{toolbar:'#contentToolbar',skin:'line',width:700,id:'content-table'}">
 													<thead>
-													<tr>
-														<td lay-data="{field:'key',width:100,edit:'text'}">字段名</td>
-														<td lay-data="{field:'value',edit:'text'}">XPath规则</td>
-													</tr>
+														<tr>
+															<td lay-data="{field:'key',width:100,edit:'text'}">字段名</td>
+															<td lay-data="{field:'value',edit:'text'}">XPath规则</td>
+															<td lay-data="{width:100,templet:'#content-row-bar'}">操作</td>
+														</tr>
 													</thead>
 												</table>
 											</div>
 											<div class="layui-form-item">
 												<div class="layui-input-block">
 													<button type="button" class="pear-btn pear-btn-success pre">上一步</button>
-													<button class="pear-btn pear-btn-success" lay-submit lay-filter="formStep3">
-														&emsp;下一步&emsp;
+													<button class="pear-btn pear-btn-success" lay-submit lay-filter="step-save">
+														&emsp;保存&emsp;
 													</button>
 												</div>
 											</div>
 										</form>
-									</div>
-									<div>
-										<div style="text-align: center;margin-top: 90px;">
-											<i class="layui-icon layui-circle" style="color: white;font-size:30px;font-weight:bold;background: #52C41A;padding: 20px;line-height: 80px;">&#xe605;</i>
-											<div style="font-size: 24px;color: #333;font-weight: 500;margin-top: 30px;">
-												入款成功
-											</div>
-											<div style="font-size: 14px;color: #666;margin-top: 20px;">预计两小时到账</div>
-										</div>
-										<div style="text-align: center;margin-top: 50px;">
-											<button class="pear-btn pear-btn-success next">再入一笔</button>
-											<button class="pear-btn pear-btn-success">查看账单</button>
-										</div>
 									</div>
 								</div>
 							</div>
@@ -194,6 +186,14 @@
 			<div class="layui-btn-container">
 				<button class="layui-btn layui-btn-sm" lay-event="addContentRow">新增行</button>
 			</div>
+		</script>
+		<script type="text/html" id="field-row-bar">
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="debug"><i class="layui-icon layui-icon-website"></i></button>
+			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
+		</script>
+		<script type="text/html" id="content-row-bar">
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="debug"><i class="layui-icon layui-icon-website"></i></button>
+			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
 		</script>
 		<script>
 			layui.use(['loading','form','jquery','step','code','element','notice','table'], function() {
@@ -233,11 +233,19 @@
 					});
 				});
 
-				form.on('submit(user-save)', function(data){
-					loading.load(1,"保存中");
+				form.on('submit(step-save)', function(data){
+					loading.Load(1,"");
+					let fieldTableData = table.getData('field-table');
+					let contentTableData = table.getData('content-table');
+					let stepForm1Data = form.val("stepForm1");
+					let stepForm2Data = form.val("stepForm2");
+					let obj = $.extend(stepForm1Data,stepForm2Data);
+					obj.fieldsJson = JSON.stringify(fieldTableData);
+					obj.contentFieldsJson = JSON.stringify(contentTableData);
+					obj.spiderId = spiderId;
 					$.ajax({
-						url:'/spider/add',
-						data:JSON.stringify(data.field),
+						url:'/spider/edit',
+						data:JSON.stringify(obj),
 						dataType:'json',
 						contentType:'application/json',
 						type:'post',
@@ -249,7 +257,8 @@
 									parent.layui.table.reload("list-table");
 								});
 							} else {
-								layer.msg(result.message, {icon: 2, time: 1000});
+								notice.error(result.message);
+								// layer.msg(result.message, {icon: 2, time: 1000});
 							}
 						}
 					})
@@ -268,8 +277,6 @@
 						title: '请求信息填写'
 					}, {
 						title: '字段信息填写'
-					},{
-						title: "结果"
 					}]
 				});
 
@@ -301,14 +308,95 @@
 				table.on('toolbar(field-table)',function(obj){
 					if(obj.event === 'addFieldRow'){
 						window.addFieldRow();
-					}else if(obj.event === 'addContentRow'){
+					}
+				});
+
+				table.on('toolbar(content-table)',function(obj){
+					if(obj.event === 'addContentRow'){
 						window.addContentRow();
 					}
 				});
 
+				table.on('tool(field-table)',function (obj){
+					if(obj.event === 'debug'){
+						notice.info("debug");
+						window.fieldDebug(obj,"listField");
+					}else if(obj.event === 'remove'){
+						notice.info("remove");
+						window.fieldTableRemove(obj);
+					}
+				});
+
+				table.on('tool(content-table)',function (obj){
+					if(obj.event === 'debug'){
+						notice.info("debug");
+						window.fieldDebug(obj,"contentField");
+					}else if(obj.event === 'remove'){
+						notice.info("remove");
+						window.contentFieldTableRemove(obj);
+					}
+				});
+
+				window.fieldTableRemove = function (obj){
+					let oldData = table.cache['field-table'];
+					for(let i = 0 ; i < oldData.length ; i++){
+						if(oldData[i].value == obj.data.value){
+							oldData.splice(i,1);
+						}
+					}
+					table.reload('field-table',{
+						data : oldData
+					});
+				}
+
+				window.contentFieldTableRemove = function (obj){
+					let oldData = table.cache['content-table'];
+					for(let i = 0 ; i < oldData.length ; i++){
+						if(oldData[i].value == obj.data.value){
+							oldData.splice(i,1);
+						}
+					}
+					table.reload('content-table',{
+						data : oldData
+					});
+				}
+
+				window.fieldDebug = function (obj,type){
+					let object = new Object();
+					let selectXPath = $("[name = 'xPathSelection']")[0].value;
+					let entryUrl = $("[name = 'entryUrl']")[0].value;
+					object['entryUrl'] = entryUrl;
+					object['xpathSelection'] = selectXPath;
+					if(type == 'listField'){
+						object['listFieldXPath'] = obj.data.value;
+					}else{
+						object['contentXpath'] = $("[name = 'contentXpath']")[0].value;
+						object['contentFieldXPath'] = obj.data.value;
+					}
+					$.ajax({
+						url:'/spider/test/'+type,
+						data:JSON.stringify(object),
+						dataType:'json',
+						contentType:'application/json',
+						type:'post',
+						success:function(result) {
+							let str = result.data.toString().replaceAll(",","<br>")
+							if (result.code == 0) {
+								layer.open({
+									title: '测试结果',
+									area:'500px',
+									content:str
+								});
+							} else {
+								notice.error(result.message);
+								// layer.msg(result.message, {icon: 2, time: 1000});
+							}
+						}
+					})
+				}
+
 				window.addFieldRow = function(){
 					var oldData = table.cache['field-table'];
-					console.log(oldData);
 					var newRow = {'key':'','value':''};
 					oldData.push(newRow);
 					table.reload('field-table',{
@@ -316,47 +404,49 @@
 					});
 				}
 
-				window.addContentRow = function(){
+				window.addContentRow = function() {
 					var oldData = table.cache['content-table'];
-					console.log(oldData);
-					var newRow = {'key':'','value':''};
+					var newRow = {'key': '', 'value': ''};
 					oldData.push(newRow);
-					table.reload('content-table',{
-						data : oldData
+					table.reload('content-table', {
+						data: oldData
 					});
 				}
 
+
 				$("body").on("click", "[data-type]", function() {
 					let type = $(this).attr("data-type");
-					let entryUrl = $("[name = 'entryUrl']")[0].value;
 					let obj = new Object();
-					obj['entryUrl'] = entryUrl;
+					obj['entryUrl'] = $("[name = 'entryUrl']")[0].value;
+					obj['xpathSelection'] = $("[name = 'xPathSelection']")[0].value;
 					if(type == 'listRegex'){
-						let input = $("[name = 'listRegex']");
-						let listRegex = input[0].value;
-						obj['listRegex'] = listRegex;
-						$.ajax({
-							url:'/spider/test/listRegex',
-							data:JSON.stringify(obj),
-							dataType:'json',
-							contentType:'application/json',
-							type:'post',
-							success:function(result) {
-								let str = result.data.toString().replaceAll(",","<br>")
-								if (result.code == 0) {
-									layer.open({
-										title: '结构',
-										offset:'50px',
-										content:str
-									});
-								} else {
-									layer.msg(result.message, {icon: 2, time: 1000});
-								}
-							}
-						})
+						obj['listRegex'] = $("[name = 'listRegex']")[0].value;
+					}else{
+						obj['contentXpath'] = $("[name = 'contentXpath']")[0].value;
 					}
+
+					$.ajax({
+						url:'/spider/test/'+type,
+						data:JSON.stringify(obj),
+						dataType:'json',
+						contentType:'application/json',
+						type:'post',
+						success:function(result) {
+							let str = result.data.toString().replaceAll(",","<br>")
+							if (result.code == 0) {
+								layer.open({
+									title: '测试结果',
+									area:'500ox',
+									content:str
+								});
+							} else {
+								notice.error(result.message);
+								// layer.msg(result.message, {icon: 2, time: 1000});
+							}
+						}
+					})
 				});
-			})
+			});
 		</script>
 	</body>
 </html>

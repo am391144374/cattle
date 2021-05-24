@@ -96,11 +96,15 @@ public class DefaultHttpClientDownloader extends AbstractDownloader {
             return page;
         }catch (SocketTimeoutException | ConnectTimeoutException e){
             logger.warn("download page {} time out", request.getUrl(), e);
-            processContext.putWarn(this,e);
+            if(processContext != null){
+                processContext.putWarn(this,e);
+            }
             return page;
         } catch (IOException e) {
             logger.warn("download page {} error", request.getUrl(), e);
-            processContext.putError(this,e);
+            if(processContext != null){
+                processContext.putError(this,e);
+            }
             return page;
         } finally {
             if (httpResponse != null) {

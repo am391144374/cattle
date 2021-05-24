@@ -12,6 +12,12 @@ public class SpiderTestModule {
     /** 列表页正则表达式 */
     private String listRegex;
 
+    /** xpath 解析选型 0 - htmlCleaner，1 - xSoup */
     private Integer xPathSelection;
+
+    /** 列表页字段xpath */
+    private String listFieldXPath;
+    /** 正文页字段xpath */
+    private String contentFieldXPath;
 
 }

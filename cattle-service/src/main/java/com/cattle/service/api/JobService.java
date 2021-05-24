@@ -13,4 +13,9 @@ public interface JobService {
 
     IPage<CattleJob> selectPage(Integer offset, Integer limit, Map<String,Object> queryMap);
 
+    int insert(CattleJob cattleJob);
+
+    int updateById(CattleJob cattleJob);
+
+    int delete(Integer jobId);
 }

@@ -81,4 +81,19 @@ public class JobServiceImpl implements JobService {
         return jobMapper.selectPage(page,queryWrapper);
     }
 
+    @Override
+    public int insert(CattleJob cattleJob) {
+        return jobMapper.insert(cattleJob);
+    }
+
+    @Override
+    public int updateById(CattleJob cattleJob) {
+        return jobMapper.updateById(cattleJob);
+    }
+
+    @Override
+    public int delete(Integer jobId) {
+        return jobMapper.deleteById(jobId);
+    }
+
 }

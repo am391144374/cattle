@@ -7,6 +7,7 @@ import com.cattle.entity.CattleJob;
 import com.cattle.service.api.JobService;
 import com.cattle.web.CattleRun;
 import lombok.extern.slf4j.Slf4j;
+import org.antlr.stringtemplate.language.Cat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
@@ -55,6 +56,30 @@ public class CattleJobController {
         }
         IPage page = jobService.selectPage(offset,limit,queryMap);
         return ResponseUtil.success(page);
+    }
+
+    @PostMapping("/add")
+    public Object add(@RequestBody CattleJob cattleJob){
+        if(jobService.insert(cattleJob) > 0){
+            return ResponseUtil.success("");
+        }
+        return ResponseUtil.fail("保存失败！");
+    }
+
+    @PostMapping("/edit")
+    public Object edit(@RequestBody CattleJob cattleJob){
+        if(jobService.updateById(cattleJob) > 0){
+            return ResponseUtil.success("");
+        }
+        return ResponseUtil.fail("更新失败！");
+    }
+
+    @DeleteMapping("/delete/{jobId}")
+    public Object delete(@PathVariable Integer jobId){
+        if(jobService.delete(jobId) > 0){
+            return ResponseUtil.success("");
+        }
+        return ResponseUtil.fail("删除失败！");
     }
 
 }

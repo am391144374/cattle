@@ -1,6 +1,7 @@
 package com.cattle.component.spider.parse;
 
 import us.codecraft.webmagic.Page;
+import us.codecraft.webmagic.selector.Html;
 
 import java.util.List;
 
@@ -16,5 +17,10 @@ public class XsoupParse implements XpathParse{
     @Override
     public void setPage(Page page) {
         this.page = page;
+    }
+
+    @Override
+    public List<String> xpath(Html baseHtml, String xpath) throws Exception {
+        return baseHtml.xpath(xpath).all();
     }
 }

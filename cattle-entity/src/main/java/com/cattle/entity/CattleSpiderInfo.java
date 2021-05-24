@@ -96,7 +96,7 @@ public class CattleSpiderInfo {
     private Date createTime;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @TableField
+    @TableField(update="now()",fill = FieldFill.UPDATE)
     private Date modifyTime;
 
     /**
