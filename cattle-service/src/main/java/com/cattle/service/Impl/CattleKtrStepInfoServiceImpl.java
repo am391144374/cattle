@@ -3,7 +3,7 @@ package com.cattle.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cattle.entity.CattleKtrStep;
+import com.cattle.common.entity.CattleKtrStep;
 import com.cattle.mapper.CattleKtrStepInfoMapper;
 import com.cattle.service.api.CattleKtrStepInfoService;
 import org.springframework.stereotype.Service;

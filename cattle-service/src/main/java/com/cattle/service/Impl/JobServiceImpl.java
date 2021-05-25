@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.cattle.entity.*;
+import com.cattle.common.entity.*;
 import com.cattle.mapper.JobMapper;
 import com.cattle.service.api.*;
 import org.springframework.beans.factory.annotation.Autowired;

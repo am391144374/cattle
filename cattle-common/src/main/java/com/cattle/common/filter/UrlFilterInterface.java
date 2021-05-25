@@ -1,4 +1,4 @@
-package com.cattle.component.spider.filter;
+package com.cattle.common.filter;
 
 /**
  * url 过滤接口

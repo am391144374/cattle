@@ -1,9 +1,11 @@
-package com.cattle.entity;
+package com.cattle.common.entity;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.*;
+import com.cattle.common.filter.RedisBloomFilter;
+import com.cattle.common.filter.UrlFilterInterface;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiModel;
@@ -134,6 +136,13 @@ public class CattleSpiderInfo {
             map.put(field.get("key").toString(), field.get("value").toString());
         }
         return map;
+    }
+
+    public UrlFilterInterface getUrlFilter(){
+        if("1".equals(scanUrlType)){
+            return new RedisBloomFilter();
+        }
+        return null;
     }
 
 }

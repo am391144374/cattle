@@ -2,7 +2,7 @@ package com.cattle.component.spider.process;
 
 import cn.hutool.core.util.StrUtil;
 import com.cattle.common.ItemsHelper;
-import com.cattle.component.spider.filter.UrlFilterInterface;
+import com.cattle.common.filter.UrlFilterInterface;
 import com.cattle.component.spider.parse.HtmlCleanerParse;
 import com.cattle.component.spider.parse.XsoupParse;
 import com.cattle.component.spider.SpiderConfig;
@@ -51,14 +51,12 @@ public class PageTargetProcess implements PageProcessor {
             //url过滤
             if(urlFilter != null && spiderConfig.getScanUrlType() == 1){
                 String key = URL_FILTER_KEY + processContext.getJobId();
-                Iterator<String> urls = scanUrls.iterator();
-                while (urls.hasNext()){
-                    String url = urls.next();
-                    if(urlFilter.exist(url,key)){
-                        urls.remove();
-                    }else{
-                        urlFilter.add(url,key);
-                    }
+                String url = page.getUrl().get();
+                if(urlFilter.exist(url,key)){
+                    //判断当前页是否已经处理过，已经处理过直接返回
+                    return;
+                }else{
+                    urlFilter.add(url,key);
                 }
             }
 

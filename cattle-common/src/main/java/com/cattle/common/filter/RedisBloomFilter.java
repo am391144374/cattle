@@ -1,4 +1,4 @@
-package com.cattle.component.spider.filter;
+package com.cattle.common.filter;
 
 import cn.hutool.bloomfilter.BitSetBloomFilter;
 import cn.hutool.extra.spring.SpringUtil;

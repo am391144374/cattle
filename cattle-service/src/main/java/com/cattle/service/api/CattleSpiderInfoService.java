@@ -2,7 +2,7 @@ package com.cattle.service.api;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.cattle.entity.CattleSpiderInfo;
+import com.cattle.common.entity.CattleSpiderInfo;
 
 import java.util.Map;
 

@@ -3,8 +3,14 @@ package com.cattle.common;
 import java.util.*;
 
 /**
- * todo 目前在列表页和正文页拼接字段
- * 正文页拼接数据处理
+ *
+ * 页数据处理
+ *
+ * 设置三级缓存
+ * 一级缓存为了拼接正文页字段与列表页字段匹配正确
+ * 二级缓存为拼接完成可保存数据 做中间缓存层，防止保存完成后删除缓存导致把为保存数据直接保存的问题
+ * 三级缓存为可保存数据，保存完后直接清除，不占用内存
+ *
  */
 public class ItemsHelper {
 
@@ -12,6 +18,14 @@ public class ItemsHelper {
      * 根据正文页的url保存列表页的数据
      */
     public static Map<Long /* batchId */,Map<String /* contentUrl */,LinkedHashMap<String, String> /* list field */>> pageFields = new HashMap<>();
+
+    /**
+     * 中间缓冲层
+     */
+    public static Map<Long /* batchId */,Map<String /* contentUrl */,LinkedHashMap<String, String> /* list field */>> cachePageFields = new HashMap<>();
+
+    /** 可直接保存的页数据 */
+    public static Map<Long /* batchId */,Map<String /* contentUrl */,LinkedHashMap<String, String> /* list field */>> storagePageFields = new HashMap<>();
 
     /**
      * 新增content数据

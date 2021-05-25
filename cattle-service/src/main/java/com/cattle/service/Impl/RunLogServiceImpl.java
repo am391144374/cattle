@@ -2,7 +2,7 @@ package com.cattle.service.Impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cattle.common.enums.JobStatus;
-import com.cattle.entity.CattleRunLog;
+import com.cattle.common.entity.CattleRunLog;
 import com.cattle.mapper.RunLogMapper;
 import com.cattle.service.api.RunLogService;
 import org.springframework.stereotype.Service;

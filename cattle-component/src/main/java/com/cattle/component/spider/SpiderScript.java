@@ -4,13 +4,12 @@ import cn.hutool.core.bean.BeanUtil;
 import com.cattle.common.JobContextHelper;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.plugin.ExecuteScriptInterface;
-import com.cattle.component.spider.filter.RedisBloomFilter;
 import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
 import com.cattle.component.spider.handler.SpiderProcessHandler;
 import com.cattle.common.plugin.ProcessScript;
 import com.cattle.common.context.ProcessContext;
-import com.cattle.entity.CattleJob;
-import com.cattle.entity.CattleSpiderInfo;
+import com.cattle.common.entity.CattleJob;
+import com.cattle.common.entity.CattleSpiderInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,9 +47,6 @@ public class SpiderScript extends ProcessScript implements ExecuteScriptInterfac
 
     public void buildSpiderScript(){
         SpiderProcessHandler spiderProcess = new SpiderProcessHandler();
-        if(spiderConfig.getScanUrlType() == 1){
-            spiderProcess.setUrlFilter(new RedisBloomFilter());
-        }
         SpiderMonitorProcessHandler monitorProcess = new SpiderMonitorProcessHandler();
 
         addLastProcess(spiderProcess);
@@ -63,6 +59,7 @@ public class SpiderScript extends ProcessScript implements ExecuteScriptInterfac
         CattleSpiderInfo cattleSpiderInfo = job.getSpiderInfo();
         BeanUtil.copyProperties(cattleSpiderInfo,spiderConfig,true);
         spiderConfig.setBatchId(job.getBatchId());
+        spiderConfig.setUrlFilterInterface(cattleSpiderInfo.getUrlFilter());
         this.spiderConfig = spiderConfig;
     }
 

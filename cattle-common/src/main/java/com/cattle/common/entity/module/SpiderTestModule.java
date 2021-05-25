@@ -1,4 +1,4 @@
-package com.cattle.entity.module;
+package com.cattle.common.entity.module;
 
 import lombok.Data;
 

@@ -2,7 +2,7 @@ package com.cattle.service.api;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.cattle.entity.CattleKtrStep;
+import com.cattle.common.entity.CattleKtrStep;
 
 import java.util.List;
 

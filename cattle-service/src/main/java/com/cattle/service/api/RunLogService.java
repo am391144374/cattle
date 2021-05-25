@@ -2,7 +2,7 @@ package com.cattle.service.api;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cattle.common.enums.JobStatus;
-import com.cattle.entity.CattleRunLog;
+import com.cattle.common.entity.CattleRunLog;
 
 public interface RunLogService extends IService<CattleRunLog> {
     /**

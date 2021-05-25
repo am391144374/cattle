@@ -1,4 +1,4 @@
-package com.cattle.entity;
+package com.cattle.common.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;

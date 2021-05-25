@@ -1,7 +1,7 @@
 package com.cattle.service.api;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.cattle.entity.CattleJob;
+import com.cattle.common.entity.CattleJob;
 
 import java.util.Map;
 

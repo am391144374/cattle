@@ -1,6 +1,7 @@
 package com.cattle.common.plugin;
 
-import com.cattle.entity.CattleJob;
+
+import com.cattle.common.entity.CattleJob;
 
 public interface ExecuteScriptInterface extends Runnable {
 

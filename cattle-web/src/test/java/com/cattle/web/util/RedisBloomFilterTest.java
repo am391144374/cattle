@@ -1,8 +1,8 @@
 package com.cattle.web.util;
 
 import cn.hutool.core.util.IdUtil;
-import com.cattle.component.spider.filter.RedisBloomFilter;
-import com.cattle.component.spider.filter.UrlFilterInterface;
+import com.cattle.common.filter.RedisBloomFilter;
+import com.cattle.common.filter.UrlFilterInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

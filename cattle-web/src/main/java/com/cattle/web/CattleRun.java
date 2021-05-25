@@ -11,7 +11,7 @@ import com.cattle.common.enums.JobStatus;
 import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.common.plugin.ExtensionComponentLoader;
 import com.cattle.component.spider.SpiderConfig;
-import com.cattle.entity.CattleJob;
+import com.cattle.common.entity.CattleJob;
 import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.RunLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -157,10 +157,10 @@ public class CattleRun implements Closeable {
                                 warnsFin.forEach(warn -> {
                                     warnStrFin.append(warn);
                                 });
-                                runLogService.updateResult(batchId,context.getSuccessCount(),0,null,warnsFin.size(),warnStrFin.toString(),JobStatus.FINISH);
                                 if("spider".equals(context.getScriptType())){
                                     storage(context);
                                 }
+                                runLogService.updateResult(batchId,context.getSuccessCount(),0,null,warnsFin.size(),warnStrFin.toString(),JobStatus.FINISH);
                                 JobContextHelper.remove(batchId);
                                 ItemsHelper.remove(batchId);
                                 break;

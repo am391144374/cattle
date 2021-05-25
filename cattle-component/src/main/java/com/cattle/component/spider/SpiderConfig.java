@@ -3,6 +3,7 @@ package com.cattle.component.spider;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.cattle.common.filter.UrlFilterInterface;
 import com.google.common.base.Strings;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -69,6 +70,8 @@ public class SpiderConfig {
 
     @ApiModelProperty(notes = "url 扫描类型   0 - 全量，1 - 增量")
     private Integer scanUrlType;
+
+    private UrlFilterInterface urlFilterInterface;
 
     /**
      * key - 字段名

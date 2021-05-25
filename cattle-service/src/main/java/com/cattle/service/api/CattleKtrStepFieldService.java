@@ -1,7 +1,7 @@
 package com.cattle.service.api;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.cattle.entity.CattleKtrField;
+import com.cattle.common.entity.CattleKtrField;
 
 import java.util.List;
 

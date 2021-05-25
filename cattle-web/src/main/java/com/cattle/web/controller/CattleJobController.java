@@ -3,17 +3,14 @@ package com.cattle.web.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cattle.common.util.ResponseUtil;
-import com.cattle.entity.CattleJob;
+import com.cattle.common.entity.CattleJob;
 import com.cattle.service.api.JobService;
 import com.cattle.web.CattleRun;
 import lombok.extern.slf4j.Slf4j;
-import org.antlr.stringtemplate.language.Cat;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,9 +1,9 @@
 package com.cattle.web;
 
 import com.cattle.common.enums.JobStatus;
-import com.cattle.entity.CattleJob;
-import com.cattle.entity.CattleRunLog;
-import com.cattle.entity.CattleSpiderInfo;
+import com.cattle.common.entity.CattleJob;
+import com.cattle.common.entity.CattleRunLog;
+import com.cattle.common.entity.CattleSpiderInfo;
 import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.JobService;
 import com.cattle.service.api.RunLogService;
