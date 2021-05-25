@@ -15,6 +15,7 @@ public class RedisBloomFilter implements UrlFilterInterface{
 
     public RedisBloomFilter(){
         redisTemplate = SpringUtil.getBean("redisTemplate");
+        hashFunctionNum = 4;
     }
 
     //hash方法数量
@@ -52,10 +53,10 @@ public class RedisBloomFilter implements UrlFilterInterface{
         });
 
         /**
-         * 结果有false则代表不存在
+         * 结果有true则存在
          */
         for(Object o : resultList){
-            if((boolean)o == false){
+            if((boolean)o == true){
                 flag = true;
                 break;
             }
@@ -77,7 +78,7 @@ public class RedisBloomFilter implements UrlFilterInterface{
         });
 
         for(Object o : resultList){
-            if((boolean)o == false){
+            if((boolean)o == true){
                 flag = true;
                 break;
             }

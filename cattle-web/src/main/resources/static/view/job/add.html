@@ -16,33 +16,12 @@
                         <input type="text" name="ktrName" lay-verify="required|title" autocomplete="off" placeholder="请输入脚本名" class="layui-input">
                     </div>
                 </div>
-                <div class="layui-form-item">
-					<label class="layui-form-label">上传脚本</label>
-					<label id="scriptFile" class="pear-btn pear-btn-sm pear-btn-primary layui-icon layui-icon-upload" title="上传脚本"></label>
-					<div class="layui-form-mid layui-word-aux">建议:大小在10m以内,只能上传ktr结尾的文件。</div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">数据库表名</label>
-                    <div class="layui-input-block">
-                        <input type="text"  name="tableName" lay-verify="required|title" autocomplete="off" placeholder="请输入表明" class="layui-input">
-						<div class="layui-form-mid layui-word-aux">提示:表名年份替换值为'tableYearTemplate'</div>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">执行模式</label>
-                    <div class="layui-input-block">
-						<select name="processType" class="layui-select" lay-verify="required">
-							<option value="normal">普通模式</option>
-							<option value="edit">编辑模式</option>
-						</select>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
     <div class="bottom">
         <div class="button-container">
-            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" id = "formSubmit" lay-submit="" lay-filter="user-save">
+            <button type="submit" class="pear-btn pear-btn-primary pear-btn-sm" id = "formSubmit" lay-submit="" lay-filter="job-save">
                 <i class="layui-icon layui-icon-ok"></i>
                 提交
             </button>
@@ -60,7 +39,7 @@ layui.use(['form','jquery'],function(){
     let form = layui.form;
     let $ = layui.jquery;
 
-    form.on('submit(user-save)', function(data){
+    form.on('submit(job-save)', function(data){
 
         $.ajax({
             url:'/job/add',
