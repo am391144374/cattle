@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -30,8 +31,10 @@ public class CattleRunLog {
     private Integer warnCount;
     @TableField
     private String warnText;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField
     private Date startTime;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @TableField
     private Date endTime;
 

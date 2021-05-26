@@ -1,8 +1,10 @@
 package com.cattle.service.api;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cattle.common.entity.CattleKtrInfo;
 
+import java.util.List;
 import java.util.Map;
 
 public interface CattleKtrInfoService {
@@ -16,4 +18,6 @@ public interface CattleKtrInfoService {
     int updateById(CattleKtrInfo cattleKtrInfo);
 
     int delete(Integer id);
+
+    List<CattleKtrInfo> list(QueryWrapper<CattleKtrInfo> queryWrapper);
 }

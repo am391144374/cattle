@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>kettle采集</title>
+		<link rel="stylesheet" href="../../component/pear/css/pear.css"/>
+	</head>
+	<body class="pear-container">
+<!--		<div class="layui-card">-->
+<!--			<div class="layui-card-body">-->
+<!--				<form class="layui-form" action="">-->
+<!--					<div class="layui-form-item">-->
+
+<!--						<div class="layui-form-item layui-inline">-->
+<!--							<label class="layui-form-label">计划名</label>-->
+<!--							<div class="layui-input-inline">-->
+<!--								<input type="text" name="jobName" placeholder="" class="layui-input">-->
+<!--							</div>-->
+<!--						</div>-->
+
+<!--						<div class="layui-form-item layui-inline">-->
+<!--							<button class="pear-btn pear-btn-md pear-btn-primary" lay-submit lay-filter="user-query">-->
+<!--								<i class="layui-icon layui-icon-search"></i>-->
+<!--								查询-->
+<!--							</button>-->
+<!--							<button type="reset" class="pear-btn pear-btn-md">-->
+<!--								<i class="layui-icon layui-icon-refresh"></i>-->
+<!--								重置-->
+<!--							</button>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</form>-->
+<!--			</div>-->
+<!--		</div>-->
+
+		<div class="layui-card">
+			<div class="layui-card-body">
+				<table id="list-table" lay-filter="list-table"></table>
+			</div>
+		</div>
+
+<!--		<script type="text/html" id="table-toolbar">-->
+<!--			<button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">-->
+<!--				<i class="layui-icon layui-icon-add-1"></i>-->
+<!--				新增-->
+<!--			</button>-->
+<!--			<button class="pear-btn pear-btn-danger pear-btn-md" lay-event="batchRemove">-->
+<!--				<i class="layui-icon layui-icon-delete"></i>-->
+<!--				删除-->
+<!--			</button>-->
+<!--		</script>-->
+
+<!--		<script type="text/html" id="role-bar">-->
+<!--			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="execute"><i class="layui-icon layui-icon-play"></i></button>-->
+<!--			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="stop"><i class="layui-icon layui-icon-close"></i></button>-->
+<!--			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>-->
+<!--		</script>-->
+
+		<script src="../../component/layui/layui.js"></script>
+		<script src="../../component/pear/pear.js"></script>
+		<script>
+			layui.use(['table','form','jquery','notice'],function () {
+				let table = layui.table;
+				let form = layui.form;
+				let $ = layui.jquery;
+				let notice = layui.notice;
+
+				let cols = [
+				    [
+				        {type:'numbers'},
+						{field:"batchId",hide:'true'},
+				        {title: '执行计划名', field: 'jobName', align:'center'},
+				        {title: '执行状态', field: 'jobStatus', align:'center'},
+				        {title: '保存数', field: 'count', align:'center'},
+						{title: '错误数', field: 'errorCount', align:'center'},
+						{title: '警告数', field: 'warnCount', align:'center'},
+						{title: '错误日志', field: 'errorText', align:'center'},
+						{title: '警告日志', field: 'warnText', align:'center'},
+						{title: '开始时间', field: 'startTime', align:'center'},
+						{title: '结束时间', field: 'endTime', align:'center'}
+				    ]
+				];
+
+				table.render({
+				    elem: '#list-table',
+				    url: '/run/log/list',
+					title:'执行日志',
+					method: 'get',
+				    page: true ,
+				    cols: cols ,
+				    skin: 'line',
+				    toolbar: '#table-toolbar',
+					request:{
+						pageName:'offset',
+						limitName:'limit'
+					},
+					response:{
+						msgName:'message',
+						countName:'total'
+					},
+					parseData:function(res){ //res 即为原始返回的数据
+						return {
+						  "code": res.code, //解析接口状态
+						  "msg": res.message, //解析提示文本
+						  "count": res.total, //解析数据长度
+						  "data": res.data.records //解析数据列表
+						};
+					},
+				    defaultToolbar: [{
+						title: '刷新',
+				        layEvent: 'refresh',
+				        icon: 'layui-icon-refresh',
+				    }, 'filter', 'print', 'exports']
+				});
+
+				table.on('toolbar(list-table)',function(obj){
+					if(obj.event === 'add'){
+					    window.add();
+					} else if(obj.event === 'refresh'){
+					    window.refresh();
+					} else if(obj.event === 'batchRemove'){
+					    window.batchRemove(obj);
+					}
+				});
+
+				window.refresh = function(){
+				    table.reload('list-table');
+				}
+
+			})
+		</script>
+	</body>
+</html>

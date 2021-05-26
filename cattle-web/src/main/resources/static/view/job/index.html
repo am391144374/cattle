@@ -52,22 +52,23 @@
 
 		<script type="text/html" id="role-bar">
 			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="execute"><i class="layui-icon layui-icon-play"></i></button>
-			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i></button>
+			<button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="stop"><i class="layui-icon layui-icon-close"></i></button>
 			<button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i></button>
 		</script>
 
 		<script src="../../component/layui/layui.js"></script>
 		<script src="../../component/pear/pear.js"></script>
 		<script>
-			layui.use(['table','form','jquery'],function () {
+			layui.use(['table','form','jquery','notice'],function () {
 				let table = layui.table;
 				let form = layui.form;
 				let $ = layui.jquery;
+				let notice = layui.notice;
 
 				let cols = [
 				    [
 				        {type:'numbers'},
-						{field:"id",hide:'true'},
+						{field:"jobId",hide:'true'},
 				        {title: '执行计划名', field: 'jobName', align:'center', width:100},
 				        {title: '脚本类型', field: 'scriptType', align:'center'},
 				        {title: '关联的脚本ID', field: 'relateId', align:'center'},
@@ -119,9 +120,8 @@
 				table.on('tool(list-table)', function(obj){
 				    if(obj.event === 'remove'){
 				        window.remove(obj);
-				    } else if(obj.event === 'edit'){
-						window.ktrId = obj.data['id'];
-				        window.edit(obj);
+				    } else if(obj.event === 'stp'){
+				        window.stop(obj);
 				    } else if(obj.event === 'execute'){
 						window.execute(obj);
 					}
@@ -143,14 +143,8 @@
 				}
 
 
-				window.edit = function(obj){
-				    layer.open({
-				        type: 2,
-				        title: '修改',
-				        shade: 0.1,
-				        area: ['500px', '400px'],
-				        content: 'edit.html'
-				    });
+				window.stop = function(obj){
+					notice.debug("stop " + obj.data.jobName);
 				}
 
 				window.execute = function (obj){
@@ -175,8 +169,7 @@
 				        layer.close(index);
 				        let loading = layer.load();
 				        $.ajax({
-				            url: "/ktr/remove?id="+obj.data['id'],
-				            dataType:'json',
+				            url: "/job/delete/"+obj.data['jobId'],
 				            type:'delete',
 				            success:function(result){
 				                layer.close(loading);

@@ -82,33 +82,33 @@
 				var $ = layui.jquery;
 				var convert = layui.convert;
 				var popup = layui.popup;
-		
+
 				// 初始化顶部用户信息
-				admin.setAvatar("admin/images/avatar.jpg","就眠仪式");
-				
+				admin.setAvatar("admin/images/avatar.jpg","lsj");
+
 				// 根目录下 pear.config.yml 文件为初始化配置
 				// 你可以通过 admin.setConfigPath 方法修改配置文件位置
 				// 你可以通过 admin.setConfigType 方法修改配置文件类型
 				admin.setConfigType("yml");
 				admin.setConfigPath("config/pear.config.yml");
 				admin.render();
-				
-				// 登出逻辑 
+
+				// 登出逻辑
 				admin.logout(function(){
-				
+
 					popup.success("注销成功",function(){
 						location.href = "login.html";
 					})
 					// 注销逻辑 返回 true / false
 					return true;
 				})
-				
+
 				// 初始化消息回调
 				admin.message();
-				
+
 				// 重写消息回调 [消息列表点击事件]
 				// admin.message(function(id, title, context, form) {});
-				
+
 			})
 		</script>
 	</body>

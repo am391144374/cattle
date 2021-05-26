@@ -11,9 +11,26 @@
         <div class="main-container">
             <div class="main-container">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">脚本名</label>
+                    <label class="layui-form-label">执行计划名</label>
                     <div class="layui-input-block">
-                        <input type="text" name="ktrName" lay-verify="required|title" autocomplete="off" placeholder="请输入脚本名" class="layui-input">
+                        <input type="text" name="jobName" lay-verify="required|title" autocomplete="off" placeholder="请输入脚本名" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">脚本类型</label>
+                    <div class="layui-input-block">
+                        <select name="scriptType" lay-filter="script-type-select" class="layui-form-select">
+                            <option value="空白" selected="selected"></option>
+                            <option value="kettle">kettle</option>
+                            <option value="spider">spider</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">执行脚本选择</label>
+                    <div class="layui-input-block">
+                        <select id = "relateId" name="relateId" lay-verify="required" lay-search class="layui-form-select">
+                        </select>
                     </div>
                 </div>
             </div>
@@ -35,9 +52,38 @@
 <script src="../../component/layui/layui.js"></script>
 <script src="../../component/pear/pear.js"></script>
 <script>
-layui.use(['form','jquery'],function(){
+layui.use(['form','jquery','notice'],function(){
     let form = layui.form;
     let $ = layui.jquery;
+    let notice = layui.notice;
+
+    form.on("select(script-type-select)",function (obj){
+        let value = obj.value;
+        if(value == '空白'){
+            notice.error("选择不能为空");
+            return false;
+        }
+
+        $.ajax({
+            url:'/job/script/list?scriptName='+value,
+            type:'get',
+            success:function(result){
+                if(result.code == 0){
+                    $("#relateId").empty();
+                    result.data.forEach((item,index) => {
+                        if(value == 'kettle'){
+                            $("#relateId").append(new Option(item.ktrName,item.id,false,true));
+                        }else{
+                            $("#relateId").append(new Option(item.spiderName,item.spiderId,false,true));
+                        }
+                    })
+                    form.render();
+                }else{
+                    layer.msg(result.message,{icon:2,time:1000});
+                }
+            }
+        })
+    });
 
     form.on('submit(job-save)', function(data){
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -51,5 +52,10 @@ public class CattleKtrInfoServiceImpl implements CattleKtrInfoService {
     @Override
     public int delete(Integer id) {
         return ktrInfoMapper.deleteById(id);
+    }
+
+    @Override
+    public List<CattleKtrInfo> list(QueryWrapper<CattleKtrInfo> queryWrapper) {
+        return ktrInfoMapper.selectList(queryWrapper);
     }
 }
