@@ -139,7 +139,7 @@ public class CattleSpiderInfo {
     }
 
     public UrlFilterInterface getUrlFilter(){
-        if("1".equals(scanUrlType)){
+        if(scanUrlType != null && scanUrlType == 1){
             return new RedisBloomFilter();
         }
         return null;

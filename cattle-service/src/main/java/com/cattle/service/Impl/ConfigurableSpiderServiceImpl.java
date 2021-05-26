@@ -162,7 +162,7 @@ public class ConfigurableSpiderServiceImpl implements ConfigurableSpiderService 
         return sql.toString();
     }
 
-    public void doPrepareSaveData(List<LinkedHashMap<String, String>> datas, String tableName,Set<String> columns, String uuid) throws SQLException, ClassNotFoundException {
+    public void doPrepareSaveData(List<LinkedHashMap<String, String>> datas, String tableName,Set<String> columns, String uuid) throws Exception {
         //插入数据
         String sql = buildPrepareSql(columns,tableName);
         log.info("doPrepareSaveData sql={}", sql);

@@ -8,17 +8,21 @@ import com.cattle.component.spider.parse.XsoupParse;
 import com.cattle.component.spider.SpiderConfig;
 import com.cattle.component.spider.parse.XpathParse;
 import com.cattle.common.context.ProcessContext;
+import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 扫描匹配的数据
  * @author lsj
  * @date 2021/03/10
  */
+@Slf4j
 public class PageTargetProcess implements PageProcessor {
 
     private Site site;
@@ -26,13 +30,13 @@ public class PageTargetProcess implements PageProcessor {
     private ProcessContext processContext;
     private UrlFilterInterface urlFilter;
 
-    private String URL_FILTER_KEY = "url:filter:";
-
     @Override
     public void process(Page page) {
         XpathParse xpathParse = getXpathParse(page);
         LinkedHashMap<String,List<String>> columnMap = new LinkedHashMap<>();
         List<String> contentUrls = null;
+        //判断当前页面是否为正文页
+        boolean isContentUrl = false;
         //不是列表页就是正文页
         if(page.getUrl().regex(spiderConfig.getListRegex()).match() || page.getRequest().getUrl().equals(spiderConfig.getEntryUrl())) {
             List<String> scanUrls = new ArrayList<>();
@@ -49,32 +53,44 @@ public class PageTargetProcess implements PageProcessor {
             }
 
             //url过滤
-            if(urlFilter != null && spiderConfig.getScanUrlType() == 1){
-                String key = URL_FILTER_KEY + processContext.getJobId();
-                String url = page.getUrl().get();
-                if(urlFilter.exist(url,key)){
-                    //判断当前页是否已经处理过，已经处理过直接返回
-                    return;
-                }else{
-                    urlFilter.add(url,key);
-                }
-            }
+//            if(urlFilter != null && spiderConfig.getScanUrlType() == 1){
+//                String key = SpiderConstants.URL_FILTER_KEY + processContext.getJobId();
+//                String url = page.getUrl().get();
+//                if(urlFilter.exist(url,key)){
+//                    //判断当前页是否已经处理过，已经处理过直接返回
+//                    return;
+//                }else{
+//                    urlFilter.add(url,key);
+//                }
+//            }
 
             page.addTargetRequests(scanUrls);
 
             if(StrUtil.isNotBlank(spiderConfig.getFieldsJson())){
-                spiderConfig.getFields().forEach((column,xpath) -> {
+                AtomicInteger parseSize = new AtomicInteger(0);
+                LinkedHashMap<String,String> fields = spiderConfig.getFields();
+                for(String column : fields.keySet()){
                     try {
-                        List<String> vstr = xpathParse.xpath(xpath);
+                        List<String> vstr = xpathParse.xpath(fields.get(column));
+                        if(parseSize.get() == 0){
+                            parseSize.set(vstr.size());
+                        }
+                        if(parseSize.get() != vstr.size()){
+                            String warnText = String.format("当前页面：%s , 字段信息数量无法对应，请检查！",page.getUrl().get());
+                            log.warn(warnText);
+                            processContext.putWarn(this,new RuntimeException(warnText));
+                            return;
+                        }
                         columnMap.put(column,vstr);
                     } catch (Exception e) {
                         e.printStackTrace();
                         processContext.putError(this,e);
                     }
-                });
+                }
             }
 
         }else{
+            isContentUrl = true;
             spiderConfig.getContentFields().forEach((column,xpath) -> {
                 try {
                     List<String> vstr = xpathParse.xpath(xpath);
@@ -88,21 +104,26 @@ public class PageTargetProcess implements PageProcessor {
 
         List<LinkedHashMap<String, String>> resultList = new ArrayList<>();
         List<String> finalContentUrls = contentUrls;
+        //判断是否有匹配到正文页url
+        AtomicBoolean needAddContent = new AtomicBoolean(false);
+        if(contentUrls != null && contentUrls.size() > 0){
+            needAddContent.set(true);
+        }
         columnMap.forEach((column, vstr) -> {
             try {
                 if (resultList.isEmpty() || resultList.size() != vstr.size()) {
-                    resultList.clear();
                     for (int i = 0; i < vstr.size(); i++) {
                         LinkedHashMap param = new LinkedHashMap<>();
-                        if(finalContentUrls != null && finalContentUrls.size() > 0){
-                            ItemsHelper.addListField(spiderConfig.getBatchId(),finalContentUrls.get(i),param);
-                        }
                         resultList.add(param);
                     }
                 }
-                for (int i = 0; i < resultList.size(); i++) {
-                    Map<String, String> obj = resultList.get(i);
+                for (int i = 0; i < vstr.size(); i++) {
+                    LinkedHashMap<String, String> obj = resultList.get(i);
                     obj.put(column, vstr.get(i));
+                    if(needAddContent.get()){
+                        //因为要与正文页匹配所以需要单个添加
+                        ItemsHelper.addField(spiderConfig.getBatchId(),finalContentUrls.get(i),obj);
+                    }
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -110,8 +131,20 @@ public class PageTargetProcess implements PageProcessor {
             }
         });
 
-        if(resultList.size() > 0){
-            ItemsHelper.addContentField(spiderConfig.getBatchId(),page.getUrl().get(),resultList);
+        /**
+         * 这一块逻辑 有三种情况 目的是列表页的解析数据与正文页的数据正确匹配
+         *
+         * 1. 如果列表页有匹配正文页url，则在上面已经添加所以不需要再添加
+         * 2. 如果没有匹配正文页url或者不需要匹配的，只有列表页面数据，则在这里直接添加
+         * 3. 如果当前页面是正文页数据，则直接匹配保存
+         */
+        if(resultList.size() > 0 && !needAddContent.get()){
+            if(isContentUrl){
+                ItemsHelper.addField(spiderConfig.getBatchId(),page.getUrl().get(),resultList.get(0));
+            }else{
+                ItemsHelper.addFields(spiderConfig.getBatchId(),page.getUrl().get(),resultList);
+            }
+
         }
     }
 

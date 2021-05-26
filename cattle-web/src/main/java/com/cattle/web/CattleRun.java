@@ -6,8 +6,10 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.cattle.common.ItemsHelper;
 import com.cattle.common.JobContextHelper;
+import com.cattle.common.constants.SpiderConstants;
 import com.cattle.common.context.ProcessContext;
 import com.cattle.common.enums.JobStatus;
+import com.cattle.common.filter.UrlFilterInterface;
 import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.common.plugin.ExtensionComponentLoader;
 import com.cattle.component.spider.SpiderConfig;
@@ -162,7 +164,6 @@ public class CattleRun implements Closeable {
                                 }
                                 runLogService.updateResult(batchId,context.getSuccessCount(),0,null,warnsFin.size(),warnStrFin.toString(),JobStatus.FINISH);
                                 JobContextHelper.remove(batchId);
-                                ItemsHelper.remove(batchId);
                                 break;
                             //执行中
                             case RUNNING:
@@ -195,6 +196,8 @@ public class CattleRun implements Closeable {
     public void storage(ProcessContext processContext){
         SpiderConfig spiderConfig = (SpiderConfig) processContext.get("spiderConfig");
         List<LinkedHashMap<String, String>> result = ItemsHelper.getPageField(spiderConfig.getBatchId());
+        //获取后删除，防止再次获取
+        ItemsHelper.remove(processContext.getBatchId());
         if(result != null && result.size() > 0){
             try {
                 Set<String> columns = new HashSet<>();
@@ -204,15 +207,48 @@ public class CattleRun implements Closeable {
                 if(StrUtil.isNotBlank(spiderConfig.getContentXpath())){
                     columns.addAll(spiderConfig.getContentFields().keySet());
                 }
+                //过滤结果
+                saveFilter(spiderConfig,processContext,result);
                 spiderService.doPrepareSaveData(result,spiderConfig.getTableName(),columns, String.valueOf(processContext.getBatchId()));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-                processContext.putError(this,throwables);
+                processContext.setSuccessCount(result.size());
+            } catch (SQLException e) {
+                e.printStackTrace();
+                processContext.putError(this,e);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
                 processContext.putError(this,e);
+            } catch (Exception e) {
+                e.printStackTrace();
+                processContext.putError(this,e);
             }
-            processContext.setSuccessCount(result.size());
+        }
+    }
+
+    /**
+     * 只对结果过滤
+     * 因为有些网站可能是分页更新的，所以可能更新后每页内的数据是不同的
+     * @param spiderConfig
+     * @param processContext
+     * @param result
+     */
+    private void saveFilter(SpiderConfig spiderConfig,ProcessContext processContext,List<LinkedHashMap<String, String>> result){
+        UrlFilterInterface urlFilter = spiderConfig.getUrlFilterInterface();
+        if(spiderConfig.getUrlFilterInterface() != null && spiderConfig.getScanUrlType() == 1){
+            String key = SpiderConstants.URL_FILTER_KEY + processContext.getJobId();
+            Iterator<LinkedHashMap<String, String>> iterator = result.iterator();
+            while (iterator.hasNext()){
+                LinkedHashMap<String, String> tempValue = iterator.next();
+                StringBuilder value = new StringBuilder();
+                tempValue.forEach((k,v) -> {
+                    value.append(v);
+                });
+                if(urlFilter.exist(value.toString(),key)){
+                    //判断当前页是否已经处理过，已经处理过直接返回
+                    iterator.remove();
+                }else{
+                    urlFilter.add(value.toString(),key);
+                }
+            }
         }
     }
 }

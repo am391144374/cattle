@@ -17,52 +17,66 @@ public class ItemsHelper {
     /**
      * 根据正文页的url保存列表页的数据
      */
-    public static Map<Long /* batchId */,Map<String /* contentUrl */,LinkedHashMap<String, String> /* list field */>> pageFields = new HashMap<>();
+    public static Map<Long /* batchId */,Map<String /* url */,List<LinkedHashMap<String, String>>/* list field */>> pageFields = new HashMap<>();
 
+    // todo 三级缓存逻辑需要再想想，如何保证多线程情况下快速 ”升级“
     /**
      * 中间缓冲层
      */
-    public static Map<Long /* batchId */,Map<String /* contentUrl */,LinkedHashMap<String, String> /* list field */>> cachePageFields = new HashMap<>();
+    public static Map<Long /* batchId */,Map<String /* url */,List<LinkedHashMap<String, String>>/* list field */>> cachePageFields = new HashMap<>();
 
     /** 可直接保存的页数据 */
-    public static Map<Long /* batchId */,Map<String /* contentUrl */,LinkedHashMap<String, String> /* list field */>> storagePageFields = new HashMap<>();
+    public static Map<Long /* batchId */,Map<String /* url */,List<LinkedHashMap<String, String>>/* list field */>> storagePageFields = new HashMap<>();
 
     /**
-     * 新增content数据
+     * 新增单条数据
      * @param batchId
-     * @param contentUrl
-     * @param fields
+     * @param url
+     * @param field
      */
-    public static void addContentField(long batchId,String contentUrl,List<LinkedHashMap<String, String>> fields){
+    public static void addField(long batchId,String url,LinkedHashMap<String, String> field){
         if(pageFields.containsKey(batchId)){
-            Map<String,LinkedHashMap<String, String>> listFieldMap = pageFields.get(batchId);
-            if(listFieldMap.containsKey(contentUrl)){
-                LinkedHashMap<String, String> listField = listFieldMap.get(contentUrl);
-                fields.get(0).forEach((k,v) -> {
-                    listField.put(k,v);
-                });
+            Map<String,List<LinkedHashMap<String, String>>> listFieldMap = pageFields.get(batchId);
+            if(listFieldMap.containsKey(url)){
+                List<LinkedHashMap<String, String>> listField = listFieldMap.get(url);
+
+                for(int i = 0 ; i < listField.size() ; i++){
+                    listField.get(i).putAll(field);
+                }
             }else{
-                listFieldMap.put(contentUrl,fields.get(0));
+                List<LinkedHashMap<String, String>> linkedHashMaps = new ArrayList<>();
+                linkedHashMaps.add(field);
+                listFieldMap.put(url,linkedHashMaps);
             }
         }else{
-            Map<String,LinkedHashMap<String, String>> listFieldMap = new HashMap<>();
-            listFieldMap.put(contentUrl,fields.get(0));
+            Map<String,List<LinkedHashMap<String, String>>> listFieldMap = new HashMap<>();
+            List<LinkedHashMap<String, String>> linkedHashMaps = new ArrayList<>();
+            linkedHashMaps.add(field);
+            listFieldMap.put(url,linkedHashMaps);
             pageFields.put(batchId,listFieldMap);
         }
     }
 
     /**
-     * 新增列表页面字段
+     * 全量新增
      * @param batchId
-     * @param contentUrl
-     * @param field
+     * @param url
+     * @param fields
      */
-    public static void addListField(long batchId,String contentUrl,LinkedHashMap<String, String> field){
+    public static void addFields(long batchId,String url,List<LinkedHashMap<String, String>> fields){
         if(pageFields.containsKey(batchId)){
-            pageFields.get(batchId).put(contentUrl,field);
+            Map<String,List<LinkedHashMap<String, String>>> listFieldMap = pageFields.get(batchId);
+            if(listFieldMap.containsKey(url)){
+                List<LinkedHashMap<String, String>> listField = listFieldMap.get(url);
+                listField.addAll(fields);
+            }else{
+                List<LinkedHashMap<String, String>> linkedHashMaps = new ArrayList<>();
+                linkedHashMaps.addAll(fields);
+                listFieldMap.put(url,linkedHashMaps);
+            }
         }else{
-            Map<String,LinkedHashMap<String, String>> listFieldMap = new HashMap<>();
-            listFieldMap.put(contentUrl,field);
+            Map<String,List<LinkedHashMap<String, String>>> listFieldMap = new HashMap<>();
+            listFieldMap.put(url,fields);
             pageFields.put(batchId,listFieldMap);
         }
     }
@@ -72,9 +86,9 @@ public class ItemsHelper {
             return null;
         }
         List<LinkedHashMap<String,String>> resultList = new ArrayList<>();
-        Map<String,LinkedHashMap<String, String>> fieldMaps = pageFields.get(batchId);
+        Map<String,List<LinkedHashMap<String, String>>> fieldMaps = pageFields.get(batchId);
         fieldMaps.forEach((k,v) -> {
-           resultList.add(v);
+           resultList.addAll(v);
         });
         return resultList;
     }

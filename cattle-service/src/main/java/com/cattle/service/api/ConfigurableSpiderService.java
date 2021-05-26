@@ -30,5 +30,5 @@ public interface ConfigurableSpiderService{
      * @throws SQLException
      * @throws ClassNotFoundException
      */
-    void doPrepareSaveData(List<LinkedHashMap<String, String>> datas, String tableName, Set<String> columns, String uuid) throws SQLException, ClassNotFoundException;
+    void doPrepareSaveData(List<LinkedHashMap<String, String>> datas, String tableName, Set<String> columns, String uuid) throws Exception;
 }
