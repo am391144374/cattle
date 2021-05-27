@@ -52,4 +52,14 @@ public class CattleKtrStepInfoServiceImpl implements CattleKtrStepInfoService {
         return stepInfoMapper.deleteById(stepId);
     }
 
+    @Override
+    public CattleKtrStep selectOne(QueryWrapper<CattleKtrStep> queryWrapper) {
+        return stepInfoMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public List<CattleKtrStep> selectList(QueryWrapper<CattleKtrStep> queryWrapper) {
+        return stepInfoMapper.selectList(queryWrapper);
+    }
+
 }

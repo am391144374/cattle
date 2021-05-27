@@ -32,11 +32,13 @@ public class CattleJob {
 
     @TableField(exist = false)
     private long batchId;
+
     /**
      * kettle 执行信息
      */
     @TableField(exist = false)
-    private CattleKtrInfo ktrInfo;
+    private CattleKtrStep stepInfo;
+
     /**
      * 爬虫 执行信息
      */

@@ -89,12 +89,6 @@
             <version>4.8.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.cattle</groupId>
-            <artifactId>cattle-entity</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- HtmlUnit java 模拟网页点击 -->
 
     </dependencies>

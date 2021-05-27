@@ -1,6 +1,7 @@
 package com.cattle.component.kettle;
 
 import com.cattle.common.JobContextHelper;
+import com.cattle.common.entity.CattleKtrInfo;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.component.kettle.handler.ExecuteKettleScriptProcessHandler;
@@ -96,47 +97,46 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
 
     public void buildConfig(CattleJob job){
         KettleConfig kettleConfig = new KettleConfig();
-        List<CattleKtrStep> stepInfoList = job.getKtrInfo().getStepInfoList();
-        for(CattleKtrStep stepInfo : stepInfoList){
-            String stepType = stepInfo.getStepType();
-            List<FieldMeta> fieldMetaList = new ArrayList<>();
-            List<CattleKtrField> stepFields = stepInfo.getFieldList();
-            stepFields.forEach(stepField -> {
-                FieldMeta fieldMeta = FieldMeta.builder()
-                        .comment(stepField.getComment())
-                        .name(stepField.getFieldName())
-                        .type(stepField.getFieldType())
-                        .value(stepField.getDefaultValue()).build();
-                if(fieldMeta.getType().equals("Number")){
-                    fieldMeta.setPrecision(stepField.getPrecision());
-                }
-                if(!fieldMeta.getType().equals("Integer")){
-                    fieldMeta.setLength(stepField.getLength());
-                }
-                fieldMetaList.add(fieldMeta);
-            });
-            switch (stepType){
-                // excel导入
-                case "excelImport":
-                    kettleConfig.setSelectValueMap(fieldMetaList);
-                    ExcelMeta excelMeta = new ExcelMeta();
-                    excelMeta.setFileName(stepInfo.parseFileList());
-                    excelMeta.setSheetName(new String[]{stepInfo.getSheetName()});
-                    excelMeta.setStartRow(new int[]{stepInfo.getStartRow()});
-                    excelMeta.setStartCol(new int[]{stepInfo.getStartCol()});
-                    kettleConfig.setExcelMeta(excelMeta);
-                    break;
-                //todo 目前新增变量不做设置
+        CattleKtrStep stepInfo = job.getStepInfo();
+        CattleKtrInfo scriptInfo = stepInfo.getKtrInfo();
+        String stepType = stepInfo.getStepType();
+        List<FieldMeta> fieldMetaList = new ArrayList<>();
+        List<CattleKtrField> stepFields = stepInfo.getFieldList();
+        stepFields.forEach(stepField -> {
+            FieldMeta fieldMeta = FieldMeta.builder()
+                    .comment(stepField.getComment())
+                    .name(stepField.getFieldName())
+                    .type(stepField.getFieldType())
+                    .value(stepField.getDefaultValue()).build();
+            if(fieldMeta.getType().equals("Number")){
+                fieldMeta.setPrecision(stepField.getPrecision());
+            }
+            if(!fieldMeta.getType().equals("Integer")){
+                fieldMeta.setLength(stepField.getLength());
+            }
+            fieldMetaList.add(fieldMeta);
+        });
+        switch (stepType){
+            // excel导入
+            case "excelImport":
+                kettleConfig.setSelectValueMap(fieldMetaList);
+                ExcelMeta excelMeta = new ExcelMeta();
+                excelMeta.setFileName(stepInfo.parseFileList());
+                excelMeta.setSheetName(new String[]{stepInfo.getSheetName()});
+                excelMeta.setStartRow(new int[]{stepInfo.getStartRow()});
+                excelMeta.setStartCol(new int[]{stepInfo.getStartCol()});
+                kettleConfig.setExcelMeta(excelMeta);
+                kettleConfig.setTableName(stepInfo.getTableName());
+                break;
+            //todo 目前新增变量不做设置
 //                case "constant":
 //                    kettleConfig.setConstantMap(fieldMetaList);
 //                    break;
-            }
         }
-        kettleConfig.setScriptFile(job.getKtrInfo().getScriptFile());
+        kettleConfig.setScriptFile(scriptInfo.getScriptFile());
         kettleConfig.setJobName(job.getJobName());
         kettleConfig.setBatchId(job.getBatchId());
-        kettleConfig.setProcessType(job.getKtrInfo().getProcessType());
-        kettleConfig.setTableName(job.getKtrInfo().getTableName());
+        kettleConfig.setProcessType(scriptInfo.getProcessType());
 
         this.kettleConfig = kettleConfig;
     }

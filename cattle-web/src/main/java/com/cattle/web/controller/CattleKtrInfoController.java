@@ -1,6 +1,7 @@
 package com.cattle.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cattle.common.util.ResponseUtil;
 import com.cattle.common.entity.CattleKtrField;
@@ -91,6 +92,11 @@ public class CattleKtrInfoController {
 
     @PostMapping("/step/add")
     public Object stepAdd(@RequestBody CattleKtrStep cattleKtrStep){
+        String tableName = cattleKtrStep.getTableName();
+        QueryWrapper<CattleKtrStep> queryWrapper = new QueryWrapper<>();
+        if(ktrStepInfoService.selectOne(queryWrapper) != null){
+            return ResponseUtil.fail("已经存在的数据库表名");
+        }
         if(ktrStepInfoService.insert(cattleKtrStep) > 0){
             return ResponseUtil.success("");
         }

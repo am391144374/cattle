@@ -1,7 +1,5 @@
 package com.cattle.component.spider.handler;
 
-import cn.hutool.core.util.StrUtil;
-import com.cattle.common.ItemsHelper;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.handler.ExecuteProcessHandler;
 import com.cattle.common.context.ProcessContext;
@@ -23,6 +21,7 @@ public class SpiderMonitorProcessHandler extends ExecuteProcessHandler {
         while (spider.getStatus() != Spider.Status.Stopped){
             //阻塞等待完成
             try {
+                //可自己中断
                 if(processContext.getJobStatus().getName().equals(JobStatus.INTERRUPT.getName())){
                     spider.stop();
                     break;

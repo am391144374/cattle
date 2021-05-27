@@ -1,6 +1,7 @@
 package com.cattle.service.api;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cattle.common.entity.CattleKtrStep;
 
@@ -19,5 +20,9 @@ public interface CattleKtrStepInfoService {
     int updateById(CattleKtrStep cattleKtrStep);
 
     int delete(Integer stepId);
+
+    CattleKtrStep selectOne(QueryWrapper<CattleKtrStep> queryWrapper);
+
+    List<CattleKtrStep> selectList(QueryWrapper<CattleKtrStep> queryWrapper);
 
 }

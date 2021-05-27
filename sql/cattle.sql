@@ -11,7 +11,7 @@
  Target Server Version : 80022
  File Encoding         : 65001
 
- Date: 26/05/2021 14:10:03
+ Date: 27/05/2021 11:39:15
 */
 
 SET NAMES utf8mb4;
@@ -30,14 +30,14 @@ CREATE TABLE `cattle_job_info`  (
   `end_time` datetime(0) NULL DEFAULT NULL,
   `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`job_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of cattle_job_info
 -- ----------------------------
-INSERT INTO `cattle_job_info` VALUES (1, '测试', 1, 'kettle', '2021-05-08 15:31:46', NULL, '2021-05-13 17:15:22');
-INSERT INTO `cattle_job_info` VALUES (2, '杭州楼盘', 3, 'spider', NULL, NULL, '2021-05-13 17:15:24');
+INSERT INTO `cattle_job_info` VALUES (2, '长沙楼盘', 3, 'spider', NULL, NULL, '2021-05-27 03:38:09');
 INSERT INTO `cattle_job_info` VALUES (3, '电影首发站', 1, 'spider', '2021-05-14 14:14:48', NULL, '2021-05-14 06:14:50');
+INSERT INTO `cattle_job_info` VALUES (5, 'kettle脚本测试', 1, 'kettle', NULL, NULL, '2021-05-27 03:35:39');
 
 -- ----------------------------
 -- Table structure for cattle_ktr_field
@@ -55,19 +55,14 @@ CREATE TABLE `cattle_ktr_field`  (
   `deleted` tinyint(1) NULL DEFAULT 0,
   `update_time` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`field_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '步骤字段' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '步骤字段' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of cattle_ktr_field
 -- ----------------------------
 INSERT INTO `cattle_ktr_field` VALUES (1, 'name', 'String', 20, NULL, NULL, NULL, 1, 0, NULL);
 INSERT INTO `cattle_ktr_field` VALUES (2, 'age', 'String', 50, NULL, NULL, NULL, 1, 0, NULL);
-INSERT INTO `cattle_ktr_field` VALUES (3, 'sex', 'Number', 15, 2, NULL, '在统孵化器数量(个)', 1, 0, NULL);
-INSERT INTO `cattle_ktr_field` VALUES (24, 'ceshi', 'String', 12, NULL, 'e', '', NULL, 0, NULL);
-INSERT INTO `cattle_ktr_field` VALUES (25, '1', 'String', 1, 0, '', '', 14, 1, NULL);
-INSERT INTO `cattle_ktr_field` VALUES (26, '2', 'String', 1, 0, '1', '1', 14, 0, NULL);
-INSERT INTO `cattle_ktr_field` VALUES (27, 'ce', 'String', 122, 0, '1', '1', 1, 1, NULL);
-INSERT INTO `cattle_ktr_field` VALUES (28, 'c', 'String', 1, 0, '123', '1', 1, 1, NULL);
+INSERT INTO `cattle_ktr_field` VALUES (3, 'sex', 'Number', 15, 2, NULL, '性别', 1, 0, NULL);
 
 -- ----------------------------
 -- Table structure for cattle_ktr_info
@@ -89,14 +84,7 @@ CREATE TABLE `cattle_ktr_info`  (
 -- ----------------------------
 -- Records of cattle_ktr_info
 -- ----------------------------
-INSERT INTO `cattle_ktr_info` VALUES (1, '测试脚本', 'D:\\code\\new work space from git\\Cattle\\doc\\科技企业孵化\\excel导入基础脚本.ktr', 'test_tableYearTemplate_kettle_test', 'edit', 0, '2021-05-11 07:52:02', NULL, NULL);
-INSERT INTO `cattle_ktr_info` VALUES (6, '测试', 'D:\\临时文件\\temp\\\\1.ktr', '测试', 'normal', 1, '2021-05-12 08:25:03', NULL, NULL);
-INSERT INTO `cattle_ktr_info` VALUES (7, '1231', NULL, '123', 'normal', 1, '2021-05-12 08:15:11', NULL, NULL);
-INSERT INTO `cattle_ktr_info` VALUES (8, '测试', 'D:\\临时文件\\temp\\\\1.ktr', 'c', 'normal', 1, '2021-05-12 08:15:09', NULL, NULL);
-INSERT INTO `cattle_ktr_info` VALUES (9, '123', 'D:\\临时文件\\temp\\\\1.ktr', '132', 'edit', 1, '2021-05-12 08:15:06', NULL, NULL);
-INSERT INTO `cattle_ktr_info` VALUES (10, '测试', 'D:\\临时文件\\temp多excel导入测试.ktr', '测试', 'normal', 1, '2021-05-11 09:18:02', NULL, NULL);
-INSERT INTO `cattle_ktr_info` VALUES (11, '测试2', NULL, '测试2', 'edit', 0, '2021-05-12 08:53:27', NULL, NULL);
-INSERT INTO `cattle_ktr_info` VALUES (12, '1', NULL, '1', 'normal', 1, '2021-05-25 08:18:24', NULL, NULL);
+INSERT INTO `cattle_ktr_info` VALUES (1, '年鉴excel导入基础脚本', 'D:\\code\\new work space from git\\Cattle\\doc\\科技企业孵化\\excel导入基础脚本.ktr', 'test_tableYearTemplate_kettle_test', 'edit', 0, '2021-05-27 03:17:16', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for cattle_ktr_step
@@ -106,6 +94,7 @@ CREATE TABLE `cattle_ktr_step`  (
   `step_id` int(0) NOT NULL AUTO_INCREMENT,
   `step_name` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `ktr_info_id` int(0) NULL DEFAULT NULL COMMENT 'cattle_ktr_info',
+  `table_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '数据库表名',
   `step_type` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '步骤类型：excel导入、字段选择、自定义字段',
   `next_step_id` int(0) NULL DEFAULT NULL COMMENT '下一步步骤ID',
   `sheet_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'excel   sheetName',
@@ -123,10 +112,7 @@ CREATE TABLE `cattle_ktr_step`  (
 -- ----------------------------
 -- Records of cattle_ktr_step
 -- ----------------------------
-INSERT INTO `cattle_ktr_step` VALUES (1, 'excel导入', 1, 'excelImport', 2, 'Sheet1', 12, 0, 'D:\\code\\new work space from git\\Cattle\\doc\\科技企业孵化\\1.xlsx', NULL, NULL, '2021-05-13 02:56:41', NULL, 0);
-INSERT INTO `cattle_ktr_step` VALUES (3, '新增常量', 1, 'constant', 0, '', NULL, NULL, NULL, NULL, NULL, '2021-05-12 08:24:12', NULL, 1);
-INSERT INTO `cattle_ktr_step` VALUES (5, '测试', 1, 'excelImport', NULL, NULL, 12, 12, NULL, NULL, NULL, '2021-05-12 09:35:23', NULL, 1);
-INSERT INTO `cattle_ktr_step` VALUES (14, 'excel', 11, 'excelImport', NULL, '12', 123, 123, NULL, NULL, NULL, '2021-05-13 02:07:52', NULL, 0);
+INSERT INTO `cattle_ktr_step` VALUES (1, '测试', 1, 'test_tableYearTemplate_kettle_test', 'excelImport', 2, 'Sheet1', 12, 0, 'D:\\code\\new work space from git\\Cattle\\doc\\科技企业孵化\\1.xlsx', NULL, NULL, '2021-05-27 03:17:55', NULL, 0);
 
 -- ----------------------------
 -- Table structure for cattle_run_log
@@ -162,6 +148,8 @@ INSERT INTO `cattle_run_log` VALUES (1397418571277144064, 2, '杭州楼盘', 'ru
 INSERT INTO `cattle_run_log` VALUES (1397419321772347392, 2, '杭州楼盘', 'running', NULL, NULL, NULL, NULL, NULL, '2021-05-26 05:10:17', NULL);
 INSERT INTO `cattle_run_log` VALUES (1397420091804618752, 2, '杭州楼盘', 'finish', 656, 0, NULL, 1, 'com.cattle.component.spider.process.PageTargetProcessexecutor warn Exception:java.lang.RuntimeException --- message:当前页面：https://cs.newhouse.fang.com/house/s/b934 , 字段信息数量无法对应，请检查！', '2021-05-26 05:13:13', '2021-05-26 13:13:14');
 INSERT INTO `cattle_run_log` VALUES (1397420136771751936, 2, '杭州楼盘', 'finish', 659, 0, NULL, 1, 'com.cattle.component.spider.process.PageTargetProcessexecutor warn Exception:java.lang.RuntimeException --- message:当前页面：https://cs.newhouse.fang.com/house/s/b934 , 字段信息数量无法对应，请检查！', '2021-05-26 05:14:40', '2021-05-26 13:14:41');
+INSERT INTO `cattle_run_log` VALUES (1397490681332764672, 3, '电影首发站', 'running', NULL, NULL, NULL, NULL, NULL, '2021-05-26 09:52:22', NULL);
+INSERT INTO `cattle_run_log` VALUES (1397757338059935744, 5, 'kettle脚本测试', 'finish', 0, 0, NULL, 0, '', '2021-05-27 03:36:35', '2021-05-27 11:36:35');
 
 -- ----------------------------
 -- Table structure for cattle_spider_info
@@ -188,7 +176,7 @@ CREATE TABLE `cattle_spider_info`  (
   `deleted` tinyint(1) NULL DEFAULT 0,
   `scan_url_type` tinyint(1) NULL DEFAULT NULL COMMENT 'url 扫描类型   0 - 全量，1 - 增量',
   PRIMARY KEY (`spider_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of cattle_spider_info

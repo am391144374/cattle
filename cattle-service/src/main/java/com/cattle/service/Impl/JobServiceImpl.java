@@ -55,14 +55,12 @@ public class JobServiceImpl implements JobService {
                 jobInfo.setSpiderInfo(spiderInfo);
                 break;
             case "kettle":
-                CattleKtrInfo cattleKtrInfo = ktrInfoService.selectById(jobInfo.getRelateId());
-                List<CattleKtrStep> stepInfoList = stepInfoService.selectStepInfoByKtrInfoId(cattleKtrInfo.getId());
-                for(CattleKtrStep stepInfo : stepInfoList){
-                    List<CattleKtrField> stepFields = stepFieldService.selectFieldListByStepId(stepInfo.getStepId());
-                    stepInfo.setFieldList(stepFields);
-                }
-                cattleKtrInfo.setStepInfoList(stepInfoList);
-                jobInfo.setKtrInfo(cattleKtrInfo);
+                CattleKtrStep stepInfo = stepInfoService.selectStepInfoById(jobInfo.getRelateId());
+                List<CattleKtrField> stepFields = stepFieldService.selectFieldListByStepId(stepInfo.getStepId());
+                CattleKtrInfo cattleKtrInfo = ktrInfoService.selectById(stepInfo.getKtrInfoId());
+                stepInfo.setFieldList(stepFields);
+                stepInfo.setKtrInfo(cattleKtrInfo);
+                jobInfo.setStepInfo(stepInfo);
                 break;
         }
         return jobInfo;

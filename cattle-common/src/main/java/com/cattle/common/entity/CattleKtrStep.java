@@ -20,6 +20,8 @@ public class CattleKtrStep {
     @TableField
     private String stepName;
     @TableField
+    private String tableName;
+    @TableField
     private Integer ktrInfoId;
     /** 步骤类型：excel导入-excelImport、自定义变量-constant
      * 自定义变量目前不做新增
@@ -49,8 +51,14 @@ public class CattleKtrStep {
 
     @TableField
     private Integer outputDbId;
+
     @TableField(exist = false)
     private List<CattleKtrField> fieldList;
+    /**
+     * kettle 执行信息
+     */
+    @TableField(exist = false)
+    private CattleKtrInfo ktrInfo;
 
     public String[] parseFileList(){
         return fileList.split(",");

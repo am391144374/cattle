@@ -69,7 +69,7 @@
 				    [
 				        {type:'numbers'},
 						{field:"jobId",hide:'true'},
-				        {title: '执行计划名', field: 'jobName', align:'center', width:100},
+				        {title: '执行计划名', field: 'jobName', align:'center', width:350},
 				        {title: '脚本类型', field: 'scriptType', align:'center'},
 				        {title: '关联的脚本ID', field: 'relateId', align:'center'},
 				        {title: '操作', toolbar: '#role-bar', align:'center', width:195}
@@ -220,20 +220,6 @@
 				window.refresh = function(){
 				    table.reload('list-table');
 				}
-
-				// $("body").on("click", "[data-url]", function() {
-				// 	window.ktrInfoId = $(this).attr("data-value");
-				// 	let index = layer.open({
-				// 		type: 2,
-				// 		title: $(this).attr("data-title"),
-				// 		id:'stepIndex',
-				// 		anim:3,
-				// 		shade: 0.1,
-				// 		maxmin:true,
-				// 		content: $(this).attr("data-url")
-				// 	});
-				// 	layer.full(index);
-				// })
 
 			})
 		</script>

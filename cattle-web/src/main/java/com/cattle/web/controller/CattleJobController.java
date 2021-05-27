@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cattle.common.util.ResponseUtil;
 import com.cattle.common.entity.CattleJob;
 import com.cattle.service.api.CattleKtrInfoService;
+import com.cattle.service.api.CattleKtrStepInfoService;
 import com.cattle.service.api.CattleSpiderInfoService;
 import com.cattle.service.api.JobService;
 import com.cattle.web.CattleRun;
@@ -29,9 +30,9 @@ public class CattleJobController {
     @Autowired
     private JobService jobService;
     @Autowired
-    private CattleKtrInfoService ktrInfoService;
-    @Autowired
     private CattleSpiderInfoService spiderInfoService;
+    @Autowired
+    private CattleKtrStepInfoService ktrStepInfoService;
 
     @Autowired
     private CattleRun cattleRun;
@@ -90,7 +91,7 @@ public class CattleJobController {
     public Object scriptList(String scriptName){
         switch (scriptName){
             case "kettle":
-               return ResponseUtil.success(ktrInfoService.list(new QueryWrapper<>()));
+               return ResponseUtil.success(ktrStepInfoService.selectList(new QueryWrapper<>()));
             case "spider":
                return ResponseUtil.success(spiderInfoService.list());
         }

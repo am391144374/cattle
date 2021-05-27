@@ -13,6 +13,9 @@ spring:
         max-wait: -1
     timeout: 10000000
 
+cattle:
+  upload:
+    path: D:\临时文件\temp
 
 server:
   port: 5000

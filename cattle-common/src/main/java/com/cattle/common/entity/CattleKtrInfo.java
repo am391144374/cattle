@@ -18,8 +18,6 @@ public class CattleKtrInfo {
     /** 用于kettle脚本文件地址 kettle执行需要有个默认的  以 .ktr结尾的文件作为模板*/
     @TableField
     private String scriptFile;
-    @TableField
-    private String tableName;
     /**
      * 脚本执行方式
      * normal-普通模式   即只执行脚本，不对脚本进行改造
@@ -38,6 +36,4 @@ public class CattleKtrInfo {
     @TableField
     private String remark;
 
-    @TableField(exist = false)
-    private List<CattleKtrStep> stepInfoList;
 }

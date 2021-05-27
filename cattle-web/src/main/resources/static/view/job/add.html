@@ -72,7 +72,7 @@ layui.use(['form','jquery','notice'],function(){
                     $("#relateId").empty();
                     result.data.forEach((item,index) => {
                         if(value == 'kettle'){
-                            $("#relateId").append(new Option(item.ktrName,item.id,false,true));
+                            $("#relateId").append(new Option(item.stepName,item.stepId,false,true));
                         }else{
                             $("#relateId").append(new Option(item.spiderName,item.spiderId,false,true));
                         }

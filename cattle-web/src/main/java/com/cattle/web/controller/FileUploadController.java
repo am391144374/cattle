@@ -2,6 +2,7 @@ package com.cattle.web.controller;
 
 import com.cattle.common.util.ResponseUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,7 +16,8 @@ import java.util.Map;
 @RestController
 public class FileUploadController {
 
-    String diskPath = "D:\\临时文件\\temp";
+    @Value("${cattle.upload.path}")
+    private String diskPath;
 
     @RequestMapping("/upload")
     public Object upload(MultipartFile file){
