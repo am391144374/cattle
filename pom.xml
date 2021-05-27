@@ -14,7 +14,6 @@
         <module>cattle-service</module>
         <module>cattle-dao</module>
         <module>cattle-component</module>
-        <module>cattle-entity</module>
     </modules>
 
     <properties>

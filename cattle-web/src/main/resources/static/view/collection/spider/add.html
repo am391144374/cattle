@@ -19,20 +19,21 @@
 												<div class="layui-inline">
 													<label class="layui-form-label">爬虫名</label>
 													<div class="layui-input-block">
-														<input type="text" name="spiderName" autocomplete="off" class="layui-input">
+														<input type="text" name="spiderName" lay-verify="required" autocomplete="off" class="layui-input">
 													</div>
 												</div>
 											</div>
 											<div class="layui-form-item">
 												<label class="layui-form-label">数据库表名</label>
 												<div class="layui-input-block">
-													<input type="text"  name="tableName" autocomplete="off" class="layui-input">
+													<input type="text"  name="tableName" lay-verify="required" autocomplete="off" class="layui-input">
 												</div>
 											</div>
 											<div class="layui-form-item">
 												<label class="layui-form-label">xpath解析选型</label>
 												<div class="layui-input-block">
-													<select name="xPathSelection" class="layui-select" lay-verify="required">
+													<select name="xpathSelection" lay-verify="required">
+														<option value=""></option>
 														<option value="0">htmlCleaner</option>
 														<option value="1">xSoup</option>
 													</select>
@@ -61,6 +62,16 @@
 												</div>
 												<div class="layui-input-inline">
 													<label data-type="contentXpath" class="pear-btn pear-btn-sm pear-btn-primary layui-icon layui-icon-website"></label>
+												</div>
+											</div>
+											<div class="layui-form-item">
+												<label class="layui-form-label">数据保存类型</label>
+												<div class="layui-input-block">
+													<select name="scanUrlType" lay-verify="required">
+														<option value=""></option>
+														<option value="0">全量</option>
+														<option value="1">增量</option>
+													</select>
 												</div>
 											</div>
 											<div class="layui-form-item">
