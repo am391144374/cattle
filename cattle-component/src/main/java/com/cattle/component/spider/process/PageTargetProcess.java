@@ -2,6 +2,7 @@ package com.cattle.component.spider.process;
 
 import cn.hutool.core.util.StrUtil;
 import com.cattle.common.ItemsHelper;
+import com.cattle.common.constants.SpiderConstants;
 import com.cattle.common.filter.UrlFilterInterface;
 import com.cattle.component.spider.parse.HtmlCleanerParse;
 import com.cattle.component.spider.parse.XsoupParse;
@@ -45,24 +46,24 @@ public class PageTargetProcess implements PageProcessor {
             if(StrUtil.isNotBlank(spiderConfig.getContentXpath())){
                 try {
                     contentUrls = xpathParse.xpath(spiderConfig.getContentXpath());
-                    scanUrls.addAll(contentUrls);
+                    //url过滤 只正对正文页url 不对列表页url 做过滤 提高后续调用效率
+                    if(urlFilter != null && spiderConfig.getScanUrlType() == 1){
+                        String key = SpiderConstants.URL_FILTER_KEY + processContext.getJobId();
+                        for (String contentUrl : contentUrls) {
+                            if(urlFilter.exist(contentUrl,key)){
+                                //判断当前页是否已经处理过，已经处理过直接返回
+                                continue;
+                            }else{
+                                urlFilter.add(contentUrl,key);
+                                scanUrls.add(contentUrl);
+                            }
+                        }
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                     processContext.putError(this,e);
                 }
             }
-
-            //url过滤
-//            if(urlFilter != null && spiderConfig.getScanUrlType() == 1){
-//                String key = SpiderConstants.URL_FILTER_KEY + processContext.getJobId();
-//                String url = page.getUrl().get();
-//                if(urlFilter.exist(url,key)){
-//                    //判断当前页是否已经处理过，已经处理过直接返回
-//                    return;
-//                }else{
-//                    urlFilter.add(url,key);
-//                }
-//            }
 
             page.addTargetRequests(scanUrls);
 

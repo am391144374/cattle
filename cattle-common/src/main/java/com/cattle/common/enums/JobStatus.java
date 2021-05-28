@@ -7,6 +7,7 @@ public enum JobStatus {
     RUNNING("running"),
     /** 错误中断 */
     INTERRUPT("interrupt"),
+    WAIT("wait"),
     FINISH("finish");
 
     private String name;
