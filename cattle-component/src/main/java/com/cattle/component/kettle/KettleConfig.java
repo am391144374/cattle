@@ -1,14 +1,14 @@
 package com.cattle.component.kettle;
 
-import com.cattle.component.kettle.meta.DataBaseMeta;
+import com.cattle.component.kettle.meta.DBMate;
 import com.cattle.component.kettle.meta.ExcelMeta;
 import com.cattle.component.kettle.meta.FieldMeta;
 import lombok.Data;
 import lombok.ToString;
-import org.apache.commons.beanutils.PropertyUtilsBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @ToString
@@ -38,6 +38,6 @@ public class KettleConfig{
     /** 新增变量字段 */
     private List<FieldMeta> constantMap = new ArrayList<>();
     /** 数据存储 */
-    private List<DataBaseMeta> dataBaseMetas;
+    private Map<String /* dbName */, DBMate> dataBaseMetas;
 
 }

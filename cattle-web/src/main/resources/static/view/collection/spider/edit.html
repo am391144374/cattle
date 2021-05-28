@@ -372,7 +372,7 @@
 
 				window.fieldDebug = function (obj,type){
 					let object = new Object();
-					let selectXPath = $("[name = 'xPathSelection']")[0].value;
+					let selectXPath = $("[name = 'xpathSelection']")[0].value;
 					let entryUrl = $("[name = 'entryUrl']")[0].value;
 					object['entryUrl'] = entryUrl;
 					object['xpathSelection'] = selectXPath;
@@ -427,7 +427,7 @@
 					let type = $(this).attr("data-type");
 					let obj = new Object();
 					obj['entryUrl'] = $("[name = 'entryUrl']")[0].value;
-					obj['xpathSelection'] = $("[name = 'xPathSelection']")[0].value;
+					obj['xpathSelection'] = $("[name = 'xpathSelection']")[0].value;
 					if(type == 'listRegex'){
 						obj['listRegex'] = $("[name = 'listRegex']")[0].value;
 					}else{

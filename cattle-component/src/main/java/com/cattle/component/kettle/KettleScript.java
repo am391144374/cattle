@@ -61,6 +61,7 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
             context.setJobStatus(JobStatus.RUNNING);
             context.setScriptType(getScriptType());
             context.put("transMeta",transMeta);
+            context.put("kettleConfig",kettleConfig);
             context.setJobId(cattleJob.getJobId());
             context.setJobName(kettleConfig.getJobName());
             context.setBatchId(kettleConfig.getBatchId());
@@ -88,10 +89,6 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
             stepProcessHandler.addStepMeta(constantStep);
             /** -------------*/
 
-            /** excel 处理 */
-//        ExcelHeadFormatHandler excelHeadFormatHandler = new ExcelHeadFormatHandler(kettleConfig);
-            /** ---------- */
-//        addLastProcess(excelHeadFormatHandler);
             addLastProcess(stepProcessHandler);
     }
 
@@ -133,6 +130,9 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
 //                    kettleConfig.setConstantMap(fieldMetaList);
 //                    break;
         }
+
+        //自定义数据库连接
+
         kettleConfig.setScriptFile(scriptInfo.getScriptFile());
         kettleConfig.setJobName(job.getJobName());
         kettleConfig.setBatchId(job.getBatchId());

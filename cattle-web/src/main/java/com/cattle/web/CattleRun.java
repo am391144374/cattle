@@ -209,8 +209,11 @@ public class CattleRun implements Closeable {
                 }
                 //过滤结果
                 saveFilter(spiderConfig,processContext,result);
-                spiderService.doPrepareSaveData(result,spiderConfig.getTableName(),columns, String.valueOf(processContext.getBatchId()));
-                processContext.setSuccessCount(result.size());
+
+                if(result.size() > 0){
+                    spiderService.doPrepareSaveData(result,spiderConfig.getTableName(),columns, String.valueOf(processContext.getBatchId()));
+                    processContext.setSuccessCount(result.size());
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
                 processContext.putError(this,e);

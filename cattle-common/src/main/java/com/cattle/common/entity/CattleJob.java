@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 执行计划
@@ -44,5 +46,9 @@ public class CattleJob {
      */
     @TableField(exist = false)
     private CattleSpiderInfo spiderInfo;
+
+    @TableField(exist = false)
+    /** 数据存储 */
+    private Map<String /* dbName */,CattleKtrDb> dataBaseMetas;
 
 }

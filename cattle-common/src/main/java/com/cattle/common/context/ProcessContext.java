@@ -20,7 +20,8 @@ public class ProcessContext extends HashMap<String,Object> {
 
     private Integer jobId;
 
-    private int successCount;
+    /** 默认为0 */
+    private int successCount = 0;
 
     private JobStatus jobStatus;
 
