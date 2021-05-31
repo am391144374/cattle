@@ -58,7 +58,38 @@ public class ItemsHelper {
     }
 
     /**
+     * 添加正文页数据 升级到 cachePageFields
+     * 触发 升级
+     * @param batchId
+     * @param url
+     * @param field
+     */
+    public static void addContentField(long batchId,String url,LinkedHashMap<String, String> field){
+        if(pageFields.containsKey(batchId)){
+            Map<String,List<LinkedHashMap<String, String>>> listFieldMap = pageFields.get(batchId);
+            if(listFieldMap.containsKey(url)){
+                List<LinkedHashMap<String, String>> listField = listFieldMap.get(url);
+                for(int i = 0 ; i < listField.size() ; i++){
+                    listField.get(i).putAll(field);
+                }
+            }else{
+                List<LinkedHashMap<String, String>> linkedHashMaps = new ArrayList<>();
+                linkedHashMaps.add(field);
+                listFieldMap.put(url,linkedHashMaps);
+            }
+        }else{
+            Map<String,List<LinkedHashMap<String, String>>> listFieldMap = new HashMap<>();
+            List<LinkedHashMap<String, String>> linkedHashMaps = new ArrayList<>();
+            linkedHashMaps.add(field);
+            listFieldMap.put(url,linkedHashMaps);
+            pageFields.put(batchId,listFieldMap);
+        }
+        upgradeToCachePageFields(batchId,url);
+    }
+
+    /**
      * 全量新增
+     * 触发 升级
      * @param batchId
      * @param url
      * @param fields
@@ -79,22 +110,69 @@ public class ItemsHelper {
             listFieldMap.put(url,fields);
             pageFields.put(batchId,listFieldMap);
         }
+        upgradeToCachePageFields(batchId,url);
     }
 
     public static List<LinkedHashMap<String, String>> getPageField(long batchId){
         if(!pageFields.containsKey(batchId)){
             return null;
         }
+        upgradeToStoragePageFields(batchId);
         List<LinkedHashMap<String,String>> resultList = new ArrayList<>();
-        Map<String,List<LinkedHashMap<String, String>>> fieldMaps = pageFields.get(batchId);
+        Map<String,List<LinkedHashMap<String, String>>> fieldMaps = storagePageFields.get(batchId);
+        if(fieldMaps == null || fieldMaps.size() <= 0){
+            return null;
+        }
         fieldMaps.forEach((k,v) -> {
            resultList.addAll(v);
         });
         return resultList;
     }
 
-    public static void remove(long batchId){
+    public static void removeAll(long batchId){
         pageFields.remove(batchId);
+        cachePageFields.remove(batchId);
+        storagePageFields.remove(batchId);
+    }
+
+    public static void removeStorage(long batchId){
+        storagePageFields.remove(batchId);
+    }
+
+    private static void upgradeToCachePageFields(Long batchId,String url){
+        Map<String,List<LinkedHashMap<String, String>>> cache;
+        if(!cachePageFields.containsKey(batchId)){
+            cache = new HashMap<>();
+            cachePageFields.put(batchId,cache);
+        }else{
+            cache = cachePageFields.get(batchId);
+        }
+        Map<String, List<LinkedHashMap<String, String>>> listFieldMap = pageFields.get(batchId);
+        if (listFieldMap.containsKey(url)) {
+            synchronized (batchId){
+                List<LinkedHashMap<String, String>> listField = listFieldMap.get(url);
+                cache.put(url, listField);
+                listFieldMap.remove(url);
+            }
+        }
+    }
+
+    private static void upgradeToStoragePageFields(Long batchId){
+        Map<String,List<LinkedHashMap<String, String>>> storage;
+        if(!storagePageFields.containsKey(batchId)){
+            storage = new HashMap<>();
+            storagePageFields.put(batchId,storage);
+        }else{
+            storage = storagePageFields.get(batchId);
+        }
+        synchronized (batchId){
+            Map<String,List<LinkedHashMap<String, String>>> listFieldMap = cachePageFields.get(batchId);
+            if(listFieldMap != null){
+                storage.putAll(listFieldMap);
+                storagePageFields.put(batchId,storage);
+                cachePageFields.remove(batchId);
+            }
+        }
     }
 
 }

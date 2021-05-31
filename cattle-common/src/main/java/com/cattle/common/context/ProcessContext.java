@@ -31,6 +31,10 @@ public class ProcessContext extends HashMap<String,Object> {
 
     private final Set<String> warns = new HashSet<>();
 
+    public void addSuccessCount(int addNum){
+        successCount += addNum;
+    }
+
 
     public void putError(Object errorClass, Exception e){
         String exMsg = String.format(errorClass.getClass().getName() +

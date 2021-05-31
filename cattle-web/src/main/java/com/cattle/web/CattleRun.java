@@ -155,7 +155,7 @@ public class CattleRun implements Closeable {
                                 });
                                 runLogService.updateResult(batchId,0,errors.size(),errorStr.toString(),warns.size(),warnStr.toString(),JobStatus.INTERRUPT);
                                 JobContextHelper.remove(batchId);
-                                ItemsHelper.remove(batchId);
+                                ItemsHelper.removeAll(batchId);
                                 break;
                             //执行完成
                             case FINISH:
@@ -170,11 +170,15 @@ public class CattleRun implements Closeable {
                                 }
                                 runLogService.updateResult(batchId,context.getSuccessCount(),0,null,warnsFin.size(),warnStrFin.toString(),JobStatus.FINISH);
                                 JobContextHelper.remove(batchId);
+                                ItemsHelper.removeAll(batchId);
                                 break;
                             //执行中
                             case RUNNING:
                             default:
                                 break;
+                        }
+                        if("spider".equals(context.getScriptType())){
+                            storage(context);
                         }
                     }catch (Exception e){
                         e.printStackTrace();
@@ -202,9 +206,9 @@ public class CattleRun implements Closeable {
     public void storage(ProcessContext processContext){
         SpiderConfig spiderConfig = (SpiderConfig) processContext.get("spiderConfig");
         List<LinkedHashMap<String, String>> result = ItemsHelper.getPageField(spiderConfig.getBatchId());
-        //获取后删除，防止再次获取
-        ItemsHelper.remove(processContext.getBatchId());
         if(result != null && result.size() > 0){
+            //获取后删除，防止再次获取
+            ItemsHelper.removeStorage(processContext.getBatchId());
             try {
                 Set<String> columns = new HashSet<>();
                 if(StrUtil.isNotBlank(spiderConfig.getFieldsJson())){
@@ -219,7 +223,7 @@ public class CattleRun implements Closeable {
 
                 if(result.size() > 0){
                     spiderService.doPrepareSaveData(result,spiderConfig.getTableName(),columns, String.valueOf(processContext.getBatchId()));
-                    processContext.setSuccessCount(result.size());
+                    processContext.addSuccessCount(result.size());
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

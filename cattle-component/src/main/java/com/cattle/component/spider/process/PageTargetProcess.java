@@ -141,7 +141,7 @@ public class PageTargetProcess implements PageProcessor {
          */
         if(resultList.size() > 0 && !needAddContent.get()){
             if(isContentUrl){
-                ItemsHelper.addField(spiderConfig.getBatchId(),page.getUrl().get(),resultList.get(0));
+                ItemsHelper.addContentField(spiderConfig.getBatchId(),page.getUrl().get(),resultList.get(0));
             }else{
                 ItemsHelper.addFields(spiderConfig.getBatchId(),page.getUrl().get(),resultList);
             }
