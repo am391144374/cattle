@@ -4,6 +4,8 @@ package com.cattle.web;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.cattle.common.ItemsHelper;
 import com.cattle.common.JobContextHelper;
 import com.cattle.common.constants.SpiderConstants;
@@ -14,6 +16,7 @@ import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.common.plugin.ExtensionComponentLoader;
 import com.cattle.component.spider.SpiderConfig;
 import com.cattle.common.entity.CattleJob;
+import com.cattle.mapper.CustomizeSqlMapper;
 import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.RunLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -48,10 +51,13 @@ public class CattleRun implements Closeable {
 
     /** 执行脚本 */
     private ExtensionComponentLoader componentLoader;
+    /** 自定义sql查询 */
+    private CustomizeSqlMapper customizeSqlMapper;
 
-    public CattleRun(RunLogService runLogService,ConfigurableSpiderService spiderService){
+    public CattleRun(RunLogService runLogService, ConfigurableSpiderService spiderService, CustomizeSqlMapper customizeSqlMapper){
         this.runLogService = runLogService;
         this.spiderService = spiderService;
+        this.customizeSqlMapper = customizeSqlMapper;
     }
 
     public void init(){
@@ -207,6 +213,7 @@ public class CattleRun implements Closeable {
                 if(StrUtil.isNotBlank(spiderConfig.getContentXpath())){
                     columns.addAll(spiderConfig.getContentFields().keySet());
                 }
+
                 //过滤结果
                 saveFilter(spiderConfig,processContext,result);
 
@@ -236,8 +243,10 @@ public class CattleRun implements Closeable {
      */
     private void saveFilter(SpiderConfig spiderConfig,ProcessContext processContext,List<LinkedHashMap<String, String>> result){
         UrlFilterInterface urlFilter = spiderConfig.getUrlFilterInterface();
+        boolean tableExists = true;
         if(spiderConfig.getUrlFilterInterface() != null && spiderConfig.getScanUrlType() == 1){
             String key = SpiderConstants.URL_FILTER_KEY + processContext.getJobId();
+            Set<String> whereColumns = spiderConfig.getUpdateWhereColumn();
             Iterator<LinkedHashMap<String, String>> iterator = result.iterator();
             while (iterator.hasNext()){
                 LinkedHashMap<String, String> tempValue = iterator.next();
@@ -246,10 +255,46 @@ public class CattleRun implements Closeable {
                     value.append(v);
                 });
                 if(urlFilter.exist(value.toString(),key)){
-                    //判断当前页是否已经处理过，已经处理过直接返回
+                    //判断当前页是否已经处理过，已经处理则删除当前值
                     iterator.remove();
                 }else{
                     urlFilter.add(value.toString(),key);
+                    //没有则可能存在相同，则需要先查询数据库再判断
+                    if(whereColumns.isEmpty()){
+                        continue;
+                    }
+
+                    if(tableExists){
+                        QueryWrapper queryWrapper = new QueryWrapper<>();
+                        tempValue.forEach((k,v) -> {
+                            if(whereColumns.contains(k)){
+                                queryWrapper.eq(k.toLowerCase(),v);
+                            }
+                        });
+
+                        try {
+                            Map<String,Object> tempResult = customizeSqlMapper.selectOne(spiderConfig.getTableName(),queryWrapper);
+                            if(tempResult != null){
+                                //说明存在数据，则更新，不新增
+                                iterator.remove();
+                                long id = (long) tempResult.get("id");
+                                UpdateWrapper updateWrapper = new UpdateWrapper();
+                                updateWrapper.eq("id",id);
+                                tempValue.forEach((k,v) -> {
+                                    updateWrapper.set(k.toLowerCase(),v);
+                                });
+                                customizeSqlMapper.update(spiderConfig.getTableName(),updateWrapper.getSqlSet(),updateWrapper);
+                            }
+                        }catch (Exception e){
+                            //说明为第一次数据调用，未创建表
+                            if(e.getMessage().indexOf("doesn't exist") > 0){
+                                tableExists = false;
+                            }else{
+                                e.printStackTrace();
+                                processContext.putError(this,e);
+                            }
+                        }
+                    }
                 }
             }
         }

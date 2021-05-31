@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 如何使用
+ * @see com.cattle.web.mapper.CustomizeSqlTest
  * 自定义sql查询
  */
 public interface CustomizeSqlMapper  {
@@ -18,6 +20,13 @@ public interface CustomizeSqlMapper  {
     List<Map<String,Object>> selectAll(@Param(value = "tableName") String tableName
             ,@Param(Constants.WRAPPER) Wrapper wrapper);
 
+    /**
+     *
+     * @param tableName
+     * @param setSql
+     * @param wrapper
+     * @return
+     */
     @Update("update ${tableName} set ${setSql} ${ew.customSqlSegment}")
     int update(@Param(value = "tableName") String tableName,@Param(value = "setSql") String setSql
             ,@Param(Constants.WRAPPER) Wrapper wrapper);

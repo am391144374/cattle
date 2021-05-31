@@ -1,5 +1,6 @@
 package com.cattle.component.spider;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -10,7 +11,9 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 @Data
 @ToString
@@ -104,7 +107,7 @@ public class SpiderConfig {
     }
 
     public LinkedHashMap<String, String> parseFields(String fieldsJson) {
-        if (Strings.isNullOrEmpty(fieldsJson)) {
+        if (StrUtil.isBlank(fieldsJson)) {
             return new LinkedHashMap<>();
         }
 
@@ -115,6 +118,30 @@ public class SpiderConfig {
             map.put(field.get("key").toString(), field.get("value").toString());
         }
         return map;
+    }
+
+    public Set<String> getUpdateWhereColumn(){
+        if (StrUtil.isBlank(fieldsJson)) {
+            return new HashSet<>();
+        }
+        Set<String> whereColumns = new HashSet<>();
+        JSONArray fields = JSON.parseArray(fieldsJson);
+        for (Object fieldObj : fields) {
+            JSONObject field = (JSONObject) fieldObj;
+            if("是".equals(field.getString("isWhere"))){
+                whereColumns.add(field.getString("key"));
+            }
+        }
+        if(StrUtil.isNotBlank(contentFieldsJson)){
+            JSONArray contentFields = JSON.parseArray(fieldsJson);
+            for (Object fieldObj : contentFields) {
+                JSONObject field = (JSONObject) fieldObj;
+                if("是".equals(field.getString("isWhere"))){
+                    whereColumns.add(field.getString("key"));
+                }
+            }
+        }
+        return whereColumns;
     }
 
 }

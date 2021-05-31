@@ -4,6 +4,7 @@ import com.cattle.common.enums.JobStatus;
 import com.cattle.common.entity.CattleJob;
 import com.cattle.common.entity.CattleRunLog;
 import com.cattle.common.entity.CattleSpiderInfo;
+import com.cattle.mapper.CustomizeSqlMapper;
 import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.JobService;
 import com.cattle.service.api.RunLogService;
@@ -11,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
 
 @Slf4j
 @SpringBootTest
@@ -25,9 +28,12 @@ public class CattleRunTest {
     @Autowired
     private ConfigurableSpiderService spiderService;
 
+    @Resource
+    private CustomizeSqlMapper customizeSqlMapper;
+
     @Test
     public void putSpiderTest(){
-        CattleRun cattleRun = new CattleRun(runLogService,spiderService);
+        CattleRun cattleRun = new CattleRun(runLogService,spiderService,customizeSqlMapper);
         cattleRun.init();
 
         CattleSpiderInfo cattleSpiderInfo = new CattleSpiderInfo();
@@ -35,9 +41,9 @@ public class CattleRunTest {
         cattleSpiderInfo.setSpiderName("电影");
         cattleSpiderInfo.setListRegex("https://www.wuhaozhan.net/movie/list/?p=1");
         cattleSpiderInfo.setEntryUrl("https://www.wuhaozhan.net/movie/list/?p=1");
-        cattleSpiderInfo.setFieldsJson("[{\"index\":1,\"key\":\"title\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/text()\"},{\"index\":2,\"key\":\"rate\",\"value\":\"//div[@Class='pure-g']/div/div[position() > 10]/div/div[3]//a/span/text()\"},{\"index\":3,\"key\":\"url\",\"value\":\"//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href\"}]");
+        cattleSpiderInfo.setFieldsJson("[{\"index\":1,\"key\":\"title\",\"value\":\"//div[@Class='pure-g']/div/div/div/div[2]/h1/a/text()\",\"isWhere\":\"否\"},{\"index\":2,\"key\":\"rate\",\"value\":\"//div[@Class='pure-g']/div/div/div/div[3]//a/span/text()\",\"isWhere\":\"否\"},{\"key\":\"url\",\"value\":\"//div[@Class='pure-g']/div/div/div/div[2]/h1/a/@href\",\"isWhere\":\"否\"}]");
         cattleSpiderInfo.setContentXpath("//div[@Class='pure-g']/div/div[position()>10]/div/div[2]/h1/a/@href");
-        cattleSpiderInfo.setContentFieldsJson("[{\"index\":1,\"key\":\"another\",\"value\":\"//div[@id='info']/text()\"}]");
+        cattleSpiderInfo.setContentFieldsJson("[{\"key\":\"contentName\",\"value\":\"//h1/text()\",\"isWhere\":\"是\"}]");
         cattleSpiderInfo.setXPathSelection(0);
         cattleSpiderInfo.setThreadNum(2);
 
@@ -58,7 +64,7 @@ public class CattleRunTest {
 
     @Test
     public void putKettleTest(){
-        CattleRun cattleRun = new CattleRun(runLogService,null);
+        CattleRun cattleRun = new CattleRun(runLogService,null,customizeSqlMapper);
         cattleRun.init();
 
         CattleJob job = jobService.buildExecuteJobInfo(1);

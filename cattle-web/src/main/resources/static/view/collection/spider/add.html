@@ -149,6 +149,7 @@
 													<tr>
 														<td lay-data="{field:'key',width:100,edit:'text'}">字段名</td>
 														<td lay-data="{field:'value',edit:'text'}">XPath规则</td>
+														<td lay-data="{field:'isWhere',width:138,edit:'text'}">是否更新查询字段</td>
 														<td lay-data="{width:100,templet:'#field-row-bar'}">操作</td>
 													</tr>
 													</thead>
@@ -164,6 +165,7 @@
 														<tr>
 															<td lay-data="{field:'key',width:100,edit:'text'}">字段名</td>
 															<td lay-data="{field:'value',edit:'text'}">XPath规则</td>
+															<td lay-data="{field:'isWhere',width:138,edit:'text'}">是否更新查询字段</td>
 															<td lay-data="{width:100,templet:'#content-row-bar'}">操作</td>
 														</tr>
 													</thead>
@@ -192,6 +194,9 @@
 			<div class="layui-btn-container">
 				<button class="layui-btn layui-btn-sm" lay-event="addFieldRow">新增行</button>
 			</div>
+		</script>
+		<script type="text/html" id="switchIsWhere">
+			<input type="checkbox" name="isWhere" value="{{d.isWhere}}" lay-skin="switch" lay-text="是|否" lay-filter="isWhere">
 		</script>
 		<script type="text/html" id="contentToolbar">
 			<div class="layui-btn-container">
@@ -385,7 +390,7 @@
 
 				window.addFieldRow = function(){
 					var oldData = table.cache['field-table'];
-					var newRow = {'key':'','value':''};
+					var newRow = {'key':'','value':'','isWhere':'否'};
 					oldData.push(newRow);
 					table.reload('field-table',{
 						data : oldData
@@ -394,7 +399,7 @@
 
 				window.addContentRow = function() {
 					var oldData = table.cache['content-table'];
-					var newRow = {'key': '', 'value': ''};
+					var newRow = {'key': '', 'value': '','isWhere':'否'};
 					oldData.push(newRow);
 					table.reload('content-table', {
 						data: oldData
