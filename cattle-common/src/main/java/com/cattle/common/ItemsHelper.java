@@ -7,8 +7,9 @@ import java.util.*;
  * 页数据处理
  *
  * 设置三级缓存
+ * 目的：不需要等待数据全部拼接完再保存数据，有数据能直接保存，如果采集线程较多可能导致oom
  * 一级缓存为了拼接正文页字段与列表页字段匹配正确
- * 二级缓存为拼接完成可保存数据 做中间缓存层，防止保存完成后删除缓存导致把为保存数据直接保存的问题
+ * 二级缓存为中间层，等待轮询线程升级成为三级缓存
  * 三级缓存为可保存数据，保存完后直接清除，不占用内存
  *
  */
@@ -19,7 +20,6 @@ public class ItemsHelper {
      */
     public static Map<Long /* batchId */,Map<String /* url */,List<LinkedHashMap<String, String>>/* list field */>> pageFields = new HashMap<>();
 
-    // todo 三级缓存逻辑需要再想想，如何保证多线程情况下快速 ”升级“
     /**
      * 中间缓冲层
      */
@@ -30,6 +30,7 @@ public class ItemsHelper {
 
     /**
      * 新增单条数据
+     * 因为正文页的数据与url是一一对应的关系，所以需要一条一条添加
      * @param batchId
      * @param url
      * @param field
@@ -58,8 +59,8 @@ public class ItemsHelper {
     }
 
     /**
-     * 添加正文页数据 升级到 cachePageFields
-     * 触发 升级
+     * 拼接正文页数据
+     * 触发升级，升级到 cachePageFields
      * @param batchId
      * @param url
      * @param field
@@ -113,10 +114,16 @@ public class ItemsHelper {
         upgradeToCachePageFields(batchId,url);
     }
 
+    /**
+     * 获取能保存的数据
+     * @param batchId
+     * @return
+     */
     public static List<LinkedHashMap<String, String>> getPageField(long batchId){
         if(!pageFields.containsKey(batchId)){
             return null;
         }
+        //从中间层添加到保存层
         upgradeToStoragePageFields(batchId);
         List<LinkedHashMap<String,String>> resultList = new ArrayList<>();
         Map<String,List<LinkedHashMap<String, String>>> fieldMaps = storagePageFields.get(batchId);

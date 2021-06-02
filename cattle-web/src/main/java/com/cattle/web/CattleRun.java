@@ -103,6 +103,7 @@ public class CattleRun implements Closeable {
                         runLogService.updateJobInfo(cattleJob.getJobId(), batchId, cattleJob.getJobName(), JobStatus.RUNNING);
                         cattleJob.setBatchId(batchId);
                         execute.setCattleJob(cattleJob);
+                        execute.buildConfig(cattleJob);
                         execute.run();
                     });
                 } catch (InterruptedException e) {
@@ -290,7 +291,7 @@ public class CattleRun implements Closeable {
                                 customizeSqlMapper.update(spiderConfig.getTableName(),updateWrapper.getSqlSet(),updateWrapper);
                             }
                         }catch (Exception e){
-                            //说明为第一次数据调用，未创建表
+                            //说明为第一次数据调用，未创建表，则后续都不判断是否存在
                             if(e.getMessage().indexOf("doesn't exist") > 0){
                                 tableExists = false;
                             }else{

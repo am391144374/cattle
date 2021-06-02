@@ -45,8 +45,7 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
     @Override
     public void run(){
 
-        buildConfig(cattleJob);
-
+        //编辑模式（自定义excel）
         if("edit".equals(kettleConfig.getProcessType())) {
             buildKettleEditProcess();
         }

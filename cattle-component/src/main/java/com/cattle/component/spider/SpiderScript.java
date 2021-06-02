@@ -30,7 +30,6 @@ public class SpiderScript extends ProcessScript implements ExecuteScriptInterfac
         JobContextHelper.setJobContext(cattleJob.getBatchId(),context);
         context.setJobStatus(JobStatus.RUNNING);
         try {
-            buildConfig(cattleJob);
             buildSpiderScript();
             context.setScriptType(getScriptType());
             context.setJobId(cattleJob.getJobId());
