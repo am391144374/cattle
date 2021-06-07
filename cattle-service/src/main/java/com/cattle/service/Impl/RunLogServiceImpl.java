@@ -12,9 +12,11 @@ import java.util.Date;
 @Service
 public class RunLogServiceImpl extends ServiceImpl<RunLogMapper,CattleRunLog> implements RunLogService {
 
-    public boolean createLog(long batchId){
+    public boolean createLog(long batchId,Integer jobId,String jobName){
         CattleRunLog runLog = new CattleRunLog();
         runLog.setBatchId(batchId);
+        runLog.setJobId(jobId);
+        runLog.setJobName(jobName);
         runLog.setJobStatus(JobStatus.CREATE.getName());
         return save(runLog);
     }

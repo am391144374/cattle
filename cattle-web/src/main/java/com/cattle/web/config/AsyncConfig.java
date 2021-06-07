@@ -1,6 +1,9 @@
 package com.cattle.web.config;
 
+import com.cattle.service.api.RunLogService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
@@ -10,6 +13,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
 
+@Slf4j
 @Configuration
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer {
@@ -31,7 +35,7 @@ public class AsyncConfig implements AsyncConfigurer {
         return new AsyncUncaughtExceptionHandler() {
             @Override
             public void handleUncaughtException(Throwable throwable, Method method, Object... objects) {
-                System.out.println("出现异常啦~~~~~~");
+                log.error("job 执行异常 exception:{} method:{} param{}",throwable.getMessage(),method.getName(),objects);
             }
         };
     }

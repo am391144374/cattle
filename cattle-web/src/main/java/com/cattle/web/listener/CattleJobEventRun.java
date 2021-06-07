@@ -35,7 +35,7 @@ public class CattleJobEventRun implements ApplicationListener<CattleJobEvent> {
         try {
             CattleJob cattleJob = cattleJobEvent.getCattleJob();
             log.info("###执行job 开始：{}",cattleJob.getJobName());
-            runLogService.createLog(batchId);
+            runLogService.createLog(batchId,cattleJob.getJobId(),cattleJob.getJobName());
             cattleJob.setBatchId(batchId);
             Class c = componentLoader.getComponentClass(cattleJob.getScriptType());
             if(c == null){
@@ -44,7 +44,7 @@ public class CattleJobEventRun implements ApplicationListener<CattleJobEvent> {
                 throw new RuntimeException("错误的执行脚本类别");
             }
             ExecuteScriptInterface execute = (ExecuteScriptInterface) c.newInstance();
-            runLogService.updateJobInfo(cattleJob.getJobId(), batchId, cattleJob.getJobName(), JobStatus.RUNNING);
+            runLogService.updateStatus(batchId,JobStatus.RUNNING);
             cattleJob.setBatchId(batchId);
             execute.setCattleJob(cattleJob);
             execute.buildConfig(cattleJob);

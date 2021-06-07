@@ -22,7 +22,7 @@ public class KettlePluginInit {
             initFlag = true;
 //            ClassPathResource classPathResource = new ClassPathResource("/plugins");
 //            File file = new File(classPathResource.getAbsolutePath());
-            File file = new File("D:\\code\\new work space from git\\Cattle\\cattle-component\\src\\main\\resources\\plugins");
+            File file = new File("D:\\code\\new work space from git\\Cattle\\cattle-component\\src\\main\\resources\\plugins\\1");
             for(File file1 : file.listFiles()){
                 StepPluginType.getInstance().getPluginFolders()
                         .add(new PluginFolder(file1.getPath(),false,true));

@@ -12,7 +12,7 @@ public interface RunLogService extends IService<CattleRunLog> {
      * @param jobName
      * @return
      */
-    boolean createLog(long batchId);
+    boolean createLog(long batchId,Integer jobId,String jobName);
 
     boolean updateJobInfo(Integer jobId,long batchId,String jobName,JobStatus status);
 
