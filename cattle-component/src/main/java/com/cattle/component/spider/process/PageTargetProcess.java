@@ -8,7 +8,7 @@ import com.cattle.component.spider.parse.HtmlCleanerParse;
 import com.cattle.component.spider.parse.XsoupParse;
 import com.cattle.component.spider.SpiderConfig;
 import com.cattle.component.spider.parse.XpathParse;
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
@@ -28,7 +28,7 @@ public class PageTargetProcess implements PageProcessor {
 
     private Site site;
     private SpiderConfig spiderConfig;
-    private ProcessContext processContext;
+    private ProcessContent processContent;
     private UrlFilterInterface urlFilter;
 
     @Override
@@ -48,7 +48,7 @@ public class PageTargetProcess implements PageProcessor {
                     contentUrls = xpathParse.xpath(spiderConfig.getContentXpath());
                     //url过滤 只正对正文页url 不对列表页url 做过滤 提高后续调用效率
                     if(urlFilter != null && spiderConfig.getScanUrlType() == 1){
-                        String key = SpiderConstants.URL_FILTER_KEY + processContext.getJobId();
+                        String key = SpiderConstants.URL_FILTER_KEY + processContent.getJobId();
                         for (String contentUrl : contentUrls) {
                             if(urlFilter.exist(contentUrl,key)){
                                 //判断当前页是否已经处理过，已经处理过直接返回
@@ -61,7 +61,7 @@ public class PageTargetProcess implements PageProcessor {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    processContext.putError(this,e);
+                    processContent.putError(this,e);
                 }
             }
 
@@ -79,13 +79,13 @@ public class PageTargetProcess implements PageProcessor {
                         if(parseSize.get() != vstr.size()){
                             String warnText = String.format("当前页面：%s , 字段信息数量无法对应，请检查！",page.getUrl().get());
                             log.warn(warnText);
-                            processContext.putWarn(this,new RuntimeException(warnText));
+                            processContent.putWarn(this,new RuntimeException(warnText));
                             return;
                         }
                         columnMap.put(column,vstr);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        processContext.putError(this,e);
+                        processContent.putError(this,e);
                     }
                 }
             }
@@ -98,7 +98,7 @@ public class PageTargetProcess implements PageProcessor {
                     columnMap.put(column,vstr);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    processContext.putError(this,e);
+                    processContent.putError(this,e);
                 }
             });
         }
@@ -128,7 +128,7 @@ public class PageTargetProcess implements PageProcessor {
                 }
             }catch (Exception e){
                 e.printStackTrace();
-                processContext.putError(this,e);
+                processContent.putError(this,e);
             }
         });
 
@@ -166,8 +166,8 @@ public class PageTargetProcess implements PageProcessor {
         this.spiderConfig = config;
     }
 
-    public void setProcessContext(ProcessContext processContext){
-        this.processContext = processContext;
+    public void setProcessContext(ProcessContent processContent){
+        this.processContent = processContent;
     }
 
     public XpathParse getXpathParse(Page page){

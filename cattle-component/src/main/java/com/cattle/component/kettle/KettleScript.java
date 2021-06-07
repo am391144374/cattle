@@ -12,7 +12,7 @@ import com.cattle.component.kettle.step.ConstantStep;
 import com.cattle.component.kettle.step.ExcelInputStep;
 import com.cattle.component.kettle.step.SelectValuesStep;
 import com.cattle.common.plugin.ProcessScript;
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.common.entity.CattleJob;
 import com.cattle.common.entity.CattleKtrField;
 import com.cattle.common.entity.CattleKtrStep;
@@ -53,7 +53,7 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
         //最后加上 kettle脚本执行器
         addExecuteKettleScriptActuator();
 
-        ProcessContext context = new ProcessContext();
+        ProcessContent context = new ProcessContent();
         try {
             TransMeta transMeta = new TransMeta(kettleConfig.getScriptFile());
             transMeta.setName(kettleConfig.getJobName());

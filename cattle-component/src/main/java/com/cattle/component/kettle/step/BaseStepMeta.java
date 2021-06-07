@@ -1,6 +1,6 @@
 package com.cattle.component.kettle.step;
 
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.common.handler.ExecuteProcessHandler;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.trans.TransHopMeta;
@@ -28,13 +28,13 @@ public abstract class BaseStepMeta extends ExecuteProcessHandler implements Step
     }
 
     @Override
-    public void execute(ProcessContext processContext){
+    public void execute(ProcessContent processContent){
         try {
             currentStepMeta = buildCurrentStepMate();
             transMeta.addOrReplaceStep(currentStepMeta);
         } catch (Exception e) {
             e.printStackTrace();
-            processContext.putError(currentStepMeta,e);
+            processContent.putError(currentStepMeta,e);
         }
 
     }
@@ -50,7 +50,7 @@ public abstract class BaseStepMeta extends ExecuteProcessHandler implements Step
     }
 
     @Override
-    public void executeContent(ProcessContext processContext) {
+    public void executeContent(ProcessContent processContent) {
 
     }
 }

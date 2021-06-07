@@ -2,7 +2,7 @@ package com.cattle.component.spider.handler;
 
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.handler.ExecuteProcessHandler;
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.component.spider.SpiderConfig;
 import lombok.extern.slf4j.Slf4j;
 import us.codecraft.webmagic.Spider;
@@ -15,25 +15,25 @@ import us.codecraft.webmagic.Spider;
 public class SpiderMonitorProcessHandler extends ExecuteProcessHandler {
 
     @Override
-    public void executeContent(ProcessContext processContext) {
-        Spider spider = (Spider) processContext.get("spiderWorker");
-        SpiderConfig spiderConfig = (SpiderConfig) processContext.get("spiderConfig");
+    public void executeContent(ProcessContent processContent) {
+        Spider spider = (Spider) processContent.get("spiderWorker");
+        SpiderConfig spiderConfig = (SpiderConfig) processContent.get("spiderConfig");
         while (spider.getStatus() != Spider.Status.Stopped){
             //阻塞等待完成
             try {
                 //可自己中断
-                if(processContext.getJobStatus().getName().equals(JobStatus.INTERRUPT.getName())){
+                if(processContent.getJobStatus().getName().equals(JobStatus.INTERRUPT.getName())){
                     spider.stop();
                     break;
                 }
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                processContext.putError(this,e);
+                processContent.putError(this,e);
             }
         }
-        if(!processContext.getJobStatus().getName().equals(JobStatus.INTERRUPT.getName())){
-            processContext.setJobStatus(JobStatus.FINISH);
+        if(!processContent.getJobStatus().getName().equals(JobStatus.INTERRUPT.getName())){
+            processContent.setJobStatus(JobStatus.FINISH);
         }
     }
 

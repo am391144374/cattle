@@ -1,7 +1,7 @@
 package com.cattle.web.component.spider;
 
 import cn.hutool.core.util.IdUtil;
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.handler.ProcessHandler;
 import com.cattle.component.spider.SpiderConfig;
@@ -38,14 +38,14 @@ public class SpiderProcessHandlerTest {
         spiderConfig.setXPathSelection(0);
         spiderConfig.setThreadNum(2);
 
-        ProcessContext processContext = new ProcessContext();
-        processContext.setBatchId(batchId);
-        processContext.put("spiderConfig",spiderConfig);
-        processContext.setJobStatus(JobStatus.RUNNING);
+        ProcessContent processContent = new ProcessContent();
+        processContent.setBatchId(batchId);
+        processContent.put("spiderConfig",spiderConfig);
+        processContent.setJobStatus(JobStatus.RUNNING);
 
         processHandler.setNextHandler(new SpiderMonitorProcessHandler());
-        processHandler.execute(processContext);
-        logger.info(processContext.toString());
+        processHandler.execute(processContent);
+        logger.info(processContent.toString());
     }
 
 }

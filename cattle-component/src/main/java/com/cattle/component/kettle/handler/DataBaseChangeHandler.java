@@ -1,6 +1,6 @@
 package com.cattle.component.kettle.handler;
 
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.common.handler.ExecuteProcessHandler;
 import com.cattle.component.kettle.KettleConfig;
 import com.cattle.component.kettle.meta.DBMate;
@@ -17,9 +17,9 @@ import java.util.Optional;
 public class DataBaseChangeHandler extends ExecuteProcessHandler {
 
     @Override
-    public void executeContent(ProcessContext processContext) {
-        TransMeta transMeta = (TransMeta) processContext.get("transMeta");
-        KettleConfig kettleConfig = (KettleConfig) processContext.get("kettleConfig");
+    public void executeContent(ProcessContent processContent) {
+        TransMeta transMeta = (TransMeta) processContent.get("transMeta");
+        KettleConfig kettleConfig = (KettleConfig) processContent.get("kettleConfig");
         Map<String,DBMate> dbList = kettleConfig.getDataBaseMetas();
         List<DatabaseMeta> list = transMeta.getDatabases();
         Optional.ofNullable(list).get().forEach(databaseMeta -> {

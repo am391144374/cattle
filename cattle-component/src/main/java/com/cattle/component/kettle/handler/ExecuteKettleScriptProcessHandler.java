@@ -2,7 +2,7 @@ package com.cattle.component.kettle.handler;
 
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.handler.ExecuteProcessHandler;
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.component.kettle.trans.MyTrans;
 import com.cattle.common.exception.ExecuteKettleScriptException;
 import org.pentaho.di.core.exception.KettleException;
@@ -16,11 +16,11 @@ import org.pentaho.di.trans.TransMeta;
 public class ExecuteKettleScriptProcessHandler extends ExecuteProcessHandler {
 
     @Override
-    public void executeContent(ProcessContext processContext) {
-        TransMeta transMeta = (TransMeta) processContext.get("transMeta");
-        long batchId = processContext.getBatchId();
+    public void executeContent(ProcessContent processContent) {
+        TransMeta transMeta = (TransMeta) processContent.get("transMeta");
+        long batchId = processContent.getBatchId();
         if(transMeta == null){
-            processContext.putError(this,new ExecuteKettleScriptException("execute kettle script error TransMeta is null"));
+            processContent.putError(this,new ExecuteKettleScriptException("execute kettle script error TransMeta is null"));
             return;
         }
         MyTrans trans = null;
@@ -33,16 +33,16 @@ public class ExecuteKettleScriptProcessHandler extends ExecuteProcessHandler {
             trans.waitUntilFinished();
             // 抛出异常
             if (trans.getErrors() > 0) {
-                processContext.putError(this,new RuntimeException("There are errors during transformation exception!(传输过程中发生异常)"));
+                processContent.putError(this,new RuntimeException("There are errors during transformation exception!(传输过程中发生异常)"));
                 String[] errMsgList = KettleLogStore.getAppender().getBuffer(trans.getLogChannelId(), false).toString().split("\n\r\n");
                 String errMsg=errMsgList[0];
-                processContext.putError(this,new RuntimeException(errMsg));
+                processContent.putError(this,new RuntimeException(errMsg));
             }else{
-                processContext.setJobStatus(JobStatus.FINISH);
+                processContent.setJobStatus(JobStatus.FINISH);
             }
         } catch (KettleException e) {
             e.printStackTrace();
-            processContext.putError(this,e);
+            processContent.putError(this,e);
         }finally {
             trans.cleanup();
         }

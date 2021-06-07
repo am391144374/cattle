@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author lsj
  */
 @Data
-public class ProcessContext extends HashMap<String,Object> {
+public class ProcessContent extends HashMap<String,Object> {
 
     /** 批次ID */
     private long batchId;

@@ -2,16 +2,16 @@ spring:
   profiles:
     active: druid
   redis:
-    host: localhost
+    host: redis.lzfun.top
     port: 6379
-    password:
+    password: liushijie123
     database: 0
     lettuce:
       pool:
         max-active: 30
         min-idle: 10
         max-wait: -1
-    timeout: 10000000
+    timeout: 1000
 
 cattle:
   upload:

@@ -7,7 +7,7 @@ import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.component.spider.handler.SpiderMonitorProcessHandler;
 import com.cattle.component.spider.handler.SpiderProcessHandler;
 import com.cattle.common.plugin.ProcessScript;
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.common.entity.CattleJob;
 import com.cattle.common.entity.CattleSpiderInfo;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ public class SpiderScript extends ProcessScript implements ExecuteScriptInterfac
 
     @Override
     public void run() {
-        ProcessContext context = new ProcessContext();
+        ProcessContent context = new ProcessContent();
         JobContextHelper.setJobContext(cattleJob.getBatchId(),context);
         context.setJobStatus(JobStatus.RUNNING);
         try {

@@ -1,21 +1,16 @@
-package com.cattle.web;
+package com.cattle.web.listener;
 
 
-import cn.hutool.core.thread.ThreadUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.cattle.common.ItemsHelper;
 import com.cattle.common.JobContextHelper;
 import com.cattle.common.constants.SpiderConstants;
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.filter.UrlFilterInterface;
-import com.cattle.common.plugin.ExecuteScriptInterface;
-import com.cattle.common.plugin.ExtensionComponentLoader;
 import com.cattle.component.spider.SpiderConfig;
-import com.cattle.common.entity.CattleJob;
 import com.cattle.mapper.CustomizeSqlMapper;
 import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.RunLogService;
@@ -25,104 +20,33 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author lsj
  * 脚本最小执行类
  */
 @Slf4j
-public class CattleRun implements Closeable {
+public class FinishJob{
 
-    /** 执行线程池 */
-    private ExecutorService cattlePool = Executors.newFixedThreadPool(15, ThreadUtil.newNamedThreadFactory("cattle run -",true));
-    /** 任务等待队列 */
-    private LinkedBlockingQueue<CattleJob> queue = new LinkedBlockingQueue<>(3000);
-    private boolean runFlag = true;
     /** 监控context线程 */
     private MonitorContextThread monitorContext;
-    /** 执行脚本线程 */
-    private RunJob scriptRunJob;
     // 日志保存
     private RunLogService runLogService;
     private ConfigurableSpiderService spiderService;
 
-    /** 执行脚本 */
-    private ExtensionComponentLoader componentLoader;
     /** 自定义sql查询 */
     private CustomizeSqlMapper customizeSqlMapper;
 
-    public CattleRun(RunLogService runLogService, ConfigurableSpiderService spiderService, CustomizeSqlMapper customizeSqlMapper){
+    public FinishJob(RunLogService runLogService, ConfigurableSpiderService spiderService, CustomizeSqlMapper customizeSqlMapper){
         this.runLogService = runLogService;
         this.spiderService = spiderService;
         this.customizeSqlMapper = customizeSqlMapper;
     }
 
     public void init(){
-        //启动执行线程
-        this.scriptRunJob = new RunJob();
-        scriptRunJob.start();
-
-        //初始化组件扫描
-        initComponent();
-
         //启动监控context线程
         monitorContext = new MonitorContextThread();
         monitorContext.start();
-    }
-
-    public void initComponent(){
-        componentLoader = new ExtensionComponentLoader();
-        componentLoader.findComponentByPackage();
-    }
-
-    class RunJob extends Thread{
-        /**
-         * 执行脚本
-         */
-        @Override
-        public void run() {
-            log.info("脚本执行线程启动成功！");
-            while (runFlag){
-                //雪花算法
-                long batchId = IdUtil.getSnowflake(1,1).nextId();
-                try {
-                    CattleJob cattleJob = queue.take();
-                    runLogService.createLog(batchId);
-                    cattleJob.setBatchId(batchId);
-                    Class c = componentLoader.getComponentClass(cattleJob.getScriptType());
-                    if(c == null){
-                        log.error("错误的执行脚本类别 cattleJob:{}",cattleJob.toString());
-                        runLogService.updateErrorInfo(batchId,"错误的执行脚本类别");
-                        continue;
-                    }
-                    ExecuteScriptInterface execute = (ExecuteScriptInterface) c.newInstance();
-                    cattlePool.submit(() -> {
-                        runLogService.updateJobInfo(cattleJob.getJobId(), batchId, cattleJob.getJobName(), JobStatus.RUNNING);
-                        cattleJob.setBatchId(batchId);
-                        execute.setCattleJob(cattleJob);
-                        execute.buildConfig(cattleJob);
-                        execute.run();
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    runLogService.updateErrorInfo(batchId,e.getMessage());
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                    runLogService.updateErrorInfo(batchId,e.getMessage());
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                    runLogService.updateErrorInfo(batchId,e.getMessage());
-                }
-            }
-        }
-    }
-
-    @Override
-    public void close() throws IOException {
-
     }
 
     /**
@@ -137,7 +61,7 @@ public class CattleRun implements Closeable {
         public void run() {
             log.info("context 监控线程启动成功！");
             while (true){
-                Map<Long, ProcessContext> contextMap = JobContextHelper.getAllContext();
+                Map<Long, ProcessContent> contextMap = JobContextHelper.getAllContext();
                 contextMap.forEach((batchId,context) -> {
                     try {
                         switch (context.getJobStatus()){
@@ -195,21 +119,12 @@ public class CattleRun implements Closeable {
         }
     }
 
-    /**
-     * 添加执行队列
-     * @param cattleJob
-     * @throws InterruptedException
-     */
-    public void putQueue(CattleJob cattleJob) throws InterruptedException {
-        queue.put(cattleJob);
-    }
-
-    public void storage(ProcessContext processContext){
-        SpiderConfig spiderConfig = (SpiderConfig) processContext.get("spiderConfig");
+    public void storage(ProcessContent processContent){
+        SpiderConfig spiderConfig = (SpiderConfig) processContent.get("spiderConfig");
         List<LinkedHashMap<String, String>> result = ItemsHelper.getPageField(spiderConfig.getBatchId());
         if(result != null && result.size() > 0){
             //获取后删除，防止再次获取
-            ItemsHelper.removeStorage(processContext.getBatchId());
+            ItemsHelper.removeStorage(processContent.getBatchId());
             try {
                 Set<String> columns = new HashSet<>();
                 if(StrUtil.isNotBlank(spiderConfig.getFieldsJson())){
@@ -220,21 +135,21 @@ public class CattleRun implements Closeable {
                 }
 
                 //过滤结果
-                saveFilter(spiderConfig,processContext,result);
+                saveFilter(spiderConfig, processContent,result);
 
                 if(result.size() > 0){
-                    spiderService.doPrepareSaveData(result,spiderConfig.getTableName(),columns, String.valueOf(processContext.getBatchId()));
-                    processContext.addSuccessCount(result.size());
+                    spiderService.doPrepareSaveData(result,spiderConfig.getTableName(),columns, String.valueOf(processContent.getBatchId()));
+                    processContent.addSuccessCount(result.size());
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                processContext.putError(this,e);
+                processContent.putError(this,e);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                processContext.putError(this,e);
+                processContent.putError(this,e);
             } catch (Exception e) {
                 e.printStackTrace();
-                processContext.putError(this,e);
+                processContent.putError(this,e);
             }
         }
     }
@@ -243,14 +158,14 @@ public class CattleRun implements Closeable {
      * 只对结果过滤
      * 因为有些网站可能是分页更新的，所以可能更新后每页内的数据是不同的
      * @param spiderConfig
-     * @param processContext
+     * @param processContent
      * @param result
      */
-    private void saveFilter(SpiderConfig spiderConfig,ProcessContext processContext,List<LinkedHashMap<String, String>> result){
+    private void saveFilter(SpiderConfig spiderConfig, ProcessContent processContent, List<LinkedHashMap<String, String>> result){
         UrlFilterInterface urlFilter = spiderConfig.getUrlFilterInterface();
         boolean tableExists = true;
         if(spiderConfig.getUrlFilterInterface() != null && spiderConfig.getScanUrlType() == 1){
-            String key = SpiderConstants.URL_FILTER_KEY + processContext.getJobId();
+            String key = SpiderConstants.URL_FILTER_KEY + processContent.getJobId();
             Set<String> whereColumns = spiderConfig.getUpdateWhereColumn();
             Iterator<LinkedHashMap<String, String>> iterator = result.iterator();
             while (iterator.hasNext()){
@@ -296,7 +211,7 @@ public class CattleRun implements Closeable {
                                 tableExists = false;
                             }else{
                                 e.printStackTrace();
-                                processContext.putError(this,e);
+                                processContent.putError(this,e);
                             }
                         }
                     }

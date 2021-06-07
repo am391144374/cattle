@@ -5,11 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.cattle.common.util.ResponseUtil;
 import com.cattle.common.entity.CattleJob;
-import com.cattle.service.api.CattleKtrInfoService;
 import com.cattle.service.api.CattleKtrStepInfoService;
 import com.cattle.service.api.CattleSpiderInfoService;
 import com.cattle.service.api.JobService;
-import com.cattle.web.CattleRun;
+import com.cattle.common.event.JobEventPublish;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -34,19 +33,11 @@ public class CattleJobController {
     @Autowired
     private CattleKtrStepInfoService ktrStepInfoService;
 
-    @Autowired
-    private CattleRun cattleRun;
-
     @PostMapping("/execute")
     public Object executeJob(Integer jobId){
         CattleJob cattleJob = jobService.buildExecuteJobInfo(jobId);
         if(cattleJob != null){
-            try {
-                cattleRun.putQueue(cattleJob);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return ResponseUtil.fail(-1,"执行失败："+e.getMessage(),null);
-            }
+            JobEventPublish.publishJobRun(cattleJob);
         }
         return ResponseUtil.success(0,"执行成功",null);
     }

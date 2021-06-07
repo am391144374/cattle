@@ -4,10 +4,12 @@ import com.cattle.common.enums.JobStatus;
 import com.cattle.common.entity.CattleJob;
 import com.cattle.common.entity.CattleRunLog;
 import com.cattle.common.entity.CattleSpiderInfo;
+import com.cattle.common.event.JobEventPublish;
 import com.cattle.mapper.CustomizeSqlMapper;
 import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.JobService;
 import com.cattle.service.api.RunLogService;
+import com.cattle.web.listener.FinishJob;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,7 @@ import javax.annotation.Resource;
 
 @Slf4j
 @SpringBootTest
-public class CattleRunTest {
+public class FinishJobTest {
 
     @Autowired
     private RunLogService runLogService;
@@ -33,8 +35,8 @@ public class CattleRunTest {
 
     @Test
     public void putSpiderTest(){
-        CattleRun cattleRun = new CattleRun(runLogService,spiderService,customizeSqlMapper);
-        cattleRun.init();
+        FinishJob finishJob = new FinishJob(runLogService,spiderService,customizeSqlMapper);
+        finishJob.init();
 
         CattleSpiderInfo cattleSpiderInfo = new CattleSpiderInfo();
         cattleSpiderInfo.setTableName("spider_movie_info");
@@ -52,11 +54,7 @@ public class CattleRunTest {
         job.setSpiderInfo(cattleSpiderInfo);
         job.setScriptType("spider");
 
-        try {
-            cattleRun.putQueue(job);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        JobEventPublish.publishJobRun(job);
 
         printJobLog(job);
 
@@ -64,17 +62,13 @@ public class CattleRunTest {
 
     @Test
     public void putKettleTest(){
-        CattleRun cattleRun = new CattleRun(runLogService,null,customizeSqlMapper);
-        cattleRun.init();
+        FinishJob finishJob = new FinishJob(runLogService,null,customizeSqlMapper);
+        finishJob.init();
 
         CattleJob job = jobService.buildExecuteJobInfo(1);
         job.setScriptType("kettle");
 
-        try {
-            cattleRun.putQueue(job);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        JobEventPublish.publishJobRun(job);
 
         printJobLog(job);
     }

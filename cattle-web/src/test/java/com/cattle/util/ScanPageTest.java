@@ -3,7 +3,7 @@ package com.cattle.util;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.cattle.common.ItemsHelper;
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.handler.ProcessHandler;
 import com.cattle.component.spider.SpiderConfig;
@@ -34,13 +34,13 @@ public class ScanPageTest {
         spiderConfig.setXPathSelection(0);
         spiderConfig.setThreadNum(2);
 
-        ProcessContext processContext = new ProcessContext();
-        processContext.setJobStatus(JobStatus.RUNNING);
-        processContext.setBatchId(batchId);
-        processContext.put("spiderConfig",spiderConfig);
-        processHandler.execute(processContext);
+        ProcessContent processContent = new ProcessContent();
+        processContent.setJobStatus(JobStatus.RUNNING);
+        processContent.setBatchId(batchId);
+        processContent.put("spiderConfig",spiderConfig);
+        processHandler.execute(processContent);
 
-        printValue(processContext);
+        printValue(processContent);
     }
 
     @Test
@@ -71,11 +71,11 @@ public class ScanPageTest {
         spiderConfig.setCycleRetryTimes(5);
         spiderConfig.setTableName("spider_movie_info");
 
-        ProcessContext processContext = new ProcessContext();
-        processContext.setJobStatus(JobStatus.RUNNING);
-        processContext.setBatchId(batchId);
-        processContext.put("spiderConfig",spiderConfig);
-        processHandler.execute(processContext);
+        ProcessContent processContent = new ProcessContent();
+        processContent.setJobStatus(JobStatus.RUNNING);
+        processContent.setBatchId(batchId);
+        processContent.put("spiderConfig",spiderConfig);
+        processHandler.execute(processContent);
 
         while (true){
             try {
@@ -88,8 +88,8 @@ public class ScanPageTest {
                         });
                     });
                 }
-                if(processContext.get("spiderWorker") != null){
-                    Spider spider = (Spider) processContext.get("spiderWorker");
+                if(processContent.get("spiderWorker") != null){
+                    Spider spider = (Spider) processContent.get("spiderWorker");
                     if(spider.getStatus() == Spider.Status.Stopped){
                         List<LinkedHashMap<String, String>> resultList = ItemsHelper.getPageField(batchId);
                         System.out.println("result size " + resultList.size());
@@ -117,18 +117,18 @@ public class ScanPageTest {
         return druidDataSource;
     }
 
-    public void printValue(ProcessContext processContext){
+    public void printValue(ProcessContent processContent){
         while (true){
             try {
-                if(processContext.get("result") != null){
-                    List<LinkedHashMap<String, String>> resultList = (List<LinkedHashMap<String, String>>) processContext.get("result");
+                if(processContent.get("result") != null){
+                    List<LinkedHashMap<String, String>> resultList = (List<LinkedHashMap<String, String>>) processContent.get("result");
                     System.out.println("result size " + resultList.size());
                 }
-                if(processContext.get("spiderWorker") != null){
-                    Spider spider = (Spider) processContext.get("spiderWorker");
+                if(processContent.get("spiderWorker") != null){
+                    Spider spider = (Spider) processContent.get("spiderWorker");
                     if(spider.getStatus() == Spider.Status.Stopped){
-                        if(processContext.get("result") != null){
-                            List<LinkedHashMap<String, String>> resultList = (List<LinkedHashMap<String, String>>) processContext.get("result");
+                        if(processContent.get("result") != null){
+                            List<LinkedHashMap<String, String>> resultList = (List<LinkedHashMap<String, String>>) processContent.get("result");
                             System.out.println("result size " + resultList.size());
                             resultList.forEach(m -> {
                                 m.forEach((k,v) -> {

@@ -1,7 +1,7 @@
 package com.cattle.component.kettle.handler;
 
 import com.cattle.common.handler.ExecuteProcessHandler;
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 import com.cattle.component.kettle.step.BaseStepMeta;
 import org.pentaho.di.trans.TransMeta;
 
@@ -18,11 +18,11 @@ public class StepProcessHandler extends ExecuteProcessHandler {
     private int index = 0;
 
     @Override
-    public void executeContent(ProcessContext processContext) {
-        TransMeta transMeta = (TransMeta) processContext.get("transMeta");
+    public void executeContent(ProcessContent processContent) {
+        TransMeta transMeta = (TransMeta) processContent.get("transMeta");
         for(BaseStepMeta stepMeta : baseStepMetaList){
             stepMeta.setTransMeta(transMeta);
-            stepMeta.execute(processContext);
+            stepMeta.execute(processContent);
         }
     }
 

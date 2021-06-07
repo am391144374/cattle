@@ -1,7 +1,7 @@
 package com.cattle.common;
 
 
-import com.cattle.common.context.ProcessContext;
+import com.cattle.common.context.ProcessContent;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,14 +11,14 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JobContextHelper {
 
-    final static private Map<Long, ProcessContext> jobContext = new ConcurrentHashMap<>();
+    final static private Map<Long, ProcessContent> jobContext = new ConcurrentHashMap<>();
 
-    public static ProcessContext getContext(long batchId){
+    public static ProcessContent getContext(long batchId){
         return jobContext.get(batchId);
     }
 
-    public static void setJobContext(long batchId, ProcessContext processContext){
-        jobContext.put(batchId,processContext);
+    public static void setJobContext(long batchId, ProcessContent processContent){
+        jobContext.put(batchId, processContent);
     }
 
     /**
@@ -29,7 +29,7 @@ public class JobContextHelper {
         jobContext.remove(batchId);
     }
 
-    public static Map<Long, ProcessContext> getAllContext(){
+    public static Map<Long, ProcessContent> getAllContext(){
         return jobContext;
     }
 
