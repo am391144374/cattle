@@ -13,11 +13,11 @@ kettle
 springboot
 mybatis-plus
 mysql
-webMagic
+[webMagic](http://webmagic.io/docs/zh/)
 redis
 
 ##### 前端
-pear admin（layui）
+[pear admin（layui）](https://www.layui.com/doc/modules/table.html)
 
 #### 执行环境配置
 
@@ -73,7 +73,7 @@ pear admin（layui）
 
 - Kettle
   1. 目前未完成数据库自定义设置界面，可以在数据库配置，注意的是名字要与kettle脚本内的数据库表名字相同。
-  2. 在步骤中需要上传excel，可能需要一个步骤处理多个excel（统计年鉴多年份导入）。
+  2. 在步骤中需要上传excel，可能需要一个步骤处理多个excel。
 - Spider
   1. 目前保存的线程为起的单个的执行线程，当启动的爬虫较多时可能出现延迟问题。
   2. 在修改执行保存线程的时候需要考虑，保存信息如何实时保存数据，不实时保存可能内存占用过大，或者OOM问题。
@@ -117,9 +117,3 @@ pear admin（layui）
     - [ ] 新增定时任务
     - [x] 执行状态查询
     - [ ] 取消执行计划
-
-附录
-
-1. [WebMagic文档](http://webmagic.io/docs/zh/)
-
-2. [layuI文档](https://www.layui.com/doc/modules/table.html)
