@@ -1,6 +1,5 @@
 package com.cattle.common.event;
 
-import com.cattle.common.context.ProcessContent;
 import com.cattle.common.entity.CattleJob;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

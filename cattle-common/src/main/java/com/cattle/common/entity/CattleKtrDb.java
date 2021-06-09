@@ -17,13 +17,15 @@ public class CattleKtrDb {
     @TableId(type = IdType.AUTO)
     private Integer dbId;
     @TableField
+    private Integer stepId;
+    @TableField
     private String name;
     @TableField
     private String dbDatabase;
     @TableField
     private String dbType;
     @TableField
-    private String connectStr;
+    private String hostName;
     @TableField
     private String loginName;
     @TableField

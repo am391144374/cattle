@@ -2,9 +2,9 @@ spring:
   profiles:
     active: druid
   redis:
-    host: localhost
+    host: redis.lzfun.top
     port: 6379
-    password: xxxxx
+    password: liushijie123
     database: 0
     lettuce:
       pool:
@@ -18,7 +18,7 @@ cattle:
     path: D:\临时文件\temp
 
 server:
-  port: 5000
+  port: 5001
 logging:
   level:
     com.cattle: info

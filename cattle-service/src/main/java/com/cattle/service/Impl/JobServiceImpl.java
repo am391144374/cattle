@@ -29,6 +29,8 @@ public class JobServiceImpl implements JobService {
     private CattleKtrStepFieldService stepFieldService;
     @Autowired
     private CattleSpiderInfoService spiderInfoService;
+    @Autowired
+    private CattleKtrDbService ktrDbService;
 
     /**
      * 查询job信息
@@ -56,6 +58,13 @@ public class JobServiceImpl implements JobService {
                 break;
             case "kettle":
                 CattleKtrStep stepInfo = stepInfoService.selectStepInfoById(jobInfo.getRelateId());
+                QueryWrapper<CattleKtrDb> dbQuery = new QueryWrapper();
+                dbQuery.eq("step_id",stepInfo.getStepId());
+                Map<String,CattleKtrDb> dbMap = new HashMap<>();
+                ktrDbService.list(dbQuery).forEach(db -> {
+                    dbMap.put(db.getName(),db);
+                });
+                jobInfo.setDataBaseMetas(dbMap);
                 List<CattleKtrField> stepFields = stepFieldService.selectFieldListByStepId(stepInfo.getStepId());
                 CattleKtrInfo cattleKtrInfo = ktrInfoService.selectById(stepInfo.getKtrInfoId());
                 stepInfo.setFieldList(stepFields);

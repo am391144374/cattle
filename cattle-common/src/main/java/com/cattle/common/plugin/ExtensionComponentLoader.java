@@ -39,7 +39,11 @@ public class ExtensionComponentLoader extends AbstractScanPackage {
                         return;
                     }
                     log.info("初始化{}组件环境变量  #### start ####",scriptInterface.getScriptType());
-                    scriptInterface.initEnv();
+                    try {
+                        scriptInterface.initEnv();
+                    }catch (Exception e){
+                        log.error("初始化{}组件环境失败  error:{}",scriptInterface.getScriptType(),e.getMessage());
+                    }
                     log.info("初始化{}组件环境变量  #### end ####",scriptInterface.getScriptType());
                     log.info("注册组件 scriptType:{}------className:{}", scriptInterface.getScriptType(), loadClass.getName());
                     componentMaps.put(scriptInterface.getScriptType(), loadClass);

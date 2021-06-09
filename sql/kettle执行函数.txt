@@ -1,0 +1,56 @@
+CREATE DEFINER=`root`@`%` PROCEDURE `change_field_name`(IN tableName VARCHAR(100))
+BEGIN
+
+	
+
+	DECLARE done INT DEFAULT false;
+
+	DECLARE altersql varchar(100);
+
+	DECLARE newColumnName varchar(100);
+
+	DECLARE column_name1 varchar(100);
+
+	DECLARE column_type1 varchar(100);
+
+	DECLARE column_comment1 VARCHAR(100);
+
+	DECLARE column_list CURSOR FOR select column_name,column_type,column_comment FROM information_schema.COLUMNS where table_name = tableName;
+
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = true;
+
+	
+
+	open column_list;
+
+		read_loop : loop
+
+			fetch column_list into column_name1,column_type1,column_comment1;
+
+			IF done THEN
+
+				LEAVE read_loop;
+
+			END IF;
+
+			set @newColumnName = SUBSTRING_INDEX(column_name1,"-",1);
+
+			
+
+			set @altersql = CONCAT("alter table ",tableName," change `",column_name1,"` `",@newColumnName,"` ",column_type1," comment '",column_comment1,"'");
+
+			select @altersql from dual;
+
+			PREPARE createNewTemp from @altersql;
+
+				EXECUTE createNewTemp;
+
+	end loop;
+
+	
+
+	close column_list;
+
+	
+
+end

@@ -5,8 +5,10 @@ import com.cattle.component.kettle.meta.ExcelMeta;
 import com.cattle.component.kettle.meta.FieldMeta;
 import lombok.Data;
 import lombok.ToString;
+import org.odftoolkit.odfdom.dom.attribute.db.DbMediaTypeAttribute;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,5 +41,12 @@ public class KettleConfig{
     private List<FieldMeta> constantMap = new ArrayList<>();
     /** 数据存储 */
     private Map<String /* dbName */, DBMate> dataBaseMetas;
+
+    public void putDB(DBMate dbMate){
+        if(dataBaseMetas == null){
+            dataBaseMetas = new HashMap<>();
+        }
+        dataBaseMetas.put(dbMate.getDbName(),dbMate);
+    }
 
 }

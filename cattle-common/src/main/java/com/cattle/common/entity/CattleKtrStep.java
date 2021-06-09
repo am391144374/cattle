@@ -36,8 +36,6 @@ public class CattleKtrStep {
     private Integer startCol;
     @TableField
     private Integer nextStepId;
-    @TableField
-    private Integer inputDbId;
     @JsonIgnore
     @TableField
     private String fileList;
@@ -48,9 +46,6 @@ public class CattleKtrStep {
     @TableLogic(value = "0",delval = "1")
     @TableField
     private Integer deleted;
-
-    @TableField
-    private Integer outputDbId;
 
     @TableField(exist = false)
     private List<CattleKtrField> fieldList;

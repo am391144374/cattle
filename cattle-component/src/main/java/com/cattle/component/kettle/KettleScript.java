@@ -6,6 +6,7 @@ import com.cattle.common.enums.JobStatus;
 import com.cattle.common.plugin.ExecuteScriptInterface;
 import com.cattle.component.kettle.handler.ExecuteKettleScriptProcessHandler;
 import com.cattle.component.kettle.handler.StepProcessHandler;
+import com.cattle.component.kettle.meta.DBMate;
 import com.cattle.component.kettle.meta.ExcelMeta;
 import com.cattle.component.kettle.meta.FieldMeta;
 import com.cattle.component.kettle.step.ConstantStep;
@@ -16,6 +17,7 @@ import com.cattle.common.context.ProcessContent;
 import com.cattle.common.entity.CattleJob;
 import com.cattle.common.entity.CattleKtrField;
 import com.cattle.common.entity.CattleKtrStep;
+import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleMissingPluginsException;
 import org.pentaho.di.core.exception.KettleXMLException;
@@ -25,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author lsj
@@ -56,6 +60,10 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
         ProcessContent context = new ProcessContent();
         try {
             TransMeta transMeta = new TransMeta(kettleConfig.getScriptFile());
+            //变更数据库连接
+            if(kettleConfig.getDataBaseMetas() != null && !kettleConfig.getDataBaseMetas().isEmpty()){
+                changeDataBase(transMeta);
+            }
             transMeta.setName(kettleConfig.getJobName());
             context.setJobStatus(JobStatus.RUNNING);
             context.setScriptType(getScriptType());
@@ -74,6 +82,21 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
             e.printStackTrace();
             context.putError(this,e);
         }
+    }
+
+    private void changeDataBase(TransMeta transMeta){
+        Map<String, DBMate> dbList = kettleConfig.getDataBaseMetas();
+        List<DatabaseMeta> list = transMeta.getDatabases();
+        Optional.ofNullable(list).get().forEach(databaseMeta -> {
+            if(dbList.containsKey(databaseMeta.getName())){
+                DBMate dbMate = dbList.get(databaseMeta.getName());
+                databaseMeta.setDBPort(dbMate.getPort());
+                databaseMeta.setDBName(dbMate.getDatabase());
+                databaseMeta.setHostname(dbMate.getHostName());
+                databaseMeta.setUsername(dbMate.getUserName());
+                databaseMeta.setPassword(dbMate.getPassword());
+            }
+        });
     }
 
     public void buildKettleEditProcess(){
@@ -130,7 +153,18 @@ public class KettleScript extends ProcessScript implements ExecuteScriptInterfac
 //                    break;
         }
 
-        //自定义数据库连接
+        //数据库设置
+        cattleJob.getDataBaseMetas().forEach((k,db) -> {
+            DBMate dbMate = new DBMate();
+            dbMate.setDbName(db.getName());
+            dbMate.setDatabase(db.getDbDatabase());
+            dbMate.setHostName(db.getHostName());
+            dbMate.setPort(db.getPort().toString());
+            dbMate.setUserName(db.getLoginName());
+            dbMate.setPassword(db.getLoginPwd());
+
+            kettleConfig.putDB(dbMate);
+        });
 
         kettleConfig.setScriptFile(scriptInfo.getScriptFile());
         kettleConfig.setJobName(job.getJobName());
