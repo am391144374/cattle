@@ -24,11 +24,13 @@ redis
 ##### 环境要求
 1. kettle执行脚本 需要把kettle下的plugins文件夹下的内容都拷贝下来，否则无法执行kettle脚本，在KettlePluginInit中配置地址
 2. JDK 1.8+
-3. kettle执行基础脚本需先执行sql目录下的batch_insert_log、batch_insert_error_log、kettle执行函数。
+3. kettle执行基础脚本需先执行sql目录下的kettle执行函数（此函数是针对excel导入基础脚本需要，执行其他脚本可不执行）。
 
 ##### 项目描述
 
 - kettle（下面描述是以年鉴导入基础脚本为基础做描述）
+
+  ​	注意：目前kettle脚本自定义执行是专门针对excel导入来设计的。执行模式为普通模式则只执行脚本，不做特殊处理。
 
   - 进入如下
 
@@ -42,9 +44,10 @@ redis
 
   - 点击步骤名来设置自定义字段。
 
-    注意事项：
+  注意事项：
 
-    1. 数据库表名在脚本中设置的默认替换值为<b>```` tableYearTemplate ````</b>  ，当前默认脚本的处理规则为，以excel名字为替换值来区分年份。
+  1. 数据库表名在脚本中设置的默认替换值为<b>```` tableYearTemplate ````</b>  ，当前默认脚本的处理规则为，以excel名字为替换值来区分年份。
+  2. 脚本执行，可保存数据保存量，和失败描述。定义脚本为JSON输出，成功数据量步骤名为**successJson**字段为**count**，失败步骤名**errorJson**字段为**error_msg**（具体实现请看目录doc/kettle脚本/excel导入基础脚本.krt）。
 
 - spider
 
@@ -103,6 +106,7 @@ redis
     - [x] 执行kettle脚本
     - [x] 解析excel文件并导入数据库
     - [x] 自定义执行数据库
+    - [x] 执行成功数量保存
     - [ ] 多excel导入
 - [x] 爬虫组件（基于webMagic）
     - [x] 执行自定义爬虫

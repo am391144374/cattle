@@ -1323,7 +1323,7 @@ public class MyTrans extends Trans {
         setPaused( false );
         setStopped( false );
 
-        transFinishedBlockingQueue = new ArrayBlockingQueue<>( 10 );
+        transFinishedBlockingQueue = new ArrayBlockingQueue<>( 100 );
 
         TransListener transListener = new TransAdapter() {
             public void transFinished( MyTrans trans ) {

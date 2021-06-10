@@ -549,11 +549,6 @@
   <order>
     <hop>
       <from>表输出 3 2</from>
-      <to>错误输出 2 2</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
-      <from>表输出 3 2</from>
       <to>阻塞数据直到步骤都完成 2 2</to>
       <enabled>Y</enabled>
     </hop>
@@ -628,11 +623,6 @@
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>分组 2 2 2</from>
-      <to>插入日志记录</to>
-      <enabled>Y</enabled>
-    </hop>
-    <hop>
       <from>增加常量 2</from>
       <to>分组 2 2 2</to>
       <enabled>Y</enabled>
@@ -675,6 +665,21 @@
     <hop>
       <from>备份老表</from>
       <to>执行建表语句 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>分组 2 2 2</from>
+      <to>successJson</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>表输出 3 2</from>
+      <to>唯一行 (哈希值) 2 2</to>
+      <enabled>Y</enabled>
+    </hop>
+    <hop>
+      <from>唯一行 (哈希值) 2 2</from>
+      <to>errorJson</to>
       <enabled>Y</enabled>
     </hop>
   </order>
@@ -1217,7 +1222,7 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
         <name>zone_name-园区</name>
         <rename>zone_name-园区</rename>
         <type>String</type>
-        <length>30</length>
+        <length>1</length>
         <precision>-2</precision>
         <conversion_mask/>
         <date_format_lenient>false</date_format_lenient>
@@ -1696,62 +1701,6 @@ private boolean fieldNameFilter(String fieldName){
     </GUI>
   </step>
   <step>
-    <name>插入日志记录</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>yearbook_ods</connection>
-    <schema/>
-    <table>batch_insert_log</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-      <field>
-        <column_name>batch_id</column_name>
-        <stream_name>batch_id</stream_name>
-      </field>
-      <field>
-        <column_name>inert_num</column_name>
-        <stream_name>count</stream_name>
-      </field>
-      <field>
-        <column_name>insert_time</column_name>
-        <stream_name>insert_time</stream_name>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>384</xloc>
-      <yloc>352</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>新增常量数据处理 2 2</name>
     <type>UserDefinedJavaClass</type>
     <description/>
@@ -2119,7 +2068,7 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
         <currency/>
         <decimal/>
         <group/>
-        <nullif>111</nullif>
+        <nullif>111123214124</nullif>
         <length>64</length>
         <precision>-1</precision>
         <set_empty_string>N</set_empty_string>
@@ -2140,62 +2089,6 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
     </GUI>
   </step>
   <step>
-    <name>错误输出 2 2</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>yearbook_ods</connection>
-    <schema/>
-    <table>batch_insert_error_log</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-      <field>
-        <column_name>batch_Id</column_name>
-        <stream_name>batch_Id</stream_name>
-      </field>
-      <field>
-        <column_name>insert_time</column_name>
-        <stream_name>insert_time</stream_name>
-      </field>
-      <field>
-        <column_name>error_msg</column_name>
-        <stream_name>error_msg</stream_name>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1008</xloc>
-      <yloc>272</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
     <name>阻塞数据直到步骤都完成</name>
     <type>BlockUntilStepsFinish</type>
     <description/>
@@ -2208,7 +2101,7 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
     </partitioning>
     <steps>
       <step>
-        <name>插入日志记录</name>
+        <name>successJson</name>
         <CopyNr>0</CopyNr>
       </step>
     </steps>
@@ -2336,7 +2229,7 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
     </partitioning>
     <steps>
       <step>
-        <name>插入日志记录</name>
+        <name>successJson</name>
         <CopyNr>0</CopyNr>
       </step>
     </steps>
@@ -2354,10 +2247,151 @@ public boolean processRow(StepMetaInterface smi, StepDataInterface sdi) throws K
       <draw>Y</draw>
     </GUI>
   </step>
+  <step>
+    <name>successJson</name>
+    <type>JsonOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <outputValue>json</outputValue>
+    <jsonBloc>data</jsonBloc>
+    <nrRowsInBloc>1</nrRowsInBloc>
+    <operation_type>outputvalue</operation_type>
+    <compatibility_mode>N</compatibility_mode>
+    <encoding>UTF-8</encoding>
+    <addtoresult>N</addtoresult>
+    <file>
+      <name/>
+      <extention>js</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <create_parent_folder>N</create_parent_folder>
+      <DoNotOpenNewFileInit>N</DoNotOpenNewFileInit>
+      <servlet_output>N</servlet_output>
+    </file>
+    <fields>
+      <field>
+        <name>batch_id</name>
+        <element>batch_id</element>
+      </field>
+      <field>
+        <name>count</name>
+        <element>count</element>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>352</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>唯一行 (哈希值) 2 2</name>
+    <type>UniqueRowsByHashSet</type>
+    <description/>
+    <distribute>N</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <store_values>N</store_values>
+    <reject_duplicate_row>N</reject_duplicate_row>
+    <error_description/>
+    <fields>
+      <field>
+        <name>error_msg</name>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1008</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>errorJson</name>
+    <type>JsonOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <outputValue>json</outputValue>
+    <jsonBloc>data</jsonBloc>
+    <nrRowsInBloc>1</nrRowsInBloc>
+    <operation_type>outputvalue</operation_type>
+    <compatibility_mode>N</compatibility_mode>
+    <encoding>UTF-8</encoding>
+    <addtoresult>N</addtoresult>
+    <file>
+      <name/>
+      <extention>js</extention>
+      <append>N</append>
+      <split>N</split>
+      <haspartno>N</haspartno>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <create_parent_folder>N</create_parent_folder>
+      <DoNotOpenNewFileInit>N</DoNotOpenNewFileInit>
+      <servlet_output>N</servlet_output>
+    </file>
+    <fields>
+      <field>
+        <name>batch_id</name>
+        <element>batch_id</element>
+      </field>
+      <field>
+        <name>error_msg</name>
+        <element>error_msg</element>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1152</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
   <step_error_handling>
     <error>
       <source_step>表输出 3 2</source_step>
-      <target_step>错误输出 2 2</target_step>
+      <target_step>唯一行 (哈希值) 2 2</target_step>
       <is_enabled>Y</is_enabled>
       <nr_valuename/>
       <descriptions_valuename>error_msg</descriptions_valuename>
