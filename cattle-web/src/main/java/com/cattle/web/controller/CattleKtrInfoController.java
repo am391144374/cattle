@@ -94,6 +94,7 @@ public class CattleKtrInfoController {
     public Object stepAdd(@RequestBody CattleKtrStep cattleKtrStep){
         String tableName = cattleKtrStep.getTableName();
         QueryWrapper<CattleKtrStep> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("table_name",tableName);
         if(ktrStepInfoService.selectOne(queryWrapper) != null){
             return ResponseUtil.fail("已经存在的数据库表名");
         }

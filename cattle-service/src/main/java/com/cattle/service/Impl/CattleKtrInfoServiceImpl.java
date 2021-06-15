@@ -40,13 +40,13 @@ public class CattleKtrInfoServiceImpl implements CattleKtrInfoService {
     }
 
     @Override
-    public int insert(CattleKtrInfo cattleKtrInfo){
-        return ktrInfoMapper.insert(cattleKtrInfo);
+    public int updateById(CattleKtrInfo cattleKtrInfo) {
+        return ktrInfoMapper.updateById(cattleKtrInfo);
     }
 
     @Override
-    public int updateById(CattleKtrInfo cattleKtrInfo) {
-        return ktrInfoMapper.updateById(cattleKtrInfo);
+    public int insert(CattleKtrInfo cattleKtrInfo){
+        return ktrInfoMapper.insert(cattleKtrInfo);
     }
 
     @Override
