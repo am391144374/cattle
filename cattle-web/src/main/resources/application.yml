@@ -2,9 +2,9 @@ spring:
   profiles:
     active: druid
   redis:
-    host: redis.lzfun.top
+    host: #####
     port: 6379
-    password: liushijie123
+    password: ######
     database: 0
     lettuce:
       pool:

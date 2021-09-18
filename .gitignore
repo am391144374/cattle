@@ -16,3 +16,5 @@
 /cattle-entity/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
 /cattle-entity/target/cattle-entity-1.0-SNAPSHOT.jar
 /cattle-component/src/main/resources/plugins.zip
+/**/*.iml
+/**/target
