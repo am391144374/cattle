@@ -37,7 +37,6 @@ public class FinishJobTest {
     public void putSpiderTest(){
         FinishJob finishJob = new FinishJob(runLogService,spiderService,customizeSqlMapper);
         finishJob.init();
-
         CattleSpiderInfo cattleSpiderInfo = new CattleSpiderInfo();
         cattleSpiderInfo.setTableName("spider_movie_info");
         cattleSpiderInfo.setSpiderName("电影");

@@ -12,6 +12,7 @@ import com.cattle.service.api.CattleKtrStepFieldService;
 import com.cattle.service.api.CattleKtrStepInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,7 +22,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@Valid
+@Validated
 @RequestMapping("/ktr")
 public class CattleKtrInfoController {
 

@@ -1,7 +1,7 @@
 package com.cattle.util;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.cattle.component.spider.SpiderConfig;
+import com.cattle.spider.SpiderConfig;
 import com.cattle.common.entity.CattleSpiderInfo;
 import org.junit.jupiter.api.Test;
 

@@ -14,7 +14,7 @@ public class ExtensionComponentLoaderTest {
 
     @Test
     public void scanPackage(){
-        String COMPONENT_PACKAGE = "com.cattle.component";
+        String COMPONENT_PACKAGE = "component";
     }
 
 }

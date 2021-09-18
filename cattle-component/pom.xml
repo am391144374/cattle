@@ -10,58 +10,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cattle-component</artifactId>
+    <packaging>pom</packaging>
     <description>执行组件</description>
+    <modules>
+        <module>cattle-spider</module>
+<!--        <module>cattle-kettle</module>-->
+    </modules>
 
     <dependencies>
-
-        <!-- http://webmagic.io/docs/zh -->
-        <dependency>
-            <groupId>us.codecraft</groupId>
-            <artifactId>webmagic-core</artifactId>
-            <version>0.7.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>us.codecraft</groupId>
-            <artifactId>webmagic-extension</artifactId>
-            <version>0.7.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.htmlcleaner</groupId>
-            <artifactId>htmlcleaner</artifactId>
-            <version>2.24</version>
-        </dependency>
 
         <dependency>
             <groupId>com.cattle</groupId>
             <artifactId>cattle-common</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- kettle -->
-        <dependency>
-            <groupId>pentaho-kettle</groupId>
-            <artifactId>kettle-core</artifactId>
-            <version>9.2.0.0-103</version>
-        </dependency>
-
-        <dependency>
-            <groupId>pentaho-kettle</groupId>
-            <artifactId>kettle-engine</artifactId>
-            <version>9.2.0.0-102</version>
-        </dependency>
-
-        <dependency>
-            <groupId>pentaho-kettle</groupId>
-            <artifactId>kettle-dbdialog</artifactId>
-            <version>9.2.0.0-103</version>
-        </dependency>
-
-        <dependency>
-            <groupId>pentaho</groupId>
-            <artifactId>metastore</artifactId>
-            <version>9.1.0.0-295</version>
         </dependency>
 
         <dependency>
@@ -89,24 +50,14 @@
             <version>4.8.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.cattle</groupId>
+            <artifactId>cattle-spider</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- HtmlUnit java 模拟网页点击 -->
 
     </dependencies>
-
-    <repositories>
-        <!-- https://repo.pentaho.org/ -->
-        <repository>
-            <id>pentaho-nexus</id>
-            <name>Kettle</name>
-            <url>https://nexus.pentaho.org/content/groups/omni/</url>
-        </repository>
-
-        <!--         阿里云maven仓库 -->
-        <repository>
-            <id>aliyun_nexus</id>
-            <name>aliyun_nexus</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-        </repository>
-    </repositories>
 
 </project>

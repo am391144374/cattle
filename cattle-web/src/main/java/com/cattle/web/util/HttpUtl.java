@@ -1,6 +1,6 @@
 package com.cattle.web.util;
 
-import com.cattle.component.spider.download.DefaultHttpClientDownloader;
+import com.cattle.spider.download.DefaultHttpClientDownloader;
 import us.codecraft.webmagic.selector.Html;
 
 

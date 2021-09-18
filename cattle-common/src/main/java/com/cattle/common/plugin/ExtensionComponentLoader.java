@@ -12,7 +12,7 @@ import java.util.*;
 @Slf4j
 public class ExtensionComponentLoader extends AbstractScanPackage {
 
-    private final String COMPONENT_PACKAGE = "com.cattle.component";
+    private final String COMPONENT_PACKAGE = "com.cattle";
     final Map<String, Class<? extends ExecuteScriptInterface>> componentMaps = new HashMap<>();
 
     public void findComponentByPackage() {
@@ -32,6 +32,9 @@ public class ExtensionComponentLoader extends AbstractScanPackage {
             String classPath = subClassPath(url, COMPONENT_PACKAGE);
             try {
                 Class loadClass = Class.forName(classPath);
+                if(loadClass.getName().equals(ExecuteScriptInterface.class.getName())){
+                    return;
+                }
                 if (ExecuteScriptInterface.class.isAssignableFrom(loadClass)) {
                     ExecuteScriptInterface scriptInterface = (ExecuteScriptInterface) loadClass.newInstance();
                     if (componentMaps.containsKey(scriptInterface.getScriptType())) {

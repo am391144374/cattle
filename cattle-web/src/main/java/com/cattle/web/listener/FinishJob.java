@@ -10,14 +10,12 @@ import com.cattle.common.constants.SpiderConstants;
 import com.cattle.common.context.ProcessContent;
 import com.cattle.common.enums.JobStatus;
 import com.cattle.common.filter.UrlFilterInterface;
-import com.cattle.component.spider.SpiderConfig;
+import com.cattle.spider.SpiderConfig;
 import com.cattle.mapper.CustomizeSqlMapper;
 import com.cattle.service.api.ConfigurableSpiderService;
 import com.cattle.service.api.RunLogService;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.Closeable;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
